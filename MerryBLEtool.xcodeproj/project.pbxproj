@@ -7,6 +7,9 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		C10E5CBB19A0531B0075C0BB /* BLE_APP_Storyboard.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = C10E5CBA19A0531B0075C0BB /* BLE_APP_Storyboard.storyboard */; };
+		C11742C019AADC1600721449 /* HRMViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = C11742BF19AADC1600721449 /* HRMViewController.m */; };
+		C11742C219AAE06A00721449 /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C11742C119AAE06A00721449 /* QuartzCore.framework */; };
 		C1DF28AA186147DA00000695 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C1DF28A9186147DA00000695 /* UIKit.framework */; };
 		C1DF28AC186147DA00000695 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C1DF28AB186147DA00000695 /* Foundation.framework */; };
 		C1DF28AE186147DA00000695 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C1DF28AD186147DA00000695 /* CoreGraphics.framework */; };
@@ -17,10 +20,40 @@
 		C1DF28BE186147DB00000695 /* Default@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = C1DF28BD186147DB00000695 /* Default@2x.png */; };
 		C1DF28C0186147DB00000695 /* Default-568h@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = C1DF28BF186147DB00000695 /* Default-568h@2x.png */; };
 		C1DF28C3186147DB00000695 /* MainStoryboard.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = C1DF28C1186147DB00000695 /* MainStoryboard.storyboard */; };
-		C1DF28C6186147DB00000695 /* ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = C1DF28C5186147DB00000695 /* ViewController.m */; };
+		C1DF28CF186149EB00000695 /* GenericViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = C1DF28CD186149EB00000695 /* GenericViewController.m */; };
+		C1DF28D318614A7000000695 /* BLETabBarController.m in Sources */ = {isa = PBXBuildFile; fileRef = C1DF28D218614A7000000695 /* BLETabBarController.m */; };
+		C1DF28D71861507700000695 /* 1.png in Resources */ = {isa = PBXBuildFile; fileRef = C1DF28D41861507700000695 /* 1.png */; };
+		C1DF28D81861507700000695 /* 2.png in Resources */ = {isa = PBXBuildFile; fileRef = C1DF28D51861507700000695 /* 2.png */; };
+		C1DF28D91861507700000695 /* 3.png in Resources */ = {isa = PBXBuildFile; fileRef = C1DF28D61861507700000695 /* 3.png */; };
+		C1EE3B171862DC9200355A9D /* BLECBTask.m in Sources */ = {isa = PBXBuildFile; fileRef = C1EE3B161862DC9200355A9D /* BLECBTask.m */; };
+		C1F60B7E198B37610032A497 /* apple-touch-icon-114x114-precomposed.png in Resources */ = {isa = PBXBuildFile; fileRef = C1F60B6C198B37610032A497 /* apple-touch-icon-114x114-precomposed.png */; };
+		C1F60B7F198B37610032A497 /* apple-touch-icon-144x144-precomposed.png in Resources */ = {isa = PBXBuildFile; fileRef = C1F60B6D198B37610032A497 /* apple-touch-icon-144x144-precomposed.png */; };
+		C1F60B80198B37610032A497 /* apple-touch-icon-72x72-precomposed.png in Resources */ = {isa = PBXBuildFile; fileRef = C1F60B6E198B37610032A497 /* apple-touch-icon-72x72-precomposed.png */; };
+		C1F60B81198B37610032A497 /* apple-touch-icon-precomposed.png in Resources */ = {isa = PBXBuildFile; fileRef = C1F60B6F198B37610032A497 /* apple-touch-icon-precomposed.png */; };
+		C1F60B82198B37610032A497 /* Icon-72.png in Resources */ = {isa = PBXBuildFile; fileRef = C1F60B70198B37610032A497 /* Icon-72.png */; };
+		C1F60B83198B37610032A497 /* Icon-72@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = C1F60B71198B37610032A497 /* Icon-72@2x.png */; };
+		C1F60B84198B37610032A497 /* Icon-Small-20.png in Resources */ = {isa = PBXBuildFile; fileRef = C1F60B72198B37610032A497 /* Icon-Small-20.png */; };
+		C1F60B85198B37610032A497 /* Icon-Small-20@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = C1F60B73198B37610032A497 /* Icon-Small-20@2x.png */; };
+		C1F60B86198B37610032A497 /* Icon-Small-30.png in Resources */ = {isa = PBXBuildFile; fileRef = C1F60B74198B37610032A497 /* Icon-Small-30.png */; };
+		C1F60B87198B37610032A497 /* Icon-Small-30@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = C1F60B75198B37610032A497 /* Icon-Small-30@2x.png */; };
+		C1F60B88198B37610032A497 /* Icon-Small-50.png in Resources */ = {isa = PBXBuildFile; fileRef = C1F60B76198B37610032A497 /* Icon-Small-50.png */; };
+		C1F60B89198B37610032A497 /* Icon-Small-50@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = C1F60B77198B37610032A497 /* Icon-Small-50@2x.png */; };
+		C1F60B8A198B37610032A497 /* Icon-Small.png in Resources */ = {isa = PBXBuildFile; fileRef = C1F60B78198B37610032A497 /* Icon-Small.png */; };
+		C1F60B8B198B37610032A497 /* Icon-Small@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = C1F60B79198B37610032A497 /* Icon-Small@2x.png */; };
+		C1F60B8C198B37610032A497 /* Icon.png in Resources */ = {isa = PBXBuildFile; fileRef = C1F60B7A198B37610032A497 /* Icon.png */; };
+		C1F60B8D198B37610032A497 /* Icon@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = C1F60B7B198B37610032A497 /* Icon@2x.png */; };
+		C1F60B8E198B37610032A497 /* iTunesArtwork.png in Resources */ = {isa = PBXBuildFile; fileRef = C1F60B7C198B37610032A497 /* iTunesArtwork.png */; };
+		C1F60B8F198B37610032A497 /* iTunesArtwork@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = C1F60B7D198B37610032A497 /* iTunesArtwork@2x.png */; };
+		C1F60B91198B378B0032A497 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = C1F60B90198B378B0032A497 /* Images.xcassets */; };
+		C1FCFC5B1862CC6900DEA5AC /* CoreBluetooth.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C1FCFC5A1862CC6900DEA5AC /* CoreBluetooth.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		C10E5CBA19A0531B0075C0BB /* BLE_APP_Storyboard.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = BLE_APP_Storyboard.storyboard; sourceTree = "<group>"; };
+		C11742BE19AADC1600721449 /* HRMViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HRMViewController.h; sourceTree = "<group>"; };
+		C11742BF19AADC1600721449 /* HRMViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HRMViewController.m; sourceTree = "<group>"; };
+		C11742C119AAE06A00721449 /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
+		C184016218697F0B00266B4C /* BLEDebug.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = BLEDebug.h; sourceTree = "<group>"; };
 		C1DF28A6186147DA00000695 /* MerryBLEtool.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = MerryBLEtool.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		C1DF28A9186147DA00000695 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
 		C1DF28AB186147DA00000695 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
@@ -35,8 +68,36 @@
 		C1DF28BD186147DB00000695 /* Default@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default@2x.png"; sourceTree = "<group>"; };
 		C1DF28BF186147DB00000695 /* Default-568h@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default-568h@2x.png"; sourceTree = "<group>"; };
 		C1DF28C2186147DB00000695 /* en */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = en; path = en.lproj/MainStoryboard.storyboard; sourceTree = "<group>"; };
-		C1DF28C4186147DB00000695 /* ViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ViewController.h; sourceTree = "<group>"; };
-		C1DF28C5186147DB00000695 /* ViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ViewController.m; sourceTree = "<group>"; };
+		C1DF28CC186149EB00000695 /* GenericViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GenericViewController.h; sourceTree = "<group>"; };
+		C1DF28CD186149EB00000695 /* GenericViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GenericViewController.m; sourceTree = "<group>"; };
+		C1DF28D118614A7000000695 /* BLETabBarController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BLETabBarController.h; sourceTree = "<group>"; };
+		C1DF28D218614A7000000695 /* BLETabBarController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BLETabBarController.m; sourceTree = "<group>"; };
+		C1DF28D41861507700000695 /* 1.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = 1.png; path = Images/1.png; sourceTree = "<group>"; };
+		C1DF28D51861507700000695 /* 2.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = 2.png; path = Images/2.png; sourceTree = "<group>"; };
+		C1DF28D61861507700000695 /* 3.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = 3.png; path = Images/3.png; sourceTree = "<group>"; };
+		C1EE3B151862DC9200355A9D /* BLECBTask.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BLECBTask.h; sourceTree = "<group>"; };
+		C1EE3B161862DC9200355A9D /* BLECBTask.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BLECBTask.m; sourceTree = "<group>"; };
+		C1F60B6C198B37610032A497 /* apple-touch-icon-114x114-precomposed.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "apple-touch-icon-114x114-precomposed.png"; sourceTree = "<group>"; };
+		C1F60B6D198B37610032A497 /* apple-touch-icon-144x144-precomposed.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "apple-touch-icon-144x144-precomposed.png"; sourceTree = "<group>"; };
+		C1F60B6E198B37610032A497 /* apple-touch-icon-72x72-precomposed.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "apple-touch-icon-72x72-precomposed.png"; sourceTree = "<group>"; };
+		C1F60B6F198B37610032A497 /* apple-touch-icon-precomposed.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "apple-touch-icon-precomposed.png"; sourceTree = "<group>"; };
+		C1F60B70198B37610032A497 /* Icon-72.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Icon-72.png"; sourceTree = "<group>"; };
+		C1F60B71198B37610032A497 /* Icon-72@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Icon-72@2x.png"; sourceTree = "<group>"; };
+		C1F60B72198B37610032A497 /* Icon-Small-20.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Icon-Small-20.png"; sourceTree = "<group>"; };
+		C1F60B73198B37610032A497 /* Icon-Small-20@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Icon-Small-20@2x.png"; sourceTree = "<group>"; };
+		C1F60B74198B37610032A497 /* Icon-Small-30.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Icon-Small-30.png"; sourceTree = "<group>"; };
+		C1F60B75198B37610032A497 /* Icon-Small-30@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Icon-Small-30@2x.png"; sourceTree = "<group>"; };
+		C1F60B76198B37610032A497 /* Icon-Small-50.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Icon-Small-50.png"; sourceTree = "<group>"; };
+		C1F60B77198B37610032A497 /* Icon-Small-50@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Icon-Small-50@2x.png"; sourceTree = "<group>"; };
+		C1F60B78198B37610032A497 /* Icon-Small.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Icon-Small.png"; sourceTree = "<group>"; };
+		C1F60B79198B37610032A497 /* Icon-Small@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Icon-Small@2x.png"; sourceTree = "<group>"; };
+		C1F60B7A198B37610032A497 /* Icon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Icon.png; sourceTree = "<group>"; };
+		C1F60B7B198B37610032A497 /* Icon@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Icon@2x.png"; sourceTree = "<group>"; };
+		C1F60B7C198B37610032A497 /* iTunesArtwork.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = iTunesArtwork.png; sourceTree = "<group>"; };
+		C1F60B7D198B37610032A497 /* iTunesArtwork@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "iTunesArtwork@2x.png"; sourceTree = "<group>"; };
+		C1F60B90198B378B0032A497 /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Images.xcassets; sourceTree = "<group>"; };
+		C1FCFC5A1862CC6900DEA5AC /* CoreBluetooth.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreBluetooth.framework; path = System/Library/Frameworks/CoreBluetooth.framework; sourceTree = SDKROOT; };
+		C1FCFC621862D06400DEA5AC /* BLEDefines.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = BLEDefines.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -44,6 +105,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				C11742C219AAE06A00721449 /* QuartzCore.framework in Frameworks */,
+				C1FCFC5B1862CC6900DEA5AC /* CoreBluetooth.framework in Frameworks */,
 				C1DF28AA186147DA00000695 /* UIKit.framework in Frameworks */,
 				C1DF28AC186147DA00000695 /* Foundation.framework in Frameworks */,
 				C1DF28AE186147DA00000695 /* CoreGraphics.framework in Frameworks */,
@@ -73,6 +136,8 @@
 		C1DF28A8186147DA00000695 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				C11742C119AAE06A00721449 /* QuartzCore.framework */,
+				C1FCFC5A1862CC6900DEA5AC /* CoreBluetooth.framework */,
 				C1DF28A9186147DA00000695 /* UIKit.framework */,
 				C1DF28AB186147DA00000695 /* Foundation.framework */,
 				C1DF28AD186147DA00000695 /* CoreGraphics.framework */,
@@ -83,11 +148,22 @@
 		C1DF28AF186147DA00000695 /* MerryBLEtool */ = {
 			isa = PBXGroup;
 			children = (
+				C1F60B6A198B2DB00032A497 /* iPad */,
+				C184016218697F0B00266B4C /* BLEDebug.h */,
+				C1FCFC621862D06400DEA5AC /* BLEDefines.h */,
+				C1EE3B151862DC9200355A9D /* BLECBTask.h */,
+				C1EE3B161862DC9200355A9D /* BLECBTask.m */,
 				C1DF28B8186147DB00000695 /* AppDelegate.h */,
 				C1DF28B9186147DB00000695 /* AppDelegate.m */,
 				C1DF28C1186147DB00000695 /* MainStoryboard.storyboard */,
-				C1DF28C4186147DB00000695 /* ViewController.h */,
-				C1DF28C5186147DB00000695 /* ViewController.m */,
+				C11742BE19AADC1600721449 /* HRMViewController.h */,
+				C11742BF19AADC1600721449 /* HRMViewController.m */,
+				C10E5CBA19A0531B0075C0BB /* BLE_APP_Storyboard.storyboard */,
+				C1DF28D118614A7000000695 /* BLETabBarController.h */,
+				C1DF28D218614A7000000695 /* BLETabBarController.m */,
+				C1DF28CC186149EB00000695 /* GenericViewController.h */,
+				C1DF28CD186149EB00000695 /* GenericViewController.m */,
+				C1F60B90198B378B0032A497 /* Images.xcassets */,
 				C1DF28B0186147DA00000695 /* Supporting Files */,
 			);
 			path = MerryBLEtool;
@@ -96,6 +172,9 @@
 		C1DF28B0186147DA00000695 /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
+				C1DF28D41861507700000695 /* 1.png */,
+				C1DF28D51861507700000695 /* 2.png */,
+				C1DF28D61861507700000695 /* 3.png */,
 				C1DF28B1186147DA00000695 /* MerryBLEtool-Info.plist */,
 				C1DF28B2186147DA00000695 /* InfoPlist.strings */,
 				C1DF28B5186147DA00000695 /* main.m */,
@@ -103,8 +182,41 @@
 				C1DF28BB186147DB00000695 /* Default.png */,
 				C1DF28BD186147DB00000695 /* Default@2x.png */,
 				C1DF28BF186147DB00000695 /* Default-568h@2x.png */,
+				C1F60B6B198B37610032A497 /* ios */,
 			);
 			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+		C1F60B6A198B2DB00032A497 /* iPad */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = iPad;
+			sourceTree = "<group>";
+		};
+		C1F60B6B198B37610032A497 /* ios */ = {
+			isa = PBXGroup;
+			children = (
+				C1F60B6C198B37610032A497 /* apple-touch-icon-114x114-precomposed.png */,
+				C1F60B6D198B37610032A497 /* apple-touch-icon-144x144-precomposed.png */,
+				C1F60B6E198B37610032A497 /* apple-touch-icon-72x72-precomposed.png */,
+				C1F60B6F198B37610032A497 /* apple-touch-icon-precomposed.png */,
+				C1F60B70198B37610032A497 /* Icon-72.png */,
+				C1F60B71198B37610032A497 /* Icon-72@2x.png */,
+				C1F60B72198B37610032A497 /* Icon-Small-20.png */,
+				C1F60B73198B37610032A497 /* Icon-Small-20@2x.png */,
+				C1F60B74198B37610032A497 /* Icon-Small-30.png */,
+				C1F60B75198B37610032A497 /* Icon-Small-30@2x.png */,
+				C1F60B76198B37610032A497 /* Icon-Small-50.png */,
+				C1F60B77198B37610032A497 /* Icon-Small-50@2x.png */,
+				C1F60B78198B37610032A497 /* Icon-Small.png */,
+				C1F60B79198B37610032A497 /* Icon-Small@2x.png */,
+				C1F60B7A198B37610032A497 /* Icon.png */,
+				C1F60B7B198B37610032A497 /* Icon@2x.png */,
+				C1F60B7C198B37610032A497 /* iTunesArtwork.png */,
+				C1F60B7D198B37610032A497 /* iTunesArtwork@2x.png */,
+			);
+			path = ios;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -135,6 +247,11 @@
 			attributes = {
 				LastUpgradeCheck = 0460;
 				ORGANIZATIONNAME = merry;
+				TargetAttributes = {
+					C1DF28A5186147DA00000695 = {
+						DevelopmentTeam = 6X2JBVCB26;
+					};
+				};
 			};
 			buildConfigurationList = C1DF28A1186147DA00000695 /* Build configuration list for PBXProject "MerryBLEtool" */;
 			compatibilityVersion = "Xcode 3.2";
@@ -158,11 +275,34 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				C1F60B88198B37610032A497 /* Icon-Small-50.png in Resources */,
+				C1F60B8D198B37610032A497 /* Icon@2x.png in Resources */,
+				C1F60B83198B37610032A497 /* Icon-72@2x.png in Resources */,
+				C1F60B89198B37610032A497 /* Icon-Small-50@2x.png in Resources */,
+				C1F60B86198B37610032A497 /* Icon-Small-30.png in Resources */,
+				C1F60B80198B37610032A497 /* apple-touch-icon-72x72-precomposed.png in Resources */,
 				C1DF28B4186147DA00000695 /* InfoPlist.strings in Resources */,
 				C1DF28BC186147DB00000695 /* Default.png in Resources */,
+				C1F60B7F198B37610032A497 /* apple-touch-icon-144x144-precomposed.png in Resources */,
+				C1F60B91198B378B0032A497 /* Images.xcassets in Resources */,
+				C1F60B8A198B37610032A497 /* Icon-Small.png in Resources */,
+				C1F60B8C198B37610032A497 /* Icon.png in Resources */,
 				C1DF28BE186147DB00000695 /* Default@2x.png in Resources */,
 				C1DF28C0186147DB00000695 /* Default-568h@2x.png in Resources */,
+				C1F60B87198B37610032A497 /* Icon-Small-30@2x.png in Resources */,
+				C10E5CBB19A0531B0075C0BB /* BLE_APP_Storyboard.storyboard in Resources */,
 				C1DF28C3186147DB00000695 /* MainStoryboard.storyboard in Resources */,
+				C1DF28D71861507700000695 /* 1.png in Resources */,
+				C1F60B7E198B37610032A497 /* apple-touch-icon-114x114-precomposed.png in Resources */,
+				C1F60B82198B37610032A497 /* Icon-72.png in Resources */,
+				C1DF28D81861507700000695 /* 2.png in Resources */,
+				C1F60B84198B37610032A497 /* Icon-Small-20.png in Resources */,
+				C1F60B81198B37610032A497 /* apple-touch-icon-precomposed.png in Resources */,
+				C1DF28D91861507700000695 /* 3.png in Resources */,
+				C1F60B85198B37610032A497 /* Icon-Small-20@2x.png in Resources */,
+				C1F60B8F198B37610032A497 /* iTunesArtwork@2x.png in Resources */,
+				C1F60B8E198B37610032A497 /* iTunesArtwork.png in Resources */,
+				C1F60B8B198B37610032A497 /* Icon-Small@2x.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -175,7 +315,10 @@
 			files = (
 				C1DF28B6186147DB00000695 /* main.m in Sources */,
 				C1DF28BA186147DB00000695 /* AppDelegate.m in Sources */,
-				C1DF28C6186147DB00000695 /* ViewController.m in Sources */,
+				C11742C019AADC1600721449 /* HRMViewController.m in Sources */,
+				C1DF28CF186149EB00000695 /* GenericViewController.m in Sources */,
+				C1DF28D318614A7000000695 /* BLETabBarController.m in Sources */,
+				C1EE3B171862DC9200355A9D /* BLECBTask.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -260,10 +403,15 @@
 		C1DF28CA186147DB00000695 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "MerryBLEtool/MerryBLEtool-Prefix.pch";
 				INFOPLIST_FILE = "MerryBLEtool/MerryBLEtool-Info.plist";
+				IPHONEOS_DEPLOYMENT_TARGET = 7.1;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				TARGETED_DEVICE_FAMILY = 2;
 				WRAPPER_EXTENSION = app;
 			};
 			name = Debug;
@@ -271,10 +419,15 @@
 		C1DF28CB186147DB00000695 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "MerryBLEtool/MerryBLEtool-Prefix.pch";
 				INFOPLIST_FILE = "MerryBLEtool/MerryBLEtool-Info.plist";
+				IPHONEOS_DEPLOYMENT_TARGET = 7.1;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				TARGETED_DEVICE_FAMILY = 2;
 				WRAPPER_EXTENSION = app;
 			};
 			name = Release;
@@ -298,6 +451,7 @@
 				C1DF28CB186147DB00000695 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};
