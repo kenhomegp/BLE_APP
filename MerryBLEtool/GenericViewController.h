@@ -51,6 +51,7 @@
 - (void) batteryIndicatorTimer:(NSTimer *)timer;
 - (void) connectionTimer:(NSTimer *)timer;
 - (void) UpdateRSSITimer:(NSTimer *)timer;
+- (void) HRMeasurement:(NSTimer *)timer;
 
 - (void) logMessage:(NSString *)message;
 @end

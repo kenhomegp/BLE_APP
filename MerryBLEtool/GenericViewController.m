@@ -26,6 +26,8 @@
 @synthesize TIBLEUIConnBtn;
 @synthesize TIBLEUIBuzzer;
 
+char HeartRate_BPM;
+
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
 {
     self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
@@ -114,6 +116,9 @@
 }
 
 - (IBAction)TIBLEUIScanForPeripheralsButton:(id)sender {
+    
+    //NSLog(@"%@\n",self.navigationItem.title);
+    
     if (t.activePeripheral) {
         if(t.activePeripheral.isConnected) {
             [[t CM] cancelPeripheralConnection:[t activePeripheral]];
@@ -138,6 +143,7 @@
         [TIBLEUISpinner startAnimating];
         [TIBLEUIConnBtn setTitle:@"Scanning.." forState:UIControlStateNormal];
     }
+     
 }
 
 - (IBAction)TIBLEUISoundBuzzerButton:(id)sender {
@@ -259,11 +265,18 @@
     }
 }
 
+-(void) HRMeasurement:(NSTimer *)timer
+{
+    [TIBLEUIBuzzer setTitle:[NSString stringWithFormat:@"HeartRate:%d" , HeartRate_BPM] forState:UIControlStateNormal];
+}
+
 // Method from TIBLECBKeyfobDelegate, called when accelerometer values are updated
 -(void) accelerometerValuesUpdated:(char)x y:(char)y z:(char)z {
     //TIBLEUIAccelXBar.progress = (float)(x + 50) / 100;
     //TIBLEUIAccelYBar.progress = (float)(y + 50) / 100;
     //TIBLEUIAccelZBar.progress = (float)(z + 50) / 100;
+    
+    HeartRate_BPM = x;
 }
 // Method from TIBLECBKeyfobDelegate, called when key values are updated
 -(void) keyValuesUpdated:(char)sw {
@@ -308,10 +321,14 @@
         ((BLETabBarController *)self.parentViewController).DevName = [((BLETabBarController *)self.parentViewController).DevName stringByAppendingString:t.activePeripheral.name];
         
         [self logMessage:[NSString stringWithFormat:@"Connected to %@", t.activePeripheral.name]];
+        
+        [TIBLEUIBuzzer setTitle:@"Sound buzzer" forState:UIControlStateNormal];
+        
+        //MAIN_DEBUG(("Test 1!\r\n"));
                         
         if(Service_1 != 0 || Service_2 != 0)
         {
-            NSArray *array1 = [NSArray arrayWithObjects:@"Immediate alert <1802>\n",@"Linkl loss <1803>\n",@"Tx power <1804>\n",@"Current time <1805>\n",@"Reference time updte <1806>\n",@"Next DST change <1807>\n",@"Glucose <1808>\n",@"Health thermometer <1809>\n",@"Device information <180a>\n",@"Heart rate <180d>\n", nil];
+            NSArray *array1 = [NSArray arrayWithObjects:@"Immediate alert <1802>\n",@"Link loss <1803>\n",@"Tx power <1804>\n",@"Current time <1805>\n",@"Reference time updte <1806>\n",@"Next DST change <1807>\n",@"Glucose <1808>\n",@"Health thermometer <1809>\n",@"Device information <180a>\n",@"Heart rate <180d>\n", nil];
             
             NSArray *array2 = [NSArray arrayWithObjects:@"Phone alert <180e>\n",@"Battery <180f>\n",@"Blood pressure <1810>\n",@"Alert notification <1811>\n",@"Human interface <1812>\n",@"Scan parameters <1813>\n",@"Running speed cadence <1814>\n",@"Cycling speed cadence <1816>\n",@"Cycling power <1818>\n",@"Location navigation <1819>\n", nil];
                                     
@@ -387,7 +404,7 @@
         
         if([((BLETabBarController *)self.parentViewController).DevName isEqualToString:@""])
         {
-            MAIN_DEBUG(("Unknown device found!\r\n"));
+            MAIN_DEBUG(("Unknown device found!,%x,%x\r\n",Service_1,Service_2));
             
             ((BLETabBarController *)self.parentViewController).DevName = [((BLETabBarController *)self.parentViewController).DevName stringByAppendingString:t.activePeripheral.name];
             
@@ -423,15 +440,36 @@
                     }
                 }
             }
-        }    
+            
+            if((Service_1 & (1 << 9)))
+            {
+                //Simple profile : HeartRate demo
+                [ t notification:0x180d characteristicUUID:0x2a37 p:t.activePeripheral on:YES];
+                MAIN_DEBUG(("HeartRate demo\r\n"));
+                MAIN_DEBUG(("Get Sensor Location\r\n"));
+                [t readValue:0x180d characteristicUUID:0x2a38 p:t.activePeripheral];
+            }
+        }
     }
     
     //
-    if(((BLETabBarController *)self.parentViewController).DeviceType != TI_keyfob)
+    if(((BLETabBarController *)self.parentViewController).DeviceType != TI_keyfob && ((BLETabBarController *)self.parentViewController).DeviceType != CSR_security_tag)
     {
-        if([self.BLE_Service.text rangeOfString:@"<1802>"].location != NSNotFound)//Immediate Alert service found!
+        if([self.BLE_Service.text isEqualToString:@""] != YES)
         {
-            [TIBLEUIBuzzer setTitle:@"Find Me" forState:UIControlStateNormal];
+            if([self.BLE_Service.text rangeOfString:@"Heart rate"].location != NSNotFound && (Service_1 & (1 << 9)))
+            {
+                [TIBLEUIBuzzer setTitle:@"HeartRate Demo" forState:UIControlStateNormal];
+                //self.TIBLEUIBuzzer.enabled = NO;
+                [NSTimer scheduledTimerWithTimeInterval:(float)1.0 target:self selector:@selector(HRMeasurement:) userInfo:nil repeats:YES];
+                MAIN_DEBUG(("HeartRate Timer!!\r\n"));
+            }
+            
+            if([self.BLE_Service.text rangeOfString:@"Immediate alert"].location != NSNotFound)//Immediate Alert service found!
+            {
+                [TIBLEUIBuzzer setTitle:@"Find Me" forState:UIControlStateNormal];
+                MAIN_DEBUG(("Test 2\r\n"));
+            }
         }
     }
     
@@ -440,11 +478,20 @@
         [NSTimer scheduledTimerWithTimeInterval:(float)3.0 target:self selector:@selector(UpdateRSSITimer:) userInfo:nil repeats:YES];
         
         //Battery Service found,start readBattery timer!
-        if([self.BLE_Service.text rangeOfString:@"<180f>"].location != NSNotFound)
+        //if([self.BLE_Service.text rangeOfString:@"<180f>"].location != NSNotFound)
+        if([self.BLE_Service.text rangeOfString:@"Battery"].location != NSNotFound)
         {
             // Start battery indicator timer, calls batteryIndicatorTimer method every 2 seconds
             [NSTimer scheduledTimerWithTimeInterval:(float)2.0 target:self selector:@selector(batteryIndicatorTimer:) userInfo:nil repeats:YES];
+            
+            MAIN_DEBUG(("Battery indicator timer\n"));
         }
+        
+        if([self.BLE_Service.text rangeOfString:@"Immediate alert"].location != NSNotFound)//Immediate Alert service found!
+        {
+            [TIBLEUIBuzzer setTitle:@"Find Me" forState:UIControlStateNormal];
+        }
+
     }
 }
 

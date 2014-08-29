@@ -1028,11 +1028,36 @@
                 [[self delegate] TXPwrLevelUpdated:TXLevel];
                 break;
             }
-            //case 0x2A37:
-            //{
-            //    BLE_Characteristic_DEBUG(("HeartRate Measurement\n"));
-            //      break;
-            //}
+            /*Heart Rate profile*/
+            case 0x2A37://Heart Rate Measurement
+            {
+                //CSR1010 EVB HeartRate Monitor
+                //Data format : https://developer.bluetooth.org/gatt/characteristics/Pages/CharacteristicViewer.aspx?u=org.bluetooth.characteristic.heart_rate_measurement.xml
+                char HRMeasure[4];
+                
+                [characteristic.value getBytes:HRMeasure length:4];
+                //BLE_Characteristic_DEBUG(("HR data:%x,%x,%x,%x\n",HRMeasure[0],HRMeasure[1],HRMeasure[2],HRMeasure[3]));
+                BLE_Characteristic_DEBUG(("HR data:%d\n",HRMeasure[1]));
+                self.x = HRMeasure[1];
+                [[self delegate] accelerometerValuesUpdated:self.x y:self.y z:self.z];
+                break;
+            }
+            case 0x2A38://Body Sensor Location
+            {
+                char BSLdata = 0;
+                [characteristic.value getBytes:&BSLdata];
+                //BSLdata = 0;Other
+                //BSLdata = 1;Chest
+                //          2;Wrist
+                //          3;Finger
+                //          4;Hand
+                //          5;Ear Lobe
+                //          6;Foot
+                //          7~ 255;Reserved for future use
+                BLE_Characteristic_DEBUG(("Sensor Location:%d\n",BSLdata));
+                break;
+            }
+            /*End of Heart Rate profile*/
             default:
                 BLE_Characteristic_DEBUG(("Unknown characteristic = %X\n",characteristicUUID));
                 break;
