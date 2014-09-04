@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		C10B01F019B7133F00325785 /* AVFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C10B01EF19B7133F00325785 /* AVFoundation.framework */; };
+		C10B01F719B71C9E00325785 /* HRAlarm.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = C10B01F619B71C9E00325785 /* HRAlarm.mp3 */; };
 		C10E5CBB19A0531B0075C0BB /* BLE_APP_Storyboard.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = C10E5CBA19A0531B0075C0BB /* BLE_APP_Storyboard.storyboard */; };
 		C11742C019AADC1600721449 /* HRMViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = C11742BF19AADC1600721449 /* HRMViewController.m */; };
 		C11742C219AAE06A00721449 /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C11742C119AAE06A00721449 /* QuartzCore.framework */; };
@@ -49,6 +51,8 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		C10B01EF19B7133F00325785 /* AVFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AVFoundation.framework; path = System/Library/Frameworks/AVFoundation.framework; sourceTree = SDKROOT; };
+		C10B01F619B71C9E00325785 /* HRAlarm.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = HRAlarm.mp3; sourceTree = "<group>"; };
 		C10E5CBA19A0531B0075C0BB /* BLE_APP_Storyboard.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = BLE_APP_Storyboard.storyboard; sourceTree = "<group>"; };
 		C11742BE19AADC1600721449 /* HRMViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HRMViewController.h; sourceTree = "<group>"; };
 		C11742BF19AADC1600721449 /* HRMViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HRMViewController.m; sourceTree = "<group>"; };
@@ -105,6 +109,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				C10B01F019B7133F00325785 /* AVFoundation.framework in Frameworks */,
 				C11742C219AAE06A00721449 /* QuartzCore.framework in Frameworks */,
 				C1FCFC5B1862CC6900DEA5AC /* CoreBluetooth.framework in Frameworks */,
 				C1DF28AA186147DA00000695 /* UIKit.framework in Frameworks */,
@@ -136,6 +141,7 @@
 		C1DF28A8186147DA00000695 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				C10B01EF19B7133F00325785 /* AVFoundation.framework */,
 				C11742C119AAE06A00721449 /* QuartzCore.framework */,
 				C1FCFC5A1862CC6900DEA5AC /* CoreBluetooth.framework */,
 				C1DF28A9186147DA00000695 /* UIKit.framework */,
@@ -148,7 +154,7 @@
 		C1DF28AF186147DA00000695 /* MerryBLEtool */ = {
 			isa = PBXGroup;
 			children = (
-				C1F60B6A198B2DB00032A497 /* iPad */,
+				C10B01F619B71C9E00325785 /* HRAlarm.mp3 */,
 				C184016218697F0B00266B4C /* BLEDebug.h */,
 				C1FCFC621862D06400DEA5AC /* BLEDefines.h */,
 				C1EE3B151862DC9200355A9D /* BLECBTask.h */,
@@ -185,13 +191,6 @@
 				C1F60B6B198B37610032A497 /* ios */,
 			);
 			name = "Supporting Files";
-			sourceTree = "<group>";
-		};
-		C1F60B6A198B2DB00032A497 /* iPad */ = {
-			isa = PBXGroup;
-			children = (
-			);
-			name = iPad;
 			sourceTree = "<group>";
 		};
 		C1F60B6B198B37610032A497 /* ios */ = {
@@ -282,6 +281,7 @@
 				C1F60B86198B37610032A497 /* Icon-Small-30.png in Resources */,
 				C1F60B80198B37610032A497 /* apple-touch-icon-72x72-precomposed.png in Resources */,
 				C1DF28B4186147DA00000695 /* InfoPlist.strings in Resources */,
+				C10B01F719B71C9E00325785 /* HRAlarm.mp3 in Resources */,
 				C1DF28BC186147DB00000695 /* Default.png in Resources */,
 				C1F60B7F198B37610032A497 /* apple-touch-icon-144x144-precomposed.png in Resources */,
 				C1F60B91198B378B0032A497 /* Images.xcassets in Resources */,

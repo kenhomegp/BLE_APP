@@ -9,7 +9,7 @@
 #ifndef MerryBLEtool_BLEDebug_h
 #define MerryBLEtool_BLEDebug_h
 
-#define xDEBUG_PRINT_ENABLE
+#define DEBUG_PRINT_ENABLE
 
 #ifdef DEBUG_PRINT_ENABLE
     //#define DEBUG(x) {printf x;}

@@ -7,9 +7,12 @@
 //
 
 #import "HRMViewController.h"
+#import <AVFoundation/AVFoundation.h>
 
 @interface HRMViewController ()
-
+{
+    AVAudioPlayer *_audioPlayer;
+}
 @end
 
 @implementation HRMViewController
@@ -36,12 +39,21 @@
 	[self.heartRateBPM setText:[NSString stringWithFormat:@"%i", 0]];
 	[self.heartRateBPM setFont:[UIFont fontWithName:@"Futura-CondensedMedium" size:28]];
 	[self.heartImage addSubview:self.heartRateBPM];
+    
+    self.CountError = 0;
 	
 	// Scan for all available CoreBluetooth LE devices
 	NSArray *services = @[[CBUUID UUIDWithString:POLARH7_HRM_HEART_RATE_SERVICE_UUID], [CBUUID UUIDWithString:POLARH7_HRM_DEVICE_INFO_SERVICE_UUID]];
 	CBCentralManager *centralManager = [[CBCentralManager alloc] initWithDelegate:self queue:nil];
 	[centralManager scanForPeripheralsWithServices:services options:nil];
 	self.centralManager = centralManager;
+    
+    // Construct URL to sound file
+     NSString *path = [NSString stringWithFormat:@"%@/HRAlarm.mp3", [[NSBundle mainBundle] resourcePath]];
+    NSURL *soundUrl = [NSURL fileURLWithPath:path];
+    
+    // Create audio player object and initialize with URL to sound
+    _audioPlayer = [[AVAudioPlayer alloc] initWithContentsOfURL:soundUrl error:nil];
 }
 
 // method called whenever the device state changes.
@@ -189,6 +201,29 @@
     //Update HR_bpm data
     self.HR_bpm.text = [NSString stringWithFormat:@"%i bpm", bpm];
     
+    if(bpm > ((int)self.maxAlarmStepper.value))
+    {
+        self.CountError++;
+        if(self.CountError >= 3)
+        {
+            self.CountError = 0;
+            [_audioPlayer play];
+        }
+    }
+    else if(bpm < ((int)self.minAlarmStepper.value))
+    {
+        self.CountError++;
+        if(self.CountError >= 3)
+        {
+            self.CountError++;
+            [_audioPlayer play];
+        }
+    }
+    else{
+        if(self.CountError < 3 && self.CountError != 0)
+            self.CountError = 0;
+    }
+    
 	return;
 }
 
@@ -246,4 +281,27 @@
     // Dispose of any resources that can be recreated.
 }
 
+- (IBAction)HR_Test:(id)sender {
+    //UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"Warning!!" message:@"HeartRate value is too high" delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil];
+    //[alertView show];
+    
+    //[self.polarH7HRMPeripheral writeValue:<#(NSData *)#> forCharacteristic:<#(CBCharacteristic *)#> type:<#(CBCharacteristicWriteType)#>]
+    
+    //NSLog(@"Test Audio\n");
+    //[_audioPlayer play];
+}
+
+- (IBAction)HeartRateMinChanged:(id)sender {
+    //NSLog(@"Min changed..\n");
+    //NSLog(@"%d\n",(int)self.minAlarmStepper.value);
+    
+    [self.minAlarmLabel setText:[NSString stringWithFormat:@"MIN %d",(int)self.minAlarmStepper.value]];
+}
+
+- (IBAction)HeartRateMaxChanged:(id)sender {
+    //NSLog(@"Max changed..\n");
+    //NSLog(@"%d\n",(int)self.maxAlarmStepper.value);
+    
+    [self.maxAlarmLabel setText:[NSString stringWithFormat:@"MAX %d",(int)self.maxAlarmStepper.value]];
+}
 @end

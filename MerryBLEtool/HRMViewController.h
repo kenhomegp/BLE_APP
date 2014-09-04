@@ -27,6 +27,9 @@
 // Properties for our Object controls
 @property (nonatomic, strong) IBOutlet UIImageView *heartImage;
 @property (nonatomic, strong) IBOutlet UITextView  *deviceInfo;
+- (IBAction)HR_Test:(id)sender;
+- (IBAction)HeartRateMinChanged:(id)sender;
+- (IBAction)HeartRateMaxChanged:(id)sender;
 
 // Properties to hold data characteristics for the peripheral device
 @property (weak, nonatomic) IBOutlet UILabel *HR_bpm;
@@ -35,10 +38,15 @@
 @property (nonatomic, strong) NSString   *manufacturer;
 @property (nonatomic, strong) NSString   *polarH7DeviceData;
 @property (assign) uint16_t heartRate;
+@property (assign) uint16_t CountError;
 
 // Properties to handle storing the BPM and heart beat
 @property (nonatomic, strong) UILabel    *heartRateBPM;
 @property (nonatomic, retain) NSTimer    *pulseTimer;
+@property (weak, nonatomic) IBOutlet UIStepper *minAlarmStepper;
+@property (weak, nonatomic) IBOutlet UIStepper *maxAlarmStepper;
+@property (weak, nonatomic) IBOutlet UILabel *minAlarmLabel;
+@property (weak, nonatomic) IBOutlet UILabel *maxAlarmLabel;
 
 // Instance method to get the heart rate BPM information
 - (void) getHeartBPMData:(CBCharacteristic *)characteristic error:(NSError *)error;
