@@ -1,9 +1,9 @@
 //
-//  HRMViewController.h
-//  HeartMonitor
+//  BLETabBarController.h
+//  MerryBLEtool
 //
-//  Created by Steven F. Daniel on 30/11/13.
-//  Copyright (c) 2013 GENIESOFT STUDIOS. All rights reserved.
+//  Created by merry on 13-12-18.
+//  Copyright (c) 2013年 merry. All rights reserved.
 //
 
 #import <UIKit/UIKit.h>
@@ -47,6 +47,7 @@
 @property (weak, nonatomic) IBOutlet UIStepper *maxAlarmStepper;
 @property (weak, nonatomic) IBOutlet UILabel *minAlarmLabel;
 @property (weak, nonatomic) IBOutlet UILabel *maxAlarmLabel;
+@property (weak, nonatomic) IBOutlet UITableView *sensorsTable;
 
 // Instance method to get the heart rate BPM information
 - (void) getHeartBPMData:(CBCharacteristic *)characteristic error:(NSError *)error;

@@ -1,15 +1,15 @@
 //
-//  HRMViewController.m
-//  HeartMonitor
+//  BLETabBarController.h
+//  MerryBLEtool
 //
-//  Created by Steven F. Daniel on 30/11/13.
-//  Copyright (c) 2013 GENIESOFT STUDIOS. All rights reserved.
+//  Created by merry on 13-12-18.
+//  Copyright (c) 2013年 merry. All rights reserved.
 //
 
 #import "HRMViewController.h"
 #import <AVFoundation/AVFoundation.h>
 
-@interface HRMViewController ()
+@interface HRMViewController () <UITableViewDataSource, UITableViewDelegate>
 {
     AVAudioPlayer *_audioPlayer;
 }
@@ -23,6 +23,9 @@
 	
 	// Do any additional setup after loading the view, typically from a nib.
 	self.polarH7DeviceData = nil;
+    self.polarH7HRMPeripheral = nil;
+    self.connected = nil;
+    
 	[self.view setBackgroundColor:[UIColor groupTableViewBackgroundColor]];
 	[self.heartImage setImage:[UIImage imageNamed:@"HeartImage"]];
 	
@@ -49,11 +52,14 @@
 	self.centralManager = centralManager;
     
     // Construct URL to sound file
-     NSString *path = [NSString stringWithFormat:@"%@/HRAlarm.mp3", [[NSBundle mainBundle] resourcePath]];
+    NSString *path = [NSString stringWithFormat:@"%@/HRAlarm.mp3", [[NSBundle mainBundle] resourcePath]];
     NSURL *soundUrl = [NSURL fileURLWithPath:path];
     
     // Create audio player object and initialize with URL to sound
     _audioPlayer = [[AVAudioPlayer alloc] initWithContentsOfURL:soundUrl error:nil];
+    
+    [_audioPlayer setVolume:1.0];
+    
 }
 
 // method called whenever the device state changes.
@@ -83,6 +89,11 @@
 	[peripheral setDelegate:self];
     [peripheral discoverServices:nil];
 	self.connected = [NSString stringWithFormat:@"Connected: %@", peripheral.state == CBPeripheralStateConnected ? @"YES" : @"NO"];
+    
+    if([self.connected rangeOfString:@"YES"].location != NSNotFound)
+    {
+        [self.sensorsTable reloadData];
+    }
 }
 
 // CBPeripheralDelegate - Invoked when you discover the peripheral's available services.
@@ -102,9 +113,11 @@
         if (([localName isEqual:@"HR Sensor306125"]) || ([localName isEqual:@"CSR HR Sensor"])) {
             // We found the Heart Rate Monitor
             [self.centralManager stopScan];
-            self.polarH7HRMPeripheral = peripheral;
+            if(self.polarH7HRMPeripheral == nil)
+                self.polarH7HRMPeripheral = peripheral;
             peripheral.delegate = self;
             [self.centralManager connectPeripheral:peripheral options:nil];
+            //[self.sensorsTable reloadData];
         }
 	}
     
@@ -170,6 +183,10 @@
 	
 	// Add our constructed device information to our UITextView
 	self.deviceInfo.text = [NSString stringWithFormat:@"%@\n%@\n%@\n", self.connected, self.bodyData, self.manufacturer];  // 4
+    
+    [self.deviceInfo setHidden:YES];
+    
+    [self.sensorsTable reloadData];
     
 }
 
@@ -303,5 +320,157 @@
     //NSLog(@"%d\n",(int)self.maxAlarmStepper.value);
     
     [self.maxAlarmLabel setText:[NSString stringWithFormat:@"MAX %d",(int)self.maxAlarmStepper.value]];
+}
+
+#pragma mark -
+#pragma mark TableView Delegates
+/****************************************************************************/
+/*							TableView Delegates								*/
+/****************************************************************************/
+- (UITableViewCell *) tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
+{
+	UITableViewCell	*cell;
+	CBPeripheral	*peripheral;
+	//NSArray			*devices;
+	//NSInteger		row	= [indexPath row];
+    static NSString *cellID = @"Cell";
+    
+	cell = [tableView dequeueReusableCellWithIdentifier:cellID];
+    
+	if (!cell)
+    {
+        //cell = [[UITableViewCell alloc]initWithStyle:UITableViewCellStyleDefault reuseIdentifier:cellID];
+        
+        cell = [[UITableViewCell alloc]initWithStyle:UITableViewCellStyleValue1 reuseIdentifier:cellID];
+    }
+    
+	if ([indexPath section] == 0)
+    {
+		//devices = [[LeDiscovery sharedInstance] connectedServices];
+        //peripheral = [(LeTemperatureAlarmService*)[devices objectAtIndex:row] peripheral];
+        //peripheral = self.polarH7HRMPeripheral;
+        
+        //BLE_connected = [NSString stringWithFormat:@"Connected: %@", peripheral != nil ? @"YES" : @"NO"];
+        //NSLog(BLE_connected);
+	}
+    else
+    {
+		//devices = [[LeDiscovery sharedInstance] foundPeripherals];
+        //peripheral = (CBPeripheral*)[devices objectAtIndex:row];
+	}
+    
+    if([self.connected rangeOfString:@"YES"].location != NSNotFound)
+    {
+        peripheral = self.polarH7HRMPeripheral;
+        
+        if([indexPath section] == 0)
+        {
+            [[cell textLabel] setTextColor:[UIColor redColor]];
+            
+            if([indexPath row] == 0)
+            {
+                if ([[peripheral name] length])
+                    [[cell textLabel] setText:[peripheral name]];
+            }
+            else if([indexPath row] == 1)
+            {
+                [[cell textLabel] setText:self.connected];
+            }
+            else if([indexPath row] == 2)
+            {
+                [[cell textLabel] setText:self.bodyData];
+            }
+            else if([indexPath row] == 3)
+            {
+                [[cell textLabel] setText:self.manufacturer];
+            }
+            
+        }
+    }
+    
+    /*
+    if ([[peripheral name] length])
+        [[cell textLabel] setText:[peripheral name]];
+    else
+        [[cell textLabel] setText:@"Peripheral"];
+    */
+    
+    //[[cell detailTextLabel] setText: [peripheral isConnected] ? @"Connected" : @"Not connected"];
+    
+	return cell;
+}
+
+
+- (NSInteger) numberOfSectionsInTableView:(UITableView *)tableView
+{
+	return 1;
+}
+
+
+- (NSInteger) tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
+{
+	NSInteger	res = 0;
+    
+	//if (section == 0)
+	//	res = [[[LeDiscovery sharedInstance] connectedServices] count];
+	//else
+	//	res = [[[LeDiscovery sharedInstance] foundPeripherals] count];
+    
+    if(section == 0)
+        res = 4;
+    
+	return res;
+}
+
+
+- (void) tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
+{
+	CBPeripheral	*peripheral;
+	NSArray			*devices;
+	NSInteger		row	= [indexPath row];
+	
+	if ([indexPath section] == 0) {
+//		devices = [[LeDiscovery sharedInstance] connectedServices];
+//        peripheral = [(LeTemperatureAlarmService*)[devices objectAtIndex:row] peripheral];
+	} else {
+//		devices = [[LeDiscovery sharedInstance] foundPeripherals];
+//    	peripheral = (CBPeripheral*)[devices objectAtIndex:row];
+	}
+    
+    peripheral = self.polarH7HRMPeripheral;
+    
+	if (![peripheral isConnected]) {
+		//[[LeDiscovery sharedInstance] connectPeripheral:peripheral];
+        //[currentlyConnectedSensor setText:[peripheral name]];
+        
+        //[currentlyConnectedSensor setEnabled:NO];
+        //[currentTemperatureLabel setEnabled:NO];
+        //[maxAlarmLabel setEnabled:NO];
+        //[minAlarmLabel setEnabled:NO];
+    }
+    
+	else {
+        
+        //if ( currentlyDisplayingService != nil ) {
+        //    [currentlyDisplayingService release];
+        //    currentlyDisplayingService = nil;
+        //}
+        
+        /*
+        currentlyDisplayingService = [self serviceForPeripheral:peripheral];
+        [currentlyDisplayingService retain];
+        
+        [currentlyConnectedSensor setText:[peripheral name]];
+        
+        [currentTemperatureLabel setText:[NSString stringWithFormat:@"%dº", (int)[currentlyDisplayingService temperature]]];
+        [maxAlarmLabel setText:[NSString stringWithFormat:@"MAX %dº", (int)[currentlyDisplayingService maximumTemperature]]];
+        [minAlarmLabel setText:[NSString stringWithFormat:@"MIN %dº", (int)[currentlyDisplayingService minimumTemperature]]];
+        
+        [currentlyConnectedSensor setEnabled:YES];
+        [currentTemperatureLabel setEnabled:YES];
+        [maxAlarmLabel setEnabled:YES];
+        [minAlarmLabel setEnabled:YES];
+         */
+    }
 }
 @end
