@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		C108E4ED19D10CC20097B920 /* MessageUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C108E4EC19D10CC20097B920 /* MessageUI.framework */; };
 		C10B01F019B7133F00325785 /* AVFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C10B01EF19B7133F00325785 /* AVFoundation.framework */; };
 		C10B01F719B71C9E00325785 /* HRAlarm.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = C10B01F619B71C9E00325785 /* HRAlarm.mp3 */; };
 		C10E5CBB19A0531B0075C0BB /* BLE_APP_Storyboard.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = C10E5CBA19A0531B0075C0BB /* BLE_APP_Storyboard.storyboard */; };
@@ -27,6 +28,8 @@
 		C1DF28D71861507700000695 /* 1.png in Resources */ = {isa = PBXBuildFile; fileRef = C1DF28D41861507700000695 /* 1.png */; };
 		C1DF28D81861507700000695 /* 2.png in Resources */ = {isa = PBXBuildFile; fileRef = C1DF28D51861507700000695 /* 2.png */; };
 		C1DF28D91861507700000695 /* 3.png in Resources */ = {isa = PBXBuildFile; fileRef = C1DF28D61861507700000695 /* 3.png */; };
+		C1E700CC19D2747400410667 /* HRMSetting.m in Sources */ = {isa = PBXBuildFile; fileRef = C1E700CB19D2747400410667 /* HRMSetting.m */; };
+		C1E700CE19D2798C00410667 /* user.png in Resources */ = {isa = PBXBuildFile; fileRef = C1E700CD19D2798C00410667 /* user.png */; };
 		C1EE3B171862DC9200355A9D /* BLECBTask.m in Sources */ = {isa = PBXBuildFile; fileRef = C1EE3B161862DC9200355A9D /* BLECBTask.m */; };
 		C1F60B7E198B37610032A497 /* apple-touch-icon-114x114-precomposed.png in Resources */ = {isa = PBXBuildFile; fileRef = C1F60B6C198B37610032A497 /* apple-touch-icon-114x114-precomposed.png */; };
 		C1F60B7F198B37610032A497 /* apple-touch-icon-144x144-precomposed.png in Resources */ = {isa = PBXBuildFile; fileRef = C1F60B6D198B37610032A497 /* apple-touch-icon-144x144-precomposed.png */; };
@@ -47,10 +50,17 @@
 		C1F60B8E198B37610032A497 /* iTunesArtwork.png in Resources */ = {isa = PBXBuildFile; fileRef = C1F60B7C198B37610032A497 /* iTunesArtwork.png */; };
 		C1F60B8F198B37610032A497 /* iTunesArtwork@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = C1F60B7D198B37610032A497 /* iTunesArtwork@2x.png */; };
 		C1F60B91198B378B0032A497 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = C1F60B90198B378B0032A497 /* Images.xcassets */; };
+		C1F624B519C92E5C00565830 /* heart_monitor.png in Resources */ = {isa = PBXBuildFile; fileRef = C1F624B419C92E5C00565830 /* heart_monitor.png */; };
+		C1F624B719C92E6200565830 /* running.png in Resources */ = {isa = PBXBuildFile; fileRef = C1F624B619C92E6200565830 /* running.png */; };
+		C1F624B919C92E6A00565830 /* factory.png in Resources */ = {isa = PBXBuildFile; fileRef = C1F624B819C92E6A00565830 /* factory.png */; };
+		C1F624BB19C92E7100565830 /* bluetooth.png in Resources */ = {isa = PBXBuildFile; fileRef = C1F624BA19C92E7100565830 /* bluetooth.png */; };
+		C1F97CAC19D54E9900C753BE /* HeartLive.m in Sources */ = {isa = PBXBuildFile; fileRef = C1F97CAB19D54E9900C753BE /* HeartLive.m */; };
+		C1F97CAE19D5554300C753BE /* data.txt in Resources */ = {isa = PBXBuildFile; fileRef = C1F97CAD19D5554300C753BE /* data.txt */; };
 		C1FCFC5B1862CC6900DEA5AC /* CoreBluetooth.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C1FCFC5A1862CC6900DEA5AC /* CoreBluetooth.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		C108E4EC19D10CC20097B920 /* MessageUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MessageUI.framework; path = System/Library/Frameworks/MessageUI.framework; sourceTree = SDKROOT; };
 		C10B01EF19B7133F00325785 /* AVFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AVFoundation.framework; path = System/Library/Frameworks/AVFoundation.framework; sourceTree = SDKROOT; };
 		C10B01F619B71C9E00325785 /* HRAlarm.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = HRAlarm.mp3; sourceTree = "<group>"; };
 		C10E5CBA19A0531B0075C0BB /* BLE_APP_Storyboard.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = BLE_APP_Storyboard.storyboard; sourceTree = "<group>"; };
@@ -79,6 +89,9 @@
 		C1DF28D41861507700000695 /* 1.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = 1.png; path = Images/1.png; sourceTree = "<group>"; };
 		C1DF28D51861507700000695 /* 2.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = 2.png; path = Images/2.png; sourceTree = "<group>"; };
 		C1DF28D61861507700000695 /* 3.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = 3.png; path = Images/3.png; sourceTree = "<group>"; };
+		C1E700CA19D2747400410667 /* HRMSetting.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HRMSetting.h; sourceTree = "<group>"; };
+		C1E700CB19D2747400410667 /* HRMSetting.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HRMSetting.m; sourceTree = "<group>"; };
+		C1E700CD19D2798C00410667 /* user.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = user.png; sourceTree = "<group>"; };
 		C1EE3B151862DC9200355A9D /* BLECBTask.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BLECBTask.h; sourceTree = "<group>"; };
 		C1EE3B161862DC9200355A9D /* BLECBTask.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BLECBTask.m; sourceTree = "<group>"; };
 		C1F60B6C198B37610032A497 /* apple-touch-icon-114x114-precomposed.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "apple-touch-icon-114x114-precomposed.png"; sourceTree = "<group>"; };
@@ -100,6 +113,13 @@
 		C1F60B7C198B37610032A497 /* iTunesArtwork.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = iTunesArtwork.png; sourceTree = "<group>"; };
 		C1F60B7D198B37610032A497 /* iTunesArtwork@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "iTunesArtwork@2x.png"; sourceTree = "<group>"; };
 		C1F60B90198B378B0032A497 /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Images.xcassets; sourceTree = "<group>"; };
+		C1F624B419C92E5C00565830 /* heart_monitor.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = heart_monitor.png; sourceTree = "<group>"; };
+		C1F624B619C92E6200565830 /* running.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = running.png; sourceTree = "<group>"; };
+		C1F624B819C92E6A00565830 /* factory.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = factory.png; sourceTree = "<group>"; };
+		C1F624BA19C92E7100565830 /* bluetooth.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = bluetooth.png; sourceTree = "<group>"; };
+		C1F97CAA19D54E9900C753BE /* HeartLive.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HeartLive.h; sourceTree = "<group>"; };
+		C1F97CAB19D54E9900C753BE /* HeartLive.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HeartLive.m; sourceTree = "<group>"; };
+		C1F97CAD19D5554300C753BE /* data.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = data.txt; sourceTree = "<group>"; };
 		C1FCFC5A1862CC6900DEA5AC /* CoreBluetooth.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreBluetooth.framework; path = System/Library/Frameworks/CoreBluetooth.framework; sourceTree = SDKROOT; };
 		C1FCFC621862D06400DEA5AC /* BLEDefines.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = BLEDefines.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -109,6 +129,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				C108E4ED19D10CC20097B920 /* MessageUI.framework in Frameworks */,
 				C10B01F019B7133F00325785 /* AVFoundation.framework in Frameworks */,
 				C11742C219AAE06A00721449 /* QuartzCore.framework in Frameworks */,
 				C1FCFC5B1862CC6900DEA5AC /* CoreBluetooth.framework in Frameworks */,
@@ -141,6 +162,7 @@
 		C1DF28A8186147DA00000695 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				C108E4EC19D10CC20097B920 /* MessageUI.framework */,
 				C10B01EF19B7133F00325785 /* AVFoundation.framework */,
 				C11742C119AAE06A00721449 /* QuartzCore.framework */,
 				C1FCFC5A1862CC6900DEA5AC /* CoreBluetooth.framework */,
@@ -154,6 +176,7 @@
 		C1DF28AF186147DA00000695 /* MerryBLEtool */ = {
 			isa = PBXGroup;
 			children = (
+				C1F97CAD19D5554300C753BE /* data.txt */,
 				C10B01F619B71C9E00325785 /* HRAlarm.mp3 */,
 				C184016218697F0B00266B4C /* BLEDebug.h */,
 				C1FCFC621862D06400DEA5AC /* BLEDefines.h */,
@@ -165,6 +188,10 @@
 				C11742BE19AADC1600721449 /* HRMViewController.h */,
 				C11742BF19AADC1600721449 /* HRMViewController.m */,
 				C10E5CBA19A0531B0075C0BB /* BLE_APP_Storyboard.storyboard */,
+				C1E700CA19D2747400410667 /* HRMSetting.h */,
+				C1F97CAA19D54E9900C753BE /* HeartLive.h */,
+				C1F97CAB19D54E9900C753BE /* HeartLive.m */,
+				C1E700CB19D2747400410667 /* HRMSetting.m */,
 				C1DF28D118614A7000000695 /* BLETabBarController.h */,
 				C1DF28D218614A7000000695 /* BLETabBarController.m */,
 				C1DF28CC186149EB00000695 /* GenericViewController.h */,
@@ -178,6 +205,11 @@
 		C1DF28B0186147DA00000695 /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
+				C1E700CD19D2798C00410667 /* user.png */,
+				C1F624BA19C92E7100565830 /* bluetooth.png */,
+				C1F624B819C92E6A00565830 /* factory.png */,
+				C1F624B619C92E6200565830 /* running.png */,
+				C1F624B419C92E5C00565830 /* heart_monitor.png */,
 				C1DF28D41861507700000695 /* 1.png */,
 				C1DF28D51861507700000695 /* 2.png */,
 				C1DF28D61861507700000695 /* 3.png */,
@@ -277,24 +309,29 @@
 				C1F60B88198B37610032A497 /* Icon-Small-50.png in Resources */,
 				C1F60B8D198B37610032A497 /* Icon@2x.png in Resources */,
 				C1F60B83198B37610032A497 /* Icon-72@2x.png in Resources */,
+				C1F624BB19C92E7100565830 /* bluetooth.png in Resources */,
 				C1F60B89198B37610032A497 /* Icon-Small-50@2x.png in Resources */,
 				C1F60B86198B37610032A497 /* Icon-Small-30.png in Resources */,
 				C1F60B80198B37610032A497 /* apple-touch-icon-72x72-precomposed.png in Resources */,
 				C1DF28B4186147DA00000695 /* InfoPlist.strings in Resources */,
+				C1F624B519C92E5C00565830 /* heart_monitor.png in Resources */,
 				C10B01F719B71C9E00325785 /* HRAlarm.mp3 in Resources */,
 				C1DF28BC186147DB00000695 /* Default.png in Resources */,
 				C1F60B7F198B37610032A497 /* apple-touch-icon-144x144-precomposed.png in Resources */,
 				C1F60B91198B378B0032A497 /* Images.xcassets in Resources */,
 				C1F60B8A198B37610032A497 /* Icon-Small.png in Resources */,
+				C1E700CE19D2798C00410667 /* user.png in Resources */,
 				C1F60B8C198B37610032A497 /* Icon.png in Resources */,
 				C1DF28BE186147DB00000695 /* Default@2x.png in Resources */,
 				C1DF28C0186147DB00000695 /* Default-568h@2x.png in Resources */,
 				C1F60B87198B37610032A497 /* Icon-Small-30@2x.png in Resources */,
+				C1F97CAE19D5554300C753BE /* data.txt in Resources */,
 				C10E5CBB19A0531B0075C0BB /* BLE_APP_Storyboard.storyboard in Resources */,
 				C1DF28C3186147DB00000695 /* MainStoryboard.storyboard in Resources */,
 				C1DF28D71861507700000695 /* 1.png in Resources */,
 				C1F60B7E198B37610032A497 /* apple-touch-icon-114x114-precomposed.png in Resources */,
 				C1F60B82198B37610032A497 /* Icon-72.png in Resources */,
+				C1F624B919C92E6A00565830 /* factory.png in Resources */,
 				C1DF28D81861507700000695 /* 2.png in Resources */,
 				C1F60B84198B37610032A497 /* Icon-Small-20.png in Resources */,
 				C1F60B81198B37610032A497 /* apple-touch-icon-precomposed.png in Resources */,
@@ -303,6 +340,7 @@
 				C1F60B8F198B37610032A497 /* iTunesArtwork@2x.png in Resources */,
 				C1F60B8E198B37610032A497 /* iTunesArtwork.png in Resources */,
 				C1F60B8B198B37610032A497 /* Icon-Small@2x.png in Resources */,
+				C1F624B719C92E6200565830 /* running.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -315,10 +353,12 @@
 			files = (
 				C1DF28B6186147DB00000695 /* main.m in Sources */,
 				C1DF28BA186147DB00000695 /* AppDelegate.m in Sources */,
+				C1F97CAC19D54E9900C753BE /* HeartLive.m in Sources */,
 				C11742C019AADC1600721449 /* HRMViewController.m in Sources */,
 				C1DF28CF186149EB00000695 /* GenericViewController.m in Sources */,
 				C1DF28D318614A7000000695 /* BLETabBarController.m in Sources */,
 				C1EE3B171862DC9200355A9D /* BLECBTask.m in Sources */,
+				C1E700CC19D2747400410667 /* HRMSetting.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

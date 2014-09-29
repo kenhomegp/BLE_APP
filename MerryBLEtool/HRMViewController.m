@@ -9,6 +9,8 @@
 #import "HRMViewController.h"
 #import <AVFoundation/AVFoundation.h>
 
+#define drawHeartRateCurveTimeInterval  0.01
+
 @interface HRMViewController () <UITableViewDataSource, UITableViewDelegate>
 {
     AVAudioPlayer *_audioPlayer;
@@ -17,10 +19,22 @@
 
 @implementation HRMViewController
 
+- (HeartLive *)refreshMoniterView
+{
+    if (!_refreshMoniterView) {
+        //CGFloat xOffset = 20;
+        CGFloat xOffset = 74;
+        _refreshMoniterView = [[HeartLive alloc] initWithFrame:CGRectMake(xOffset, 800, CGRectGetWidth(self.view.frame) - 2 * xOffset, 200)];
+        _refreshMoniterView.backgroundColor = [UIColor blackColor];
+        NSLog(@"HeartRateCurveView width = %f, heigth = 200",CGRectGetWidth(self.view.frame) - 20);
+    }
+    return _refreshMoniterView;
+}
+
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-	
+    
 	// Do any additional setup after loading the view, typically from a nib.
 	self.polarH7DeviceData = nil;
     self.polarH7HRMPeripheral = nil;
@@ -60,6 +74,89 @@
     
     [_audioPlayer setVolume:1.0];
     
+    //HeartRate Curve
+    [self.view addSubview:self.refreshMoniterView];
+    
+    //Read HeartRate data from data.txt
+    void (^createData)(void) = ^{
+        NSString *tempString = [NSString stringWithContentsOfFile:[[NSBundle mainBundle] pathForResource:@"data" ofType:@"txt"] encoding:NSUTF8StringEncoding error:nil];
+        
+        NSMutableArray *tempData = [[tempString componentsSeparatedByString:@","] mutableCopy];
+        [tempData enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
+            NSNumber *tempDataa = @(-[obj integerValue] + 2048);
+            [tempData replaceObjectAtIndex:idx withObject:tempDataa];
+        }];
+        self.dataSource = tempData;
+        
+        [NSTimer scheduledTimerWithTimeInterval:drawHeartRateCurveTimeInterval target:self selector:@selector(timerRefresnFun) userInfo:nil repeats:YES];
+    };
+    createData();
+}
+
+- (void)timerRefresnFun
+{
+    [[PointContainer sharedContainer] addPointAsRefreshChangeform:[self bubbleRefreshPoint]];
+    
+    [self.refreshMoniterView fireDrawingWithPoints:[PointContainer sharedContainer].refreshPointContainer pointsCount:[PointContainer sharedContainer].numberOfRefreshElements];
+}
+
+#pragma mark - bubble datasource
+
+- (CGPoint)bubbleRefreshPoint
+{
+    static NSInteger dataSourceCounterIndex = -1;
+    dataSourceCounterIndex ++;
+    dataSourceCounterIndex %= [self.dataSource count];
+    
+    
+    //NSInteger pixelPerPoint = 1;
+    NSInteger pixelPerPoint = 2;
+
+    static NSInteger xCoordinateInMoniter = 0;
+    
+    CGPoint targetPointToAdd = (CGPoint){xCoordinateInMoniter,[self.dataSource[dataSourceCounterIndex] integerValue] * 0.5 + 120};
+    
+    xCoordinateInMoniter += pixelPerPoint;
+    xCoordinateInMoniter %= (int)(CGRectGetWidth(self.refreshMoniterView.frame));
+    
+    //NSLog(@"Simulation data : %@",NSStringFromCGPoint(targetPointToAdd));
+    
+    return targetPointToAdd;
+}
+
+/*
+- (CGPoint)bubbleTranslationPoint
+{
+    static NSInteger dataSourceCounterIndex = -1;
+    dataSourceCounterIndex ++;
+    dataSourceCounterIndex %= [self.dataSource count];
+    
+    
+    NSInteger pixelPerPoint = 1;
+    static NSInteger xCoordinateInMoniter = 0;
+    
+    CGPoint targetPointToAdd = (CGPoint){xCoordinateInMoniter,[self.dataSource[dataSourceCounterIndex] integerValue] * 0.5 + 120};
+    xCoordinateInMoniter += pixelPerPoint;
+    //xCoordinateInMoniter %= (int)(CGRectGetWidth(self.translationMoniterView.frame));
+    
+    //    NSLog(@"吐出来的点:%@",NSStringFromCGPoint(targetPointToAdd));
+    return targetPointToAdd;
+}
+*/
+
+- (void) prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
+{
+    
+    //HRMSetting *User = [segue destinationViewController];
+    //_UserAge = User.HR_UserAge;
+    //_UserName = User.HR_UserName;
+    //NSLog(@"Segue : passing data");
+    
+    if([[segue identifier] isEqualToString:@"SegueForSetting"])
+    {
+        HRMSetting *User = [segue destinationViewController];
+        [User setDelegate:self];
+    }
 }
 
 // method called whenever the device state changes.
@@ -298,15 +395,6 @@
     // Dispose of any resources that can be recreated.
 }
 
-- (IBAction)HR_Test:(id)sender {
-    //UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"Warning!!" message:@"HeartRate value is too high" delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil];
-    //[alertView show];
-    
-    //[self.polarH7HRMPeripheral writeValue:<#(NSData *)#> forCharacteristic:<#(CBCharacteristic *)#> type:<#(CBCharacteristicWriteType)#>]
-    
-    //NSLog(@"Test Audio\n");
-    //[_audioPlayer play];
-}
 
 - (IBAction)HeartRateMinChanged:(id)sender {
     //NSLog(@"Min changed..\n");
@@ -366,23 +454,43 @@
         if([indexPath section] == 0)
         {
             [[cell textLabel] setTextColor:[UIColor redColor]];
+            //UIFont *myFont = [ UIFont fontWithName: @"Arial" size: 18.0 ];
+            UIFont *myFont = [ UIFont fontWithName: @"ArialRoundedMTBold" size: 18.0 ];
             
             if([indexPath row] == 0)
             {
                 if ([[peripheral name] length])
+                {
+                    cell.textLabel.font = myFont;
                     [[cell textLabel] setText:[peripheral name]];
+                }
+                
+                //cell.imageView.image = [UIImage imageNamed:@"heart_monitor.png"];
+                
+                [[cell imageView] setImage:[UIImage imageNamed:@"heart_monitor.png"]];
             }
             else if([indexPath row] == 1)
             {
+                cell.textLabel.font = myFont;
                 [[cell textLabel] setText:self.connected];
+                
+                //cell.imageView.image = [UIImage imageNamed:@"bluetooth.png"];
+                
+                [[cell imageView] setImage:[UIImage imageNamed:@"bluetooth.png"]];
             }
             else if([indexPath row] == 2)
             {
+                cell.textLabel.font = myFont;
                 [[cell textLabel] setText:self.bodyData];
+                
+                cell.imageView.image = [UIImage imageNamed:@"running.png"];
             }
             else if([indexPath row] == 3)
             {
+                cell.textLabel.font = myFont;
                 [[cell textLabel] setText:self.manufacturer];
+                
+                cell.imageView.image = [UIImage imageNamed:@"factory.png"];
             }
             
         }
@@ -472,5 +580,94 @@
         [minAlarmLabel setEnabled:YES];
          */
     }
+}
+
+#pragma mark -
+#pragma mark MailComposeController delegates
+- (void) mailComposeController:(MFMailComposeViewController *)controller didFinishWithResult:(MFMailComposeResult)result error:(NSError *)error
+{
+    [self dismissModalViewControllerAnimated:YES];
+    NSLog(@"Email ok");
+}
+
+#pragma mark - passUserSetting protocol methods
+/****************************************************************************/
+/*			     passUserSetting protocol methods						    */
+/****************************************************************************/
+-(void)setName : (NSString *)User_Name
+{
+    _UserName = User_Name;
+}
+
+-(void)setAge : (NSString *)User_Age;
+{
+    _UserAge = User_Age;
+}
+
+-(void)APPSetting : (int)Configdata;
+{
+    _APPConfig = Configdata;
+}
+
+#pragma mark - My Test Code
+/****************************************************************************/
+/*							My Test Code								    */
+/****************************************************************************/
+- (IBAction)HR_Test:(id)sender {
+    //UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"Warning!!" message:@"HeartRate value is too high" delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil];
+    //[alertView show];
+    
+    //[self.polarH7HRMPeripheral writeValue:<#(NSData *)#> forCharacteristic:<#(CBCharacteristic *)#> type:<#(CBCharacteristicWriteType)#>]
+    
+    //NSLog(@"Test Audio\n");
+    //[_audioPlayer play];
+    
+    //Get Current time
+    NSDate* now = [NSDate date];
+    NSCalendar *gregorian = [[NSCalendar alloc] initWithCalendarIdentifier:NSGregorianCalendar];
+    NSDateComponents *dateComponents = [gregorian components:(NSHourCalendarUnit  | NSMinuteCalendarUnit | NSSecondCalendarUnit) fromDate:now];
+    NSInteger hour = [dateComponents hour];
+    NSString *am_OR_pm=@"AM";
+    
+    if (hour>12)
+    {
+        hour=hour%12;
+        
+        am_OR_pm = @"PM";
+    }
+    
+    NSInteger minute = [dateComponents minute];
+    NSInteger second = [dateComponents second];
+    
+    //[gregorian release];
+    
+    NSLog(@"Current Time  %@",[NSString stringWithFormat:@"%02d:%02d:%02d %@", hour, minute, second,am_OR_pm]);
+    
+    NSDate *today = [NSDate date];
+    NSLog(@"Today ==> %@\n",today);
+    
+    //Send E-mail
+    /*
+    MFMailComposeViewController *mailComposer = [[MFMailComposeViewController alloc] init];
+    mailComposer.mailComposeDelegate = self;
+    
+    NSArray *emailAddress = [[NSArray alloc] initWithObjects:@"minglung.huang@merry.com.tw", nil];
+    
+    [mailComposer setToRecipients:emailAddress];
+    [mailComposer setSubject:@"Test mail"];
+    [mailComposer setMessageBody:@"Hello world!!\n Send from my APP\n" isHTML:NO];
+    //[self presentModalViewController:mailComposer animated:YES];
+    [self presentModalViewController:mailComposer animated:NO];
+     */
+    //End of Send E-mail
+    
+    //NSLog(@"%@",_UserName);
+    //NSLog(@"%@",_UserAge);
+    
+    CGPoint position = self.Test_button.frame.origin;
+    NSLog(@"Button.x = %f",position.x);
+    NSLog(@"Button.y = %f",position.y);
+    
+    
 }
 @end

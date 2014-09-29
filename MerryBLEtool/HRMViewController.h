@@ -9,7 +9,10 @@
 #import <UIKit/UIKit.h>
 #import <CoreBluetooth/CoreBluetooth.h>
 #import <QuartzCore/QuartzCore.h>
+#import <MessageUI/MessageUI.h>
 
+#import "HRMSetting.h"
+#import "HeartLive.h"
 
 #define POLARH7_HRM_DEVICE_INFO_SERVICE_UUID @"180A"       // 180A = Device Information
 #define POLARH7_HRM_HEART_RATE_SERVICE_UUID @"180D"        // 180D = Heart Rate Service
@@ -19,7 +22,18 @@
 #define POLARH7_HRM_MANUFACTURER_NAME_UUID @"2A29"
 
 
-@interface HRMViewController : UIViewController <CBCentralManagerDelegate, CBPeripheralDelegate>
+@interface HRMViewController : UIViewController <CBCentralManagerDelegate, CBPeripheralDelegate , MFMailComposeViewControllerDelegate , passUserSetting>
+
+//HeartRate Curve
+@property (nonatomic , strong) NSArray *dataSource;
+@property (nonatomic , strong) HeartLive *refreshMoniterView;
+
+//Heart Rate APP Config data
+@property (strong, nonatomic) NSString *UserName;
+@property (strong, nonatomic) NSString *UserAge;
+@property (nonatomic) unsigned int APPConfig;
+
+@property (weak, nonatomic) IBOutlet UIButton *Test_button;
 
 @property (nonatomic, strong) CBCentralManager *centralManager;
 @property (nonatomic, strong) CBPeripheral     *polarH7HRMPeripheral;
