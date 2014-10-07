@@ -62,6 +62,8 @@
 @property (weak, nonatomic) IBOutlet UILabel *minAlarmLabel;
 @property (weak, nonatomic) IBOutlet UILabel *maxAlarmLabel;
 @property (weak, nonatomic) IBOutlet UITableView *sensorsTable;
+@property (weak, nonatomic) IBOutlet UIButton *CustomButton;
+- (IBAction)DrawHeartRateCurve:(id)sender;
 
 // Instance method to get the heart rate BPM information
 - (void) getHeartBPMData:(CBCharacteristic *)characteristic error:(NSError *)error;

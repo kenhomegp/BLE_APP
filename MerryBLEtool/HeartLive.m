@@ -127,8 +127,9 @@ static const NSInteger kMaxContainerCapacity = 300;
 	
 	CGContextSetLineWidth(context, 0.2);
 	CGContextSetStrokeColorWithColor(context, [UIColor redColor].CGColor);
-	
+    
 	int pos_x = 1;
+    //int pos_x = 21;
 	while (pos_x < full_width) {
 		CGContextMoveToPoint(context, pos_x, 1);
 		CGContextAddLineToPoint(context, pos_x, full_height);
@@ -143,13 +144,17 @@ static const NSInteger kMaxContainerCapacity = 300;
 		CGContextSetLineWidth(context, 0.2);
         
 		CGContextMoveToPoint(context, 1, pos_y);
+        //CGContextMoveToPoint(context, 21, pos_y);
 		CGContextAddLineToPoint(context, full_width, pos_y);
 		pos_y += cell_square_width;
 		
 		CGContextStrokePath(context);
 	}
-	
     
+    //Test code
+    //CGContextSetFillColorWithColor(context, [[UIColor yellowColor] CGColor]);
+    //CGContextFillRect(context, CGRectMake(1, 31, 620, 30));
+	
 	CGContextSetLineWidth(context, 0.1);
     
 	cell_square_width = cell_square_width / 5;
@@ -170,6 +175,7 @@ static const NSInteger kMaxContainerCapacity = 300;
 		
 		CGContextStrokePath(context);
 	}
+    
     
 }
 

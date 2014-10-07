@@ -13,6 +13,10 @@
 		C10E5CBB19A0531B0075C0BB /* BLE_APP_Storyboard.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = C10E5CBA19A0531B0075C0BB /* BLE_APP_Storyboard.storyboard */; };
 		C11742C019AADC1600721449 /* HRMViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = C11742BF19AADC1600721449 /* HRMViewController.m */; };
 		C11742C219AAE06A00721449 /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C11742C119AAE06A00721449 /* QuartzCore.framework */; };
+		C1216F2D19DA589800C78FEA /* button.png in Resources */ = {isa = PBXBuildFile; fileRef = C1216F2C19DA589800C78FEA /* button.png */; };
+		C1216F2F19DA58A100C78FEA /* buttonHighlighted.png in Resources */ = {isa = PBXBuildFile; fileRef = C1216F2E19DA58A100C78FEA /* buttonHighlighted.png */; };
+		C1216F3119DA64A600C78FEA /* HRAlarm2.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = C1216F3019DA64A600C78FEA /* HRAlarm2.mp3 */; };
+		C126725919D941CB00DDAB7D /* HRAlarm1.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = C126725819D941CB00DDAB7D /* HRAlarm1.mp3 */; };
 		C1DF28AA186147DA00000695 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C1DF28A9186147DA00000695 /* UIKit.framework */; };
 		C1DF28AC186147DA00000695 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C1DF28AB186147DA00000695 /* Foundation.framework */; };
 		C1DF28AE186147DA00000695 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C1DF28AD186147DA00000695 /* CoreGraphics.framework */; };
@@ -67,8 +71,12 @@
 		C11742BE19AADC1600721449 /* HRMViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HRMViewController.h; sourceTree = "<group>"; };
 		C11742BF19AADC1600721449 /* HRMViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HRMViewController.m; sourceTree = "<group>"; };
 		C11742C119AAE06A00721449 /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
+		C1216F2C19DA589800C78FEA /* button.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = button.png; sourceTree = "<group>"; };
+		C1216F2E19DA58A100C78FEA /* buttonHighlighted.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = buttonHighlighted.png; sourceTree = "<group>"; };
+		C1216F3019DA64A600C78FEA /* HRAlarm2.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = HRAlarm2.mp3; sourceTree = "<group>"; };
+		C126725819D941CB00DDAB7D /* HRAlarm1.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = HRAlarm1.mp3; sourceTree = "<group>"; };
 		C184016218697F0B00266B4C /* BLEDebug.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = BLEDebug.h; sourceTree = "<group>"; };
-		C1DF28A6186147DA00000695 /* MerryBLEtool.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = MerryBLEtool.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		C1DF28A6186147DA00000695 /* MyHRM.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = MyHRM.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		C1DF28A9186147DA00000695 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
 		C1DF28AB186147DA00000695 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		C1DF28AD186147DA00000695 /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
@@ -154,7 +162,7 @@
 		C1DF28A7186147DA00000695 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				C1DF28A6186147DA00000695 /* MerryBLEtool.app */,
+				C1DF28A6186147DA00000695 /* MyHRM.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -205,7 +213,11 @@
 		C1DF28B0186147DA00000695 /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
+				C1216F3019DA64A600C78FEA /* HRAlarm2.mp3 */,
+				C1216F2E19DA58A100C78FEA /* buttonHighlighted.png */,
+				C1216F2C19DA589800C78FEA /* button.png */,
 				C1E700CD19D2798C00410667 /* user.png */,
+				C126725819D941CB00DDAB7D /* HRAlarm1.mp3 */,
 				C1F624BA19C92E7100565830 /* bluetooth.png */,
 				C1F624B819C92E6A00565830 /* factory.png */,
 				C1F624B619C92E6200565830 /* running.png */,
@@ -267,7 +279,7 @@
 			);
 			name = MerryBLEtool;
 			productName = MerryBLEtool;
-			productReference = C1DF28A6186147DA00000695 /* MerryBLEtool.app */;
+			productReference = C1DF28A6186147DA00000695 /* MyHRM.app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */
@@ -314,15 +326,19 @@
 				C1F60B86198B37610032A497 /* Icon-Small-30.png in Resources */,
 				C1F60B80198B37610032A497 /* apple-touch-icon-72x72-precomposed.png in Resources */,
 				C1DF28B4186147DA00000695 /* InfoPlist.strings in Resources */,
+				C1216F3119DA64A600C78FEA /* HRAlarm2.mp3 in Resources */,
 				C1F624B519C92E5C00565830 /* heart_monitor.png in Resources */,
 				C10B01F719B71C9E00325785 /* HRAlarm.mp3 in Resources */,
 				C1DF28BC186147DB00000695 /* Default.png in Resources */,
 				C1F60B7F198B37610032A497 /* apple-touch-icon-144x144-precomposed.png in Resources */,
 				C1F60B91198B378B0032A497 /* Images.xcassets in Resources */,
 				C1F60B8A198B37610032A497 /* Icon-Small.png in Resources */,
+				C126725919D941CB00DDAB7D /* HRAlarm1.mp3 in Resources */,
+				C1216F2D19DA589800C78FEA /* button.png in Resources */,
 				C1E700CE19D2798C00410667 /* user.png in Resources */,
 				C1F60B8C198B37610032A497 /* Icon.png in Resources */,
 				C1DF28BE186147DB00000695 /* Default@2x.png in Resources */,
+				C1216F2F19DA58A100C78FEA /* buttonHighlighted.png in Resources */,
 				C1DF28C0186147DB00000695 /* Default-568h@2x.png in Resources */,
 				C1F60B87198B37610032A497 /* Icon-Small-30@2x.png in Resources */,
 				C1F97CAE19D5554300C753BE /* data.txt in Resources */,
@@ -450,7 +466,7 @@
 				GCC_PREFIX_HEADER = "MerryBLEtool/MerryBLEtool-Prefix.pch";
 				INFOPLIST_FILE = "MerryBLEtool/MerryBLEtool-Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 7.1;
-				PRODUCT_NAME = "$(TARGET_NAME)";
+				PRODUCT_NAME = MyHRM;
 				TARGETED_DEVICE_FAMILY = 2;
 				WRAPPER_EXTENSION = app;
 			};
@@ -466,7 +482,7 @@
 				GCC_PREFIX_HEADER = "MerryBLEtool/MerryBLEtool-Prefix.pch";
 				INFOPLIST_FILE = "MerryBLEtool/MerryBLEtool-Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 7.1;
-				PRODUCT_NAME = "$(TARGET_NAME)";
+				PRODUCT_NAME = MyHRM;
 				TARGETED_DEVICE_FAMILY = 2;
 				WRAPPER_EXTENSION = app;
 			};
