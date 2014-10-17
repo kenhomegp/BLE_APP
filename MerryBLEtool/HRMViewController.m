@@ -9,6 +9,9 @@
 #import "HRMViewController.h"
 #import <AVFoundation/AVFoundation.h>
 
+#define APPStateNormal          1
+#define APPStateUserConfig      2
+
 #define drawHeartRateCurveTimeInterval  0.01
 #define StartAnimationIfConnected
 
@@ -17,13 +20,15 @@
 
 static uint16_t currentMaxHR = 0;
 static uint16_t currentMinHR = 0;
-static bool InitialUserData = 0;
 
 @interface HRMViewController () <UITableViewDataSource, UITableViewDelegate>
 {
     AVAudioPlayer *_audioPlayer;
     NSTimer *DrawHRCurve;
+    AVAudioPlayer *SoftMusic;
     //AVQueuePlayer *_MyAudioPlayer;
+    int AlarmMaxHeartRate;
+    int AlarmMinHeartRate;
 }
 @end
 
@@ -35,7 +40,8 @@ static bool InitialUserData = 0;
         //CGFloat xOffset = 20;
         CGFloat xOffset = 74;
         _refreshMoniterView = [[HeartLive alloc] initWithFrame:CGRectMake(xOffset, 800, CGRectGetWidth(self.view.frame) - 2 * xOffset, 200)];
-        _refreshMoniterView.backgroundColor = [UIColor blackColor];
+        //_refreshMoniterView.backgroundColor = [UIColor blackColor];
+        _refreshMoniterView.backgroundColor = [UIColor whiteColor];
         NSLog(@"HeartRateCurveView width = %f, heigth = 200",CGRectGetWidth(self.view.frame) - 2 * xOffset);//620 x 200
     }
     return _refreshMoniterView;
@@ -60,9 +66,21 @@ static bool InitialUserData = 0;
 	self.polarH7DeviceData = nil;
     self.polarH7HRMPeripheral = nil;
     self.connected = nil;
+    self.UserName = @"";
+    self.UserAge = @"";
+    self.RestHeartRate = 0;
+    AlarmMaxHeartRate = 70;//Default
+    AlarmMinHeartRate = 50;
     
     //Navigation View title
-    [self.navigationController.navigationBar.topItem setTitle:@"HeartRate_Sports"];
+    //[self.navigationController.navigationBar.topItem setTitle:@"HeartRate_Sports"];
+    self.title = @"心跳即時資訊";
+    
+    //[self.navigationController.navigationBar setTintColor:[UIColor redColor]];
+    //self.view.backgroundColor = [UIColor colorWithPatternImage:[UIImage imageNamed:@"Jogging"]];
+    [self.view setBackgroundColor:[UIColor colorWithPatternImage:[UIImage imageNamed:@"Jogging"]]];
+    
+    //self.view.backgroundColor = [UIColor colorWithPatternImage:[UIImage imageNamed:@"nav_bg_ios7"]];
     
     //Custom button
     [self.CustomButton setBackgroundImage:[UIImage imageNamed:@"button.png"] forState:UIControlStateNormal];
@@ -71,6 +89,24 @@ static bool InitialUserData = 0;
     //Color,Image
 	[self.view setBackgroundColor:[UIColor groupTableViewBackgroundColor]];
 	[self.heartImage setImage:[UIImage imageNamed:@"HeartImage"]];
+    //[self.heartImage setImage:[UIImage imageNamed:@"Jogging"]];
+    //[self.Image_Connected setImage:[UIImage imageNamed:@"DeviceConnected"]];
+    [self.Image_Connected setImage:[UIImage imageNamed:@"Disconnected"]];
+    
+    if([CLLocationManager locationServicesEnabled])
+    {
+        [self.Image_GPS setImage:[UIImage imageNamed:@"GPS_On"]];
+    }
+    else
+    {
+        [self.Image_GPS setImage:[UIImage imageNamed:@"GPS_Off"]];
+    }
+    
+    [self.Image_Battery setImage:[UIImage imageNamed:@"Battery"]];
+    //[self.BackgroundImage setImage:[UIImage imageNamed:@"Jogging"]];
+    [self.BackgroundImage setImage:[UIImage imageNamed:@"Jogging1"]];
+    [self.BackgroundImage addSubview:self.heartImage];
+    [self.BackgroundImage addSubview:self.HR_bpm];
 	
 	// Clear out textView
 	[self.deviceInfo setText:@""];
@@ -102,14 +138,16 @@ static bool InitialUserData = 0;
     
     NSURL *soundUrl1 = [NSURL fileURLWithPath:path1];
     
-    //NSString *path2 = [NSString stringWithFormat:@"%@/HRAlarm2.mp3", [[NSBundle mainBundle] resourcePath]];
+    NSString *path2 = [NSString stringWithFormat:@"%@/SoftMusic.mp3", [[NSBundle mainBundle] resourcePath]];
     
-    //NSURL *soundUrl2 = [NSURL fileURLWithPath:path2];
+    NSURL *soundUrl2 = [NSURL fileURLWithPath:path2];
     
     // Create audio player object and initialize with URL to sound
     _audioPlayer = [[AVAudioPlayer alloc] initWithContentsOfURL:soundUrl1 error:nil];
     
     [_audioPlayer setVolume:1.0];
+    
+    SoftMusic = [[AVAudioPlayer alloc] initWithContentsOfURL:soundUrl2 error:nil];
     
     //AVPlayerItem *item1 = [AVPlayerItem playerItemWithURL:soundUrl1];
     //AVPlayerItem *item2 = [AVPlayerItem playerItemWithURL:soundUrl2];
@@ -130,6 +168,12 @@ static bool InitialUserData = 0;
         self.dataSource = tempData;
     };
     createData();
+    
+    //Load User data(NSUserDefaults)
+    if(!([self LoadUserData]))
+    {
+        [NSTimer scheduledTimerWithTimeInterval:0.5 target:self selector:@selector(GotoUserConfig) userInfo:nil repeats:NO];
+    }
 }
 
 - (void)timerRefresnFun
@@ -183,6 +227,60 @@ static bool InitialUserData = 0;
 }
 */
 
+- (void) GotoUserConfig
+{
+    [self.Test1Button sendActionsForControlEvents:UIControlEventTouchUpInside];
+}
+
+- (bool) LoadUserData
+{
+    NSString *name,*age;
+    int MaximumHR,SetRHR,UpperTHR,LowerTHR,SetMaxHR,SetMinHR,APPConfig;
+    
+    NSUserDefaults *userDefaults = [NSUserDefaults standardUserDefaults];
+    name = [userDefaults objectForKey:@"myHRMApp_Name"];
+    age = [userDefaults objectForKey:@"myHRMApp_Age"];
+    //NSLog(@"%@",name);
+    //NSLog(@"%@",age);
+    MaximumHR = [userDefaults integerForKey:@"myHRMApp_MaxHR"];
+    SetRHR = [userDefaults integerForKey:@"myHRMApp_RHR"];
+    //NSLog(@"%d",MaximumHR);
+    //NSLog(@"%d",SetRHR);
+    UpperTHR = [userDefaults integerForKey:@"myHRMApp_UpperTHR"];
+    LowerTHR = [userDefaults integerForKey:@"myHRMApp_LowerTHR"];
+    SetMaxHR = [userDefaults integerForKey:@"myHRMApp_SetMaxHR"];
+    SetMinHR = [userDefaults integerForKey:@"myHRMApp_SetMinHR"];
+    APPConfig = [userDefaults integerForKey:@"myHRMApp_APPConfig"];
+    //NSLog(@"%d,%d,%d,%d,%d",UpperTHR,LowerTHR,SetMaxHR,SetMinHR,APPConfig);
+    
+    if(name == nil)
+    {
+        self.UserName = nil;
+        self.UserAge = nil;
+        self.RestHeartRate = 0;
+        self.APPConfig = Sports + TargetZoneAlarm + HRNotification;
+        
+        //UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"HeartRate Monitor" message:@"User data not found!" delegate:self cancelButtonTitle:@"YES" otherButtonTitles:@"NO", nil];
+        //[alert show];
+        
+        //[self.Test1Button sendActionsForControlEvents:UIControlEventTouchUpInside];
+        
+        return FALSE;
+    }
+    else
+    {
+        //UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"HeartRate Monitor" message:name delegate:self cancelButtonTitle:@"YES" otherButtonTitles:@"NO", nil];
+        //[alert show];
+        self.APPConfig = APPConfig;
+        self.UserName = name;
+        self.UserAge = age;
+        self.RestHeartRate = SetRHR;
+        
+        return TRUE;
+    }
+
+}
+
 - (void) prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
 {
     
@@ -196,9 +294,20 @@ static bool InitialUserData = 0;
         HRMSetting *User = [segue destinationViewController];
         [User setDelegate:self];
         
+        #if 1
+        User.HR_UserAge = self.UserAge;
+        User.HR_UserName = self.UserName;
+        User.APPConfig = self.APPConfig;
+        User.SetRHR = self.RestHeartRate;
+        if(AlarmMaxHeartRate != 70)
+            User.SetMaxHR = AlarmMaxHeartRate;
+        if(AlarmMinHeartRate != 50)
+            User.SetMinHR = AlarmMinHeartRate;
+        #else
         if(InitialUserData == 0)
         {
             InitialUserData = 1;
+            
             User.HR_UserName = @"";
             User.HR_UserAge = @"";
             User.APPConfig = Sports + TargetZoneAlarm + HRNotification;
@@ -208,15 +317,18 @@ static bool InitialUserData = 0;
         {
             User.APPConfig = self.APPConfig;
         }
+        #endif
     }
 }
 
 - (IBAction)DrawHeartRateCurve:(id)sender {
-    if([[self.CustomButton currentTitle] isEqualToString:@"Start"])
+    //if([[self.CustomButton currentTitle] isEqualToString:@"Start"])
+    if([[self.CustomButton currentTitle] isEqualToString:@"開始跑步"])
     {
         if(self.polarH7HRMPeripheral == nil)
         {
-            UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"HeartRate Monitor" message:@"Heart Rate Sensor not found!" delegate:self cancelButtonTitle:@"YES" otherButtonTitles:@"NO", nil];
+            //UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"HeartRate Monitor" message:@"Heart Rate Sensor not found!" delegate:self cancelButtonTitle:@"YES" otherButtonTitles:@"NO", nil];
+            UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"心跳偵測" message:@"無法找到裝置!" delegate:self cancelButtonTitle:@"YES" otherButtonTitles:nil, nil];
             [alert show];
         }
         else
@@ -225,15 +337,18 @@ static bool InitialUserData = 0;
         
             DrawHRCurve = [NSTimer scheduledTimerWithTimeInterval:drawHeartRateCurveTimeInterval target:self selector:@selector(timerRefresnFun) userInfo:nil repeats:YES];
         
-            [self.CustomButton setTitle:@"Stop" forState:UIControlStateNormal];
+            //[self.CustomButton setTitle:@"Stop" forState:UIControlStateNormal];
+            [self.CustomButton setTitle:@"結束" forState:UIControlStateNormal];
         }
     }
-    else if([[self.CustomButton currentTitle] isEqualToString:@"Stop"])
+    //else if([[self.CustomButton currentTitle] isEqualToString:@"Stop"])
+    else if([[self.CustomButton currentTitle] isEqualToString:@"結束"])
     {
         if([DrawHRCurve isValid])
             [DrawHRCurve invalidate];
         
-        [self.CustomButton setTitle:@"Start" forState:UIControlStateNormal];
+        //[self.CustomButton setTitle:@"Start" forState:UIControlStateNormal];
+        [self.CustomButton setTitle:@"開始跑步" forState:UIControlStateNormal];
     }
 }
 
@@ -270,12 +385,17 @@ static bool InitialUserData = 0;
     if([self.connected rangeOfString:@"YES"].location != NSNotFound)
     {
         [self.sensorsTable reloadData];
+        
+        [self.Image_Connected setImage:[UIImage imageNamed:@"DeviceConnected"]];
+
     }
     
     #ifdef StartAnimationIfConnected
     [self doHeartBeat];
     self.pulseTimer = [NSTimer scheduledTimerWithTimeInterval:(60. / HeartRatePulseTimer) target:self selector:@selector(doHeartBeat) userInfo:nil repeats:NO];
     #endif
+    
+    //[self.Image_Connected setImage:[UIImage imageNamed:@"DeviceConnected"]];
 }
 
 - (void)centralManager:(CBCentralManager *)central
@@ -284,7 +404,7 @@ didDisconnectPeripheral:(CBPeripheral *)peripheral
 {
     if(!(error))
     {
-        //NSLog(@"ooxx  Error 1");
+        
     }
     else{
         NSLog(@"Peripherl state = %d",peripheral.state);
@@ -292,11 +412,13 @@ didDisconnectPeripheral:(CBPeripheral *)peripheral
         if([self.pulseTimer isValid])
         {
             [self.pulseTimer invalidate];
-            NSLog(@"ooxx  Error ");
             
             if(peripheral.state == 0)//Disconnected
             {
                 self.polarH7HRMPeripheral = nil;
+                
+                [self.Image_Connected setImage:[UIImage imageNamed:@"Disconnected"]];
+
             }
         }
         #endif
@@ -433,34 +555,65 @@ didDisconnectPeripheral:(CBPeripheral *)peripheral
     //Update HR_bpm data
     self.HR_bpm.text = [NSString stringWithFormat:@"%i bpm", bpm];
     
-    if(bpm > ((int)self.maxAlarmStepper.value))
+    
+    //if(bpm > ((int)self.maxAlarmStepper.value))
     //if(bpm > 90)//Debug
+    if(bpm > AlarmMaxHeartRate)
     {
         self.CountError++;
         if(self.CountError >= 3)
         {
             self.CountError = 0;
-            [_audioPlayer play];
+            
+            if((self.APPConfig & ApplicationMode) == Normal)
+            {
+                [_audioPlayer play];
+            }
+            else if((self.APPConfig & ApplicationMode) == Sleep)
+            {
+                if(SoftMusic.playing == NO)
+                    [SoftMusic play];
+            }
             
             //NSLog(@"Play audio 1,%d",_MyAudioPlayer.status);
         }
     }
-    else if(bpm < ((int)self.minAlarmStepper.value))
+    //else if(bpm < ((int)self.minAlarmStepper.value))
     //else if(bpm < 80)
+    else if(bpm < AlarmMinHeartRate)
     {
         self.CountError++;
         if(self.CountError >= 3)
         {
-            self.CountError++;
-            [_audioPlayer play];
+            self.CountError = 0;
+            
+            if((self.APPConfig & ApplicationMode) == Normal)
+            {
+                [_audioPlayer play];
+            }
+            else if((self.APPConfig & ApplicationMode) == Sleep)
+            {
+                if(SoftMusic.playing == NO)
+                    [SoftMusic play];
+            }
             
             //NSLog(@"Play audio 2");
         }
     }
-    else{
+    else
+    {
+        if(_audioPlayer.playing)
+            [_audioPlayer stop];
+        
+        if(SoftMusic.playing)
+            [SoftMusic stop];
+        
         if(self.CountError < 3 && self.CountError != 0)
+        {
             self.CountError = 0;
+        }
     }
+    
     
     //Update Max & Min Heart Rate value
     if(currentMaxHR == 0 && currentMinHR == 0)
@@ -583,7 +736,7 @@ didDisconnectPeripheral:(CBPeripheral *)peripheral
     // Dispose of any resources that can be recreated.
 }
 
-
+/*
 - (IBAction)HeartRateMinChanged:(id)sender {
     //NSLog(@"Min changed..\n");
     //NSLog(@"%d\n",(int)self.minAlarmStepper.value);
@@ -598,6 +751,7 @@ didDisconnectPeripheral:(CBPeripheral *)peripheral
     
     [self.maxAlarmLabel setText:[NSString stringWithFormat:@"MAX %d",(int)self.maxAlarmStepper.value]];
 }
+*/
 
 #pragma mark -
 #pragma mark TableView Delegates
@@ -797,20 +951,26 @@ didDisconnectPeripheral:(CBPeripheral *)peripheral
 {
     _APPConfig = Configdata;
     
+    
     switch(self.APPConfig & ApplicationMode)
     {
         case (Normal):
-            [self.navigationController.navigationBar.topItem setTitle:@"HeartRate_Normal"];
+            //[self.navigationController.navigationBar.topItem setTitle:@"HeartRate_Normal"];
+            [self.HealthyCareViewButton sendActionsForControlEvents:UIControlEventTouchUpInside];
             break;
         case (Sports):
-            [self.navigationController.navigationBar.topItem setTitle:@"HeartRate_Sports"];
+            //[self.navigationController.navigationBar.topItem setTitle:@"HeartRate_Sports"];
             break;
         case (Sleep):
-            [self.navigationController.navigationBar.topItem setTitle:@"HeartRate_Sleep"];
+            //[self.navigationController.navigationBar.topItem setTitle:@"HeartRate_Sleep"];
+            [self.HealthyCareViewButton sendActionsForControlEvents:UIControlEventTouchUpInside];
             break;
         default:
             break;
     }
+    
+    
+    //NSLog(@"APP Config changed!");
 }
 
 -(void)passHeartRateData:(int)MaxHR SetMaxHR:(int)MaxHeartRate SetMinHR:(int)MinHeartRate RestHeartRate:(int)RHR UpperTargetHeartRate:(int)UpperTHR LowerTargetHeartRate:(int)LowerTHR
@@ -822,6 +982,11 @@ didDisconnectPeripheral:(CBPeripheral *)peripheral
     int b = UpperTHR;
     int c = LowerTHR;
     NSLog(@"%d,%d,%d,%d,%d,%d",i,j,k,a,b,c);*/
+    
+    AlarmMaxHeartRate = MaxHeartRate;
+    AlarmMinHeartRate = MinHeartRate;
+    
+    //NSLog(@"HeartRate data changed!");
     
 }
 #pragma mark - My Test Code
@@ -884,6 +1049,25 @@ didDisconnectPeripheral:(CBPeripheral *)peripheral
     //NSLog(@"Button.y = %f",position.y);
     
     //NSLog(@"APP Config = %d",self.APPConfig);
+    
+    /*
+    if((self.APPConfig & ApplicationMode) == Sleep)
+    {
+        if(SoftMusic.playing == NO)
+            [SoftMusic play];
+        else
+            [SoftMusic stop];
+    }
+    else if((self.APPConfig & ApplicationMode) == Normal)
+    {
+        if(_audioPlayer.playing == NO)
+            [_audioPlayer play];
+        else
+            [_audioPlayer stop];
+    }
+     */
+    
+    //[self.CustomButton sendActionsForControlEvents:UIControlEventTouchUpInside];
 
 }
 @end

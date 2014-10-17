@@ -37,6 +37,7 @@
 @property (strong, nonatomic) NSString *HR_UserName;
 @property (strong, nonatomic) NSString *HR_UserAge;
 @property (nonatomic) unsigned int APPConfig;
+//@property (nonatomic) unsigned int RestHR;
 @property (nonatomic, assign) id <passUserSetting> delegate;
 - (IBAction)APPModeChange:(id)sender;
 @property (weak, nonatomic) IBOutlet UILabel *MaxHR;
@@ -47,6 +48,13 @@
 @property (assign) int UpperTHR;
 @property (assign) int LowerTHR;
 @property (assign) int SetRHR;
+@property (assign) int UserAgeValue;
 - (IBAction)SaveHRData:(id)sender;
 - (IBAction)LoadHRData:(id)sender;
+@property (weak, nonatomic) IBOutlet UILabel *NormalMaxHR;
+@property (weak, nonatomic) IBOutlet UILabel *NormalMinHR;
+- (IBAction)MaxValueChanged:(id)sender;
+- (IBAction)MinValueChanged:(id)sender;
+@property (weak, nonatomic) IBOutlet UISlider *SetNormalMaxHR;
+@property (weak, nonatomic) IBOutlet UISlider *SetNormalMinHR;
 @end

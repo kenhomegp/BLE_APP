@@ -9,6 +9,7 @@
 #import "HeartLive.h"
 
 #pragma mark - PointContainer
+
 static const NSInteger kMaxContainerCapacity = 300;
 
 @interface PointContainer ()
@@ -194,7 +195,8 @@ static const NSInteger kMaxContainerCapacity = 300;
     CGFloat curveLineWidth = 2.0;
     CGContextRef currentContext = UIGraphicsGetCurrentContext();
     CGContextSetLineWidth(currentContext, curveLineWidth);
-	CGContextSetStrokeColorWithColor(UIGraphicsGetCurrentContext(), [UIColor greenColor].CGColor);
+	//CGContextSetStrokeColorWithColor(UIGraphicsGetCurrentContext(), [UIColor greenColor].CGColor);
+    CGContextSetStrokeColorWithColor(UIGraphicsGetCurrentContext(), [UIColor blueColor].CGColor);
     
     CGContextMoveToPoint(currentContext, self.points[0].x, self.points[0].y);
     for (int i = 1; i != self.currentPointsCount; ++ i) {

@@ -21,21 +21,66 @@
 
 - (void)SaveUserData
 {
+    int tempMaxHR,tempRHR,tempUpperTHR,tempLowerTHR,tempHRReserve = 0;
+    int i,j;
+    
+    if([UserName.text isEqualToString:@""])
+        return;
+    if([UserAge.text isEqualToString:@""])
+        return;
+    if(([self.UserRHR.text intValue]) == 0)
+        return;
+    
+    [self CalculateHRData];
+    
     NSUserDefaults *userDefaults = [NSUserDefaults standardUserDefaults];
-    [userDefaults setObject:self.HR_UserName forKey:@"myHRMApp_Name"];
-    [userDefaults setObject:self.HR_UserAge forKey:@"myHRMApp_Age"];
-    //[userDefaults setInteger:[self.HR_UserAge intValue] forKey:@"myHRMApp_Age"];
+    
+#if 1
+    [userDefaults setObject:UserName.text forKey:@"myHRMApp_Name"];
+    [userDefaults setObject:UserAge.text forKey:@"myHRMApp_Age"];
+    tempMaxHR = 220 - ([self.HR_UserAge intValue]);
+    [userDefaults setInteger:tempMaxHR forKey:@"myHRMApp_MaxHR"];
+    tempRHR = [self.UserRHR.text intValue];
+    [userDefaults setInteger:tempRHR forKey:@"myHRMApp_RHR"];
+    tempHRReserve = tempMaxHR - tempRHR;
+    tempUpperTHR = (tempHRReserve * 0.8) + tempRHR;
+    tempLowerTHR = (tempHRReserve * 0.6) + tempRHR;
+    [userDefaults setInteger:tempUpperTHR forKey:@"myHRMApp_UpperTHR"];
+    [userDefaults setInteger:tempLowerTHR forKey:@"myHRMApp_LowerTHR"];
+    i = [self.NormalMaxHR.text intValue];
+    j = [self.NormalMinHR.text intValue];
+    [userDefaults setInteger:i forKey:@"myHRMApp_SetMaxHR"];
+    [userDefaults setInteger:j forKey:@"myHRMApp_SetMinHR"];
+    
+    if(self.AlarmTHR.isOn)
+        self.APPConfig |= TargetZoneAlarm;
+    else
+        self.APPConfig &= ~(TargetZoneAlarm);
+    
+    if(self.HRNotifiction.isOn)
+        self.APPConfig |= HRNotification;
+    else
+        self.APPConfig &= ~(HRNotification);
+    
+    [userDefaults setInteger:self.APPConfig forKey:@"myHRMApp_APPConfig"];
+#else
+    [userDefaults setObject:@"peter" forKey:@"myHRMApp_Name"];
+    [userDefaults setObject:@"34" forKey:@"myHRMApp_Age"];
+    self.MaximumHR = 220-34;
+    self.SetRHR = 62;
     [userDefaults setInteger:self.MaximumHR forKey:@"myHRMApp_MaxHR"];
     [userDefaults setInteger:self.SetRHR forKey:@"myHRMApp_RHR"];
+    self.UpperTHR = 170;self.LowerTHR = 140;self.SetMaxHR = 90;self.SetMinHR = 40;self.APPConfig = 45;
     [userDefaults setInteger:self.UpperTHR forKey:@"myHRMApp_UpperTHR"];
     [userDefaults setInteger:self.LowerTHR forKey:@"myHRMApp_LowerTHR"];
     [userDefaults setInteger:self.SetMaxHR forKey:@"myHRMApp_SetMaxHR"];
     [userDefaults setInteger:self.SetMinHR forKey:@"myHRMApp_SetMinHR"];
     [userDefaults setInteger:self.APPConfig forKey:@"myHRMApp_APPConfig"];
+#endif
     
     [userDefaults synchronize];
     
-    NSLog(@"SaveUserData");
+    //NSLog(@"SaveUserData");
 }
 
 - (void)LoadUserData
@@ -43,24 +88,20 @@
     NSUserDefaults *userDefaults = [NSUserDefaults standardUserDefaults];
     self.HR_UserName = [userDefaults objectForKey:@"myHRMApp_Name"];
     self.HR_UserAge = [userDefaults objectForKey:@"myHRMApp_Age"];
-    //int i = [userDefaults integerForKey:@"myHRMApp_Age"];
-    //self.HR_UserAge = [NSString stringWithFormat:@"%d",i];
+    NSLog(@"%@",self.HR_UserName);
+    NSLog(@"%@",self.HR_UserAge);
     self.MaximumHR = [userDefaults integerForKey:@"myHRMApp_MaxHR"];
     self.SetRHR = [userDefaults integerForKey:@"myHRMApp_RHR"];
+    //NSLog(@"%d",[userDefaults integerForKey:@"myHRMApp_MaxHR"]);
+    //NSLog(@"%d",[userDefaults integerForKey:@"myHRMApp_RHR"]);
+    NSLog(@"%d",self.MaximumHR);
+    NSLog(@"%d",self.SetRHR);
     self.UpperTHR = [userDefaults integerForKey:@"myHRMApp_UpperTHR"];
     self.LowerTHR = [userDefaults integerForKey:@"myHRMApp_LowerTHR"];
     self.SetMaxHR = [userDefaults integerForKey:@"myHRMApp_SetMaxHR"];
     self.SetMinHR = [userDefaults integerForKey:@"myHRMApp_SetMinHR"];
     self.APPConfig = [userDefaults integerForKey:@"myHRMApp_APPConfig"];
-    
-    self.UserRHR.text = [NSString stringWithFormat:@"%d",self.SetRHR];
-    [self CalculateHRData];
-    
-    //NSLog(@"LoadUserData , i = %d",[self.HR_UserAge intValue]);
-    
-    UserName.text = self.HR_UserName;
-    
-    UserAge.text = self.HR_UserAge;
+    NSLog(@"%d,%d,%d,%d,%d",self.UpperTHR,self.LowerTHR,self.SetMaxHR,self.SetMinHR,self.APPConfig);
     
     NSLog(@"LoadUserData");
 }
@@ -69,7 +110,14 @@
 {
     _HR_UserAge = UserAge.text;
     
-    if(!([self.HR_UserAge isEqualToString:@""]))
+    int tmpAge = [_HR_UserAge intValue];
+    if(tmpAge != self.UserAgeValue)
+        self.UserAgeValue = tmpAge;
+    
+    //NSLog(@"Age : %@",_HR_UserAge);
+    
+    //if(!([self.HR_UserAge isEqualToString:@""]))
+    if(tmpAge != 0)
     {
         int tempMaxHR,tempRHR,tempUpperTHR,tempLowerTHR,tempHRReserve = 0;
         
@@ -78,14 +126,27 @@
         
         self.MaxHR.text = [NSString stringWithFormat:@"Maximum Heart Rate = %d",tempMaxHR];
         
-        if(!([self.UserRHR.text isEqualToString:@""]))
+        tempRHR = [self.UserRHR.text intValue];
+        
+        //NSLog(@"RHR : %@,%d",self.UserRHR.text,tempRHR);
+        
+        //if(!([self.UserRHR.text isEqualToString:@""]))
+        if(tempRHR != 0)
         {
-            tempRHR = [self.UserRHR.text intValue];
-            
-            if((tempRHR > 0) && (tempRHR < 90))
-            {
+            if(self.SetRHR != tempRHR)
                 self.SetRHR = tempRHR;
+            
+            //tempRHR = [self.UserRHR.text intValue];
+            
+            //if((tempRHR > 0) && (tempRHR < 90))
+            if(self.SetRHR != 0)
+            {
+                //self.SetRHR = tempRHR;
+                
+                tempRHR = self.SetRHR;
+                //NSLog(@"RestHR = %d",self.SetRHR);
                 tempHRReserve = tempMaxHR - tempRHR;
+                //NSLog(@"HR reserve = %d",tempHRReserve);
                 tempUpperTHR = (tempHRReserve * 0.8) + tempRHR;
                 tempLowerTHR = (tempHRReserve * 0.6) + tempRHR;
                 self.UpperTHR = tempUpperTHR;
@@ -111,11 +172,19 @@
     [super viewDidLoad];
     // Do any additional setup after loading the view.
     
+    //self.title = @"Setting";
+    self.title = @"功能設定";
+    
     if(!([self.HR_UserName isEqualToString:@""]))
         UserName.text = self.HR_UserName;
     
     if(!([self.HR_UserAge isEqualToString:@""]))
+    {
         UserAge.text = self.HR_UserAge;
+        self.UserAgeValue = [UserAge.text intValue];
+    }
+    
+    self.UserRHR.text = [NSString stringWithFormat:@"%d",self.SetRHR];
     
     if((self.APPConfig & TargetZoneAlarm))
         [self.AlarmTHR setOn:YES];
@@ -126,6 +195,18 @@
         [self.HRNotifiction setOn:YES];
     else
         [self.HRNotifiction setOn:NO];
+    
+    if(self.SetMaxHR != 70)
+    {
+        self.SetNormalMaxHR.value = self.SetMaxHR;
+        self.NormalMaxHR.text = [NSString stringWithFormat:@"%d",(int)self.SetNormalMaxHR.value];
+    }
+    
+    if(self.SetMinHR != 50)
+    {
+        self.SetNormalMinHR.value = self.SetMinHR;
+        self.NormalMinHR.text = [NSString stringWithFormat:@"%d",(int)self.SetNormalMinHR.value];
+    }
     
     //NSLog(@"APP Config = %d",self.APPConfig);
     
@@ -143,6 +224,9 @@
         default:
             break;
     }
+    
+    if(!([self.HR_UserAge isEqualToString:@""]) && self.SetRHR != 0)
+        [self CalculateHRData];
 }
 
 - (void)didReceiveMemoryWarning
@@ -215,13 +299,29 @@
         default:
             break;
     }
+    
+    //[[self delegate] APPSetting:self.APPConfig];
 }
 
 - (IBAction)SaveHRData:(id)sender {
-    //[self SaveUserData];
+    [self SaveUserData];
+    [[self delegate] APPSetting:self.APPConfig];
+    [[self delegate] passHeartRateData:self.MaximumHR SetMaxHR:self.SetMaxHR SetMinHR:self.SetMinHR RestHeartRate:self.SetRHR UpperTargetHeartRate:self.UpperTHR LowerTargetHeartRate:self.LowerTHR];
+    [self dismissViewControllerAnimated:YES completion:nil];
 }
 
 - (IBAction)LoadHRData:(id)sender {
     //[self LoadUserData];
+}
+- (IBAction)MaxValueChanged:(id)sender {
+    float i = self.SetNormalMaxHR.value;
+    self.NormalMaxHR.text = [NSString stringWithFormat:@"%d",(int)i];
+    self.SetMaxHR = (int)i;
+}
+
+- (IBAction)MinValueChanged:(id)sender {
+    float i = self.SetNormalMinHR.value;
+    self.NormalMinHR.text = [NSString stringWithFormat:@"%d",(int)i];
+    self.SetMinHR = (int)i;
 }
 @end

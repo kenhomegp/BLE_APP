@@ -10,6 +10,7 @@
 #import <CoreBluetooth/CoreBluetooth.h>
 #import <QuartzCore/QuartzCore.h>
 #import <MessageUI/MessageUI.h>
+#import <CoreLocation/CoreLocation.h>
 
 #import "HRMSetting.h"
 #import "HeartLive.h"
@@ -32,6 +33,7 @@
 @property (strong, nonatomic) NSString *UserName;
 @property (strong, nonatomic) NSString *UserAge;
 @property (nonatomic) unsigned int APPConfig;
+@property (nonatomic) unsigned int RestHeartRate;
 
 @property (weak, nonatomic) IBOutlet UIButton *Test_button;
 
@@ -42,8 +44,8 @@
 @property (nonatomic, strong) IBOutlet UIImageView *heartImage;
 @property (nonatomic, strong) IBOutlet UITextView  *deviceInfo;
 - (IBAction)HR_Test:(id)sender;
-- (IBAction)HeartRateMinChanged:(id)sender;
-- (IBAction)HeartRateMaxChanged:(id)sender;
+//- (IBAction)HeartRateMinChanged:(id)sender;
+//- (IBAction)HeartRateMaxChanged:(id)sender;
 
 // Properties to hold data characteristics for the peripheral device
 @property (weak, nonatomic) IBOutlet UILabel *HR_bpm;
@@ -57,8 +59,8 @@
 // Properties to handle storing the BPM and heart beat
 @property (nonatomic, strong) UILabel    *heartRateBPM;
 @property (nonatomic, retain) NSTimer    *pulseTimer;
-@property (weak, nonatomic) IBOutlet UIStepper *minAlarmStepper;
-@property (weak, nonatomic) IBOutlet UIStepper *maxAlarmStepper;
+//@property (weak, nonatomic) IBOutlet UIStepper *minAlarmStepper;
+//@property (weak, nonatomic) IBOutlet UIStepper *maxAlarmStepper;
 @property (weak, nonatomic) IBOutlet UILabel *minAlarmLabel;
 @property (weak, nonatomic) IBOutlet UILabel *maxAlarmLabel;
 @property (weak, nonatomic) IBOutlet UITableView *sensorsTable;
@@ -74,5 +76,12 @@
 
 // Instance method to perform heart beat animations
 - (void) doHeartBeat;
+@property (weak, nonatomic) IBOutlet UIBarButtonItem *SettingButton;
+@property (weak, nonatomic) IBOutlet UIButton *Test1Button;
+@property (weak, nonatomic) IBOutlet UIImageView *Image_Connected;
+@property (weak, nonatomic) IBOutlet UIImageView *Image_GPS;
+@property (weak, nonatomic) IBOutlet UIImageView *Image_Battery;
+@property (weak, nonatomic) IBOutlet UIImageView *BackgroundImage;
+@property (weak, nonatomic) IBOutlet UIButton *HealthyCareViewButton;
 
 @end
