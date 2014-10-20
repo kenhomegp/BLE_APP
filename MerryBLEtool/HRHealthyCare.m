@@ -31,6 +31,18 @@
     [self.BackgroundImage setImage:[UIImage imageNamed:@"Jogging"]];
     
     [self.HeartImage setImage:[UIImage imageNamed:@"HeartImage"]];
+    
+    switch(self.APPConfig & ApplicationMode)
+    {
+        case (Normal):
+            self.TitleLabel.text = @"一般模式";
+            break;
+         case (Sleep):
+            self.TitleLabel.text = @"睡眠模式";
+            break;
+        default:
+            break;
+    }
 }
 
 - (void)didReceiveMemoryWarning

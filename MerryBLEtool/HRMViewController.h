@@ -14,6 +14,7 @@
 
 #import "HRMSetting.h"
 #import "HeartLive.h"
+#import "HRHealthyCare.h"
 
 #define POLARH7_HRM_DEVICE_INFO_SERVICE_UUID @"180A"       // 180A = Device Information
 #define POLARH7_HRM_HEART_RATE_SERVICE_UUID @"180D"        // 180D = Heart Rate Service
@@ -83,5 +84,5 @@
 @property (weak, nonatomic) IBOutlet UIImageView *Image_Battery;
 @property (weak, nonatomic) IBOutlet UIImageView *BackgroundImage;
 @property (weak, nonatomic) IBOutlet UIButton *HealthyCareViewButton;
-
+@property (weak, nonatomic) IBOutlet UILabel *SportsTimeLabel;
 @end

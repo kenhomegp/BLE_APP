@@ -29,6 +29,8 @@ static uint16_t currentMinHR = 0;
     //AVQueuePlayer *_MyAudioPlayer;
     int AlarmMaxHeartRate;
     int AlarmMinHeartRate;
+    NSTimer *SportsTimer;    // Store the timer that fires after a certain time
+    NSDate *startDate;      // Stores the date of the click on the start button
 }
 @end
 
@@ -319,7 +321,34 @@ static uint16_t currentMinHR = 0;
         }
         #endif
     }
+    else if([[segue identifier] isEqualToString:@"SegueForHealthyCare"])
+    {
+        HRHealthyCare *vc = [segue destinationViewController];
+        vc.APPConfig = self.APPConfig;
+    }
 }
+
+- (void)updateTimer
+{
+    // Create date from the elapsed time
+    NSDate *currentDate = [NSDate date];
+    NSTimeInterval timeInterval = [currentDate timeIntervalSinceDate:startDate];
+    NSDate *timerDate = [NSDate dateWithTimeIntervalSince1970:timeInterval];
+    
+    // Create a date formatter
+    NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
+    //[dateFormatter setDateFormat:@"HH:mm:ss.SSS"];
+    [dateFormatter setDateFormat:@"時間 : HH時:mm分:ss秒"];
+    //[dateFormatter setDateFormat:@"HH:mm:ss"];
+    [dateFormatter setTimeZone:[NSTimeZone timeZoneForSecondsFromGMT:0.0]];
+    
+    // Format the elapsed time and set it to the label
+    NSString *timeString = [dateFormatter stringFromDate:timerDate];
+    //self.stopwatchLabel.text = timeString;
+    //NSLog(@"%@",timeString);
+    self.SportsTimeLabel.text = timeString;
+}
+
 
 - (IBAction)DrawHeartRateCurve:(id)sender {
     //if([[self.CustomButton currentTitle] isEqualToString:@"Start"])
@@ -336,6 +365,13 @@ static uint16_t currentMinHR = 0;
             [DrawHRCurve invalidate];
         
             DrawHRCurve = [NSTimer scheduledTimerWithTimeInterval:drawHeartRateCurveTimeInterval target:self selector:@selector(timerRefresnFun) userInfo:nil repeats:YES];
+            
+            startDate = [NSDate date];
+            SportsTimer = [NSTimer scheduledTimerWithTimeInterval:1.0/2.0
+                                             target:self
+                                           selector:@selector(updateTimer)
+                                           userInfo:nil
+                                            repeats:YES];
         
             //[self.CustomButton setTitle:@"Stop" forState:UIControlStateNormal];
             [self.CustomButton setTitle:@"結束" forState:UIControlStateNormal];
@@ -346,6 +382,13 @@ static uint16_t currentMinHR = 0;
     {
         if([DrawHRCurve isValid])
             [DrawHRCurve invalidate];
+        
+        if([SportsTimer isValid])
+        {
+            [SportsTimer invalidate];
+            SportsTimer = nil;
+            self.SportsTimeLabel.text = @"時間 : 00時:00分:00秒";
+        }
         
         //[self.CustomButton setTitle:@"Start" forState:UIControlStateNormal];
         [self.CustomButton setTitle:@"開始跑步" forState:UIControlStateNormal];
