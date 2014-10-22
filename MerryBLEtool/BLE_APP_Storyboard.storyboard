@@ -244,7 +244,7 @@
         <!--Map View-->
         <scene sceneID="arf-VN-b4G">
             <objects>
-                <viewController id="Gyx-aP-GxF" customClass="HRMapView" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="GoogleMap" useStoryboardIdentifierAsRestorationIdentifier="YES" id="Gyx-aP-GxF" customClass="HRMapView" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="Iqk-Tp-QaC"/>
                         <viewControllerLayoutGuide type="bottom" id="ojw-sw-Vdy"/>
@@ -263,7 +263,7 @@
         <!--Setting - Setting-->
         <scene sceneID="QT8-YP-126">
             <objects>
-                <viewController id="5H2-QX-uy2" customClass="HRMSetting" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="HRSetting" useStoryboardIdentifierAsRestorationIdentifier="YES" id="5H2-QX-uy2" customClass="HRMSetting" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="WCd-1n-4r4"/>
                         <viewControllerLayoutGuide type="bottom" id="GX0-S2-GN8"/>
@@ -472,10 +472,10 @@
             </objects>
             <point key="canvasLocation" x="-76" y="-849"/>
         </scene>
-        <!--Healthy Care - 心律偵測-->
+        <!--Healthy Care - 心率偵測-->
         <scene sceneID="fVv-B9-wjr">
             <objects>
-                <viewController id="8JZ-Md-8hj" customClass="HRHealthyCare" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="HealthyCare" useStoryboardIdentifierAsRestorationIdentifier="YES" id="8JZ-Md-8hj" customClass="HRHealthyCare" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="WXs-2e-93i"/>
                         <viewControllerLayoutGuide type="bottom" id="sKi-xK-UTo"/>
@@ -485,19 +485,27 @@
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                         <subviews>
                             <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="yoy-32-ijb">
-                                <rect key="frame" x="0.0" y="43" width="768" height="657"/>
+                                <rect key="frame" x="589" y="679" width="140" height="110"/>
                                 <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                             </imageView>
                             <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="心律偵測" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="pn6-C4-xee">
-                                <rect key="frame" x="250" y="818" width="268" height="78"/>
+                                <rect key="frame" x="248" y="695" width="268" height="78"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="50"/>
                                 <nil key="highlightedColor"/>
                             </label>
+                            <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" fixedFrame="YES" showsHorizontalScrollIndicator="NO" translatesAutoresizingMaskIntoConstraints="NO" id="qJp-wa-paO">
+                                <rect key="frame" x="78" y="101" width="609" height="403"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
+                                <string key="text">心率是指心臟跳動的頻率,也就是心臟每分鐘跳動的次數                                                      正常成人的心跳在休息狀態下是規律的,次數介於每分鐘60至100次之間。但是一個人的心跳在一天之中是會波動的。                          在睡眠時,正常成人的心跳可能會變慢到介於每分鐘30至60次之間,運動時心跳會加速,心肺功能較好的運動員會比一般人的心跳要慢</string>
+                                <fontDescription key="fontDescription" type="system" pointSize="30"/>
+                                <textInputTraits key="textInputTraits" autocapitalizationType="sentences"/>
+                            </textView>
                         </subviews>
                         <color key="backgroundColor" cocoaTouchSystemColor="groupTableViewBackgroundColor"/>
                     </view>
-                    <navigationItem key="navigationItem" title="心律偵測" id="eX9-bD-UH5"/>
+                    <navigationItem key="navigationItem" title="心率偵測" id="eX9-bD-UH5"/>
                     <connections>
                         <outlet property="BackgroundImage" destination="yoy-32-ijb" id="bxv-BN-P9v"/>
                         <outlet property="TitleLabel" destination="pn6-C4-xee" id="Vtp-hT-klx"/>
@@ -522,6 +530,6 @@
         <simulatedScreenMetrics key="destination"/>
     </simulatedMetricsContainer>
     <inferredMetricsTieBreakers>
-        <segue reference="R9s-ku-wTn"/>
+        <segue reference="Loy-7v-YAo"/>
     </inferredMetricsTieBreakers>
 </document>

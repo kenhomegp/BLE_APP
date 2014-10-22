@@ -55,8 +55,29 @@ static uint16_t currentMinHR = 0;
         [DrawHRCurve invalidate];
     
     if([self.pulseTimer isValid])
+    {
         [self.pulseTimer invalidate];
+        NSLog(@"pulse timer invalidate");
+    }
 }
+
+- (void)viewWillAppear:(BOOL)animated
+{
+    //
+    NSLog(@"viewWillAppear");
+    
+    if(self.polarH7HRMPeripheral != nil)
+    {
+        if(!([self.pulseTimer isValid]))
+        {
+            self.pulseTimer = [NSTimer scheduledTimerWithTimeInterval:(60. / HeartRatePulseTimer) target:self selector:@selector(doHeartBeat) userInfo:nil repeats:NO];
+            
+            //NSLog(@"Recover pulse Timer");
+        }
+    }
+
+}
+
 
 - (void)viewDidLoad
 {
@@ -73,6 +94,11 @@ static uint16_t currentMinHR = 0;
     self.RestHeartRate = 0;
     AlarmMaxHeartRate = 70;//Default
     AlarmMinHeartRate = 50;
+    
+    //Gesture Regognizer
+    UISwipeGestureRecognizer *swipeRight = [[UISwipeGestureRecognizer alloc] initWithTarget:self  action:@selector(swipeRecognized:)];
+    [swipeRight setDirection:UISwipeGestureRecognizerDirectionRight];
+    [self.view addGestureRecognizer:swipeRight];
     
     //Navigation View title
     //[self.navigationController.navigationBar.topItem setTitle:@"HeartRate_Sports"];
@@ -178,6 +204,14 @@ static uint16_t currentMinHR = 0;
     }
 }
 
+- (void)swipeRecognized:(UISwipeGestureRecognizer *)swipe
+{
+    if(swipe.direction == UISwipeGestureRecognizerDirectionRight)
+    {
+        NSLog(@"Swipe Right Recognized");
+    }
+}
+
 - (void)timerRefresnFun
 {
     [[PointContainer sharedContainer] addPointAsRefreshChangeform:[self bubbleRefreshPoint]];
@@ -232,6 +266,10 @@ static uint16_t currentMinHR = 0;
 - (void) GotoUserConfig
 {
     [self.Test1Button sendActionsForControlEvents:UIControlEventTouchUpInside];
+    
+    //HRMSetting *vc;
+    //vc = [self.storyboard instantiateViewControllerWithIdentifier:@"HRSetting"];
+    //[self presentModalViewController:vc animated:YES];
 }
 
 - (bool) LoadUserData
@@ -994,24 +1032,27 @@ didDisconnectPeripheral:(CBPeripheral *)peripheral
 {
     _APPConfig = Configdata;
     
+    HRHealthyCare *vc;
     
     switch(self.APPConfig & ApplicationMode)
     {
         case (Normal):
-            //[self.navigationController.navigationBar.topItem setTitle:@"HeartRate_Normal"];
-            [self.HealthyCareViewButton sendActionsForControlEvents:UIControlEventTouchUpInside];
+            //[self.HealthyCareViewButton sendActionsForControlEvents:UIControlEventTouchUpInside];
+            vc = [self.storyboard instantiateViewControllerWithIdentifier:@"HealthyCare"];
+            vc.APPConfig = self.APPConfig;
+            [self.navigationController pushViewController:vc animated:YES];
             break;
         case (Sports):
-            //[self.navigationController.navigationBar.topItem setTitle:@"HeartRate_Sports"];
             break;
         case (Sleep):
-            //[self.navigationController.navigationBar.topItem setTitle:@"HeartRate_Sleep"];
-            [self.HealthyCareViewButton sendActionsForControlEvents:UIControlEventTouchUpInside];
+            //[self.HealthyCareViewButton sendActionsForControlEvents:UIControlEventTouchUpInside];
+            vc = [self.storyboard instantiateViewControllerWithIdentifier:@"HealthyCare"];
+            vc.APPConfig = self.APPConfig;
+            [self.navigationController pushViewController:vc animated:YES];
             break;
         default:
             break;
     }
-    
     
     //NSLog(@"APP Config changed!");
 }
@@ -1030,7 +1071,6 @@ didDisconnectPeripheral:(CBPeripheral *)peripheral
     AlarmMinHeartRate = MinHeartRate;
     
     //NSLog(@"HeartRate data changed!");
-    
 }
 #pragma mark - My Test Code
 /****************************************************************************/
@@ -1111,6 +1151,8 @@ didDisconnectPeripheral:(CBPeripheral *)peripheral
      */
     
     //[self.CustomButton sendActionsForControlEvents:UIControlEventTouchUpInside];
+    
+    //[self.navigationController pushViewController:[self.storyboard instantiateViewControllerWithIdentifier:@"HealthyCare"] animated:YES];
 
 }
 @end

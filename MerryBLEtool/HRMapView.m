@@ -77,7 +77,7 @@
     
     //Reverse Geocoding
     [geocoder reverseGeocodeLocation:Location completionHandler:^(NSArray *placemarks, NSError *error) {
-        NSLog(@"Found placemarks: %@, error: %@", placemarks, error);
+        //NSLog(@"Found placemarks: %@, error: %@", placemarks, error);
         if (error == nil && [placemarks count] > 0) {
             placemark = [placemarks lastObject];
             
@@ -89,7 +89,7 @@
             marker.map = mapView_;
             
         } else {
-            NSLog(@"Error!");
+            //NSLog(@"Error!");
         }
      }];
 
@@ -101,7 +101,7 @@
     //marker.snippet = @"Taiwan";
     //marker.map = mapView_;
     
-    NSLog(@"MoveCamera");
+    //NSLog(@"MoveCamera");
 
 }
 
