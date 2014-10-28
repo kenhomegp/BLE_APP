@@ -11,7 +11,6 @@
 		C108E4ED19D10CC20097B920 /* MessageUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C108E4EC19D10CC20097B920 /* MessageUI.framework */; };
 		C10B01F019B7133F00325785 /* AVFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C10B01EF19B7133F00325785 /* AVFoundation.framework */; };
 		C10B01F719B71C9E00325785 /* HRAlarm.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = C10B01F619B71C9E00325785 /* HRAlarm.mp3 */; };
-		C10E5CBB19A0531B0075C0BB /* BLE_APP_Storyboard.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = C10E5CBA19A0531B0075C0BB /* BLE_APP_Storyboard.storyboard */; };
 		C11742C019AADC1600721449 /* HRMViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = C11742BF19AADC1600721449 /* HRMViewController.m */; };
 		C11742C219AAE06A00721449 /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C11742C119AAE06A00721449 /* QuartzCore.framework */; };
 		C11F3A9B19EFC9C6008FBA7F /* CoreLocation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C11F3A9A19EFC9C6008FBA7F /* CoreLocation.framework */; };
@@ -45,6 +44,8 @@
 		C130E61519F0F8B000550957 /* OpenGLES.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C130E61419F0F8B000550957 /* OpenGLES.framework */; };
 		C130E61719F0F8DE00550957 /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C130E61619F0F8DE00550957 /* SystemConfiguration.framework */; };
 		C130E61A19F1025A00550957 /* HRMapView.m in Sources */ = {isa = PBXBuildFile; fileRef = C130E61919F1025A00550957 /* HRMapView.m */; };
+		C19A510119F8CEE900FC8DE4 /* sleepy.jpg in Resources */ = {isa = PBXBuildFile; fileRef = C19A510019F8CEE900FC8DE4 /* sleepy.jpg */; };
+		C19A510319F8D87D00FC8DE4 /* HeartRateDemo.jpg in Resources */ = {isa = PBXBuildFile; fileRef = C19A510219F8D87D00FC8DE4 /* HeartRateDemo.jpg */; };
 		C1DF28AA186147DA00000695 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C1DF28A9186147DA00000695 /* UIKit.framework */; };
 		C1DF28AC186147DA00000695 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C1DF28AB186147DA00000695 /* Foundation.framework */; };
 		C1DF28AE186147DA00000695 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C1DF28AD186147DA00000695 /* CoreGraphics.framework */; };
@@ -60,6 +61,8 @@
 		C1DF28D71861507700000695 /* 1.png in Resources */ = {isa = PBXBuildFile; fileRef = C1DF28D41861507700000695 /* 1.png */; };
 		C1DF28D81861507700000695 /* 2.png in Resources */ = {isa = PBXBuildFile; fileRef = C1DF28D51861507700000695 /* 2.png */; };
 		C1DF28D91861507700000695 /* 3.png in Resources */ = {isa = PBXBuildFile; fileRef = C1DF28D61861507700000695 /* 3.png */; };
+		C1E017C619FF77C600F5FA46 /* BLE_APP_Storyboard.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = C1E017C819FF77C600F5FA46 /* BLE_APP_Storyboard.storyboard */; };
+		C1E017D219FF90E400F5FA46 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = C1E017D419FF90E400F5FA46 /* Localizable.strings */; };
 		C1E700CC19D2747400410667 /* HRMSetting.m in Sources */ = {isa = PBXBuildFile; fileRef = C1E700CB19D2747400410667 /* HRMSetting.m */; };
 		C1E700CE19D2798C00410667 /* user.png in Resources */ = {isa = PBXBuildFile; fileRef = C1E700CD19D2798C00410667 /* user.png */; };
 		C1EE3B171862DC9200355A9D /* BLECBTask.m in Sources */ = {isa = PBXBuildFile; fileRef = C1EE3B161862DC9200355A9D /* BLECBTask.m */; };
@@ -96,7 +99,6 @@
 		C108E4EC19D10CC20097B920 /* MessageUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MessageUI.framework; path = System/Library/Frameworks/MessageUI.framework; sourceTree = SDKROOT; };
 		C10B01EF19B7133F00325785 /* AVFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AVFoundation.framework; path = System/Library/Frameworks/AVFoundation.framework; sourceTree = SDKROOT; };
 		C10B01F619B71C9E00325785 /* HRAlarm.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = HRAlarm.mp3; sourceTree = "<group>"; };
-		C10E5CBA19A0531B0075C0BB /* BLE_APP_Storyboard.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = BLE_APP_Storyboard.storyboard; sourceTree = "<group>"; };
 		C11742BE19AADC1600721449 /* HRMViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HRMViewController.h; sourceTree = "<group>"; };
 		C11742BF19AADC1600721449 /* HRMViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HRMViewController.m; sourceTree = "<group>"; };
 		C11742C119AAE06A00721449 /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
@@ -134,6 +136,8 @@
 		C130E61819F1025900550957 /* HRMapView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HRMapView.h; sourceTree = "<group>"; };
 		C130E61919F1025A00550957 /* HRMapView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HRMapView.m; sourceTree = "<group>"; };
 		C184016218697F0B00266B4C /* BLEDebug.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = BLEDebug.h; sourceTree = "<group>"; };
+		C19A510019F8CEE900FC8DE4 /* sleepy.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = sleepy.jpg; sourceTree = "<group>"; };
+		C19A510219F8D87D00FC8DE4 /* HeartRateDemo.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = HeartRateDemo.jpg; sourceTree = "<group>"; };
 		C1DF28A6186147DA00000695 /* MyHRM.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = MyHRM.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		C1DF28A9186147DA00000695 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
 		C1DF28AB186147DA00000695 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
@@ -155,6 +159,11 @@
 		C1DF28D41861507700000695 /* 1.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = 1.png; path = Images/1.png; sourceTree = "<group>"; };
 		C1DF28D51861507700000695 /* 2.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = 2.png; path = Images/2.png; sourceTree = "<group>"; };
 		C1DF28D61861507700000695 /* 3.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = 3.png; path = Images/3.png; sourceTree = "<group>"; };
+		C1E017C919FF7BEF00F5FA46 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/BLE_APP_Storyboard.storyboard; sourceTree = "<group>"; };
+		C1E017CA19FF7D2500F5FA46 /* zh-Hant */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hant"; path = "zh-Hant.lproj/BLE_APP_Storyboard.strings"; sourceTree = "<group>"; };
+		C1E017CB19FF7D2500F5FA46 /* zh-Hant */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hant"; path = "zh-Hant.lproj/InfoPlist.strings"; sourceTree = "<group>"; };
+		C1E017D319FF90E400F5FA46 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/Localizable.strings; sourceTree = "<group>"; };
+		C1E017D519FF90F200F5FA46 /* zh-Hant */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hant"; path = "zh-Hant.lproj/Localizable.strings"; sourceTree = "<group>"; };
 		C1E700CA19D2747400410667 /* HRMSetting.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HRMSetting.h; sourceTree = "<group>"; };
 		C1E700CB19D2747400410667 /* HRMSetting.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HRMSetting.m; sourceTree = "<group>"; };
 		C1E700CD19D2798C00410667 /* user.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = user.png; sourceTree = "<group>"; };
@@ -276,7 +285,8 @@
 				C1DF28C1186147DB00000695 /* MainStoryboard.storyboard */,
 				C11742BE19AADC1600721449 /* HRMViewController.h */,
 				C11742BF19AADC1600721449 /* HRMViewController.m */,
-				C10E5CBA19A0531B0075C0BB /* BLE_APP_Storyboard.storyboard */,
+				C1E017C819FF77C600F5FA46 /* BLE_APP_Storyboard.storyboard */,
+				C1E017D419FF90E400F5FA46 /* Localizable.strings */,
 				C130E61819F1025900550957 /* HRMapView.h */,
 				C130E61919F1025A00550957 /* HRMapView.m */,
 				C12529D119EE11EB004AFA0F /* HRHealthyCare.h */,
@@ -298,6 +308,8 @@
 		C1DF28B0186147DA00000695 /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
+				C19A510219F8D87D00FC8DE4 /* HeartRateDemo.jpg */,
+				C19A510019F8CEE900FC8DE4 /* sleepy.jpg */,
 				C11F946119F4F2A300DA0CD1 /* APPLaunch.png */,
 				C130E60019F0E22B00550957 /* Jogging1.png */,
 				C12529DA19EE75C1004AFA0F /* Energy.png */,
@@ -401,6 +413,8 @@
 			hasScannedForEncodings = 0;
 			knownRegions = (
 				en,
+				Base,
+				"zh-Hant",
 			);
 			mainGroup = C1DF289D186147DA00000695;
 			productRefGroup = C1DF28A7186147DA00000695 /* Products */;
@@ -422,6 +436,7 @@
 				C12D6A9919ED187600DBD768 /* Jogging.png in Resources */,
 				C1F60B83198B37610032A497 /* Icon-72@2x.png in Resources */,
 				C1F624BB19C92E7100565830 /* bluetooth.png in Resources */,
+				C19A510119F8CEE900FC8DE4 /* sleepy.jpg in Resources */,
 				C1F60B89198B37610032A497 /* Icon-Small-50@2x.png in Resources */,
 				C1F60B86198B37610032A497 /* Icon-Small-30.png in Resources */,
 				C12529DB19EE75C1004AFA0F /* Energy.png in Resources */,
@@ -432,6 +447,7 @@
 				C12529D519EE7556004AFA0F /* Distance.png in Resources */,
 				C1F624B519C92E5C00565830 /* heart_monitor.png in Resources */,
 				C10B01F719B71C9E00325785 /* HRAlarm.mp3 in Resources */,
+				C1E017D219FF90E400F5FA46 /* Localizable.strings in Resources */,
 				C1DF28BC186147DB00000695 /* Default.png in Resources */,
 				C1F60B7F198B37610032A497 /* apple-touch-icon-144x144-precomposed.png in Resources */,
 				C1F60B91198B378B0032A497 /* Images.xcassets in Resources */,
@@ -451,8 +467,9 @@
 				C1DF28C0186147DB00000695 /* Default-568h@2x.png in Resources */,
 				C1F60B87198B37610032A497 /* Icon-Small-30@2x.png in Resources */,
 				C1F97CAE19D5554300C753BE /* data.txt in Resources */,
-				C10E5CBB19A0531B0075C0BB /* BLE_APP_Storyboard.storyboard in Resources */,
+				C1E017C619FF77C600F5FA46 /* BLE_APP_Storyboard.storyboard in Resources */,
 				C1DF28C3186147DB00000695 /* MainStoryboard.storyboard in Resources */,
+				C19A510319F8D87D00FC8DE4 /* HeartRateDemo.jpg in Resources */,
 				C1DF28D71861507700000695 /* 1.png in Resources */,
 				C1F60B7E198B37610032A497 /* apple-touch-icon-114x114-precomposed.png in Resources */,
 				C12D6A9319ED00E500DBD768 /* Disconnected.png in Resources */,
@@ -501,6 +518,7 @@
 			isa = PBXVariantGroup;
 			children = (
 				C1DF28B3186147DA00000695 /* en */,
+				C1E017CB19FF7D2500F5FA46 /* zh-Hant */,
 			);
 			name = InfoPlist.strings;
 			sourceTree = "<group>";
@@ -511,6 +529,24 @@
 				C1DF28C2186147DB00000695 /* en */,
 			);
 			name = MainStoryboard.storyboard;
+			sourceTree = "<group>";
+		};
+		C1E017C819FF77C600F5FA46 /* BLE_APP_Storyboard.storyboard */ = {
+			isa = PBXVariantGroup;
+			children = (
+				C1E017C919FF7BEF00F5FA46 /* Base */,
+				C1E017CA19FF7D2500F5FA46 /* zh-Hant */,
+			);
+			name = BLE_APP_Storyboard.storyboard;
+			sourceTree = "<group>";
+		};
+		C1E017D419FF90E400F5FA46 /* Localizable.strings */ = {
+			isa = PBXVariantGroup;
+			children = (
+				C1E017D319FF90E400F5FA46 /* en */,
+				C1E017D519FF90F200F5FA46 /* zh-Hant */,
+			);
+			name = Localizable.strings;
 			sourceTree = "<group>";
 		};
 /* End PBXVariantGroup section */

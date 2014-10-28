@@ -14,6 +14,8 @@
 
 @implementation AppDelegate
 
+@synthesize APPState;
+
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
     // Override point for customization after application launch.
@@ -23,6 +25,7 @@
             //NSLog(@"APP state Active\n");
             break;
         case UIApplicationStateBackground :
+            APPState = @"Background";
             //NSLog(@"APP state Background\n");
             break;
         case UIApplicationStateInactive :
@@ -45,7 +48,11 @@
     
     //Google Map service
     [GMSServices provideAPIKey:@"AIzaSyDs4IWNLiwvRicNC9-tuJvz7A347tQ-r8M"];
- 
+    
+    //Passing data from APP delegate to View Controller
+    UINavigationController *vc = (UINavigationController *)self.window.rootViewController;
+    HRMViewController *myvc = (HRMViewController *)vc.topViewController;
+    myvc.APPState = APPState;
     return YES;
 }
 							
@@ -60,6 +67,7 @@
     // Use this method to release shared resources, save user data, invalidate timers, and store enough application state information to restore your application to its current state in case it is terminated later. 
     // If your application supports background execution, this method is called instead of applicationWillTerminate: when the user quits.
     
+    APPState = @"Background";
     //NSLog(@"App Enter Background\n");
 }
 
@@ -67,7 +75,14 @@
 {
     // Called as part of the transition from the background to the inactive state; here you can undo many of the changes made on entering the background.
     
-    //NSLog(@"App Enter Foreground\n");
+    if([self.APPState isEqualToString:@"Background"])
+    {
+        APPState = @"Foreground";
+        //NSLog(@"APP state : Background to Foreground\n");
+        UINavigationController *vc = (UINavigationController *)self.window.rootViewController;
+        HRMViewController *myvc = (HRMViewController *)vc.topViewController;
+        myvc.APPState = APPState;
+    }
 }
 
 - (void)applicationDidBecomeActive:(UIApplication *)application

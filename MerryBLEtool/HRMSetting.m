@@ -196,13 +196,13 @@
     else
         [self.HRNotifiction setOn:NO];
     
-    if(self.SetMaxHR != 70)
+    if(self.SetMaxHR != 0)
     {
         self.SetNormalMaxHR.value = self.SetMaxHR;
         self.NormalMaxHR.text = [NSString stringWithFormat:@"%d",(int)self.SetNormalMaxHR.value];
     }
     
-    if(self.SetMinHR != 50)
+    if(self.SetMinHR != 0)
     {
         self.SetNormalMinHR.value = self.SetMinHR;
         self.NormalMinHR.text = [NSString stringWithFormat:@"%d",(int)self.SetNormalMinHR.value];

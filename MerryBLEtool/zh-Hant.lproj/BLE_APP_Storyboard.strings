@@ -1,0 +1,123 @@
+
+/* Class = "IBUINavigationItem"; title = "Setting"; ObjectID = "3Kg-w0-xWs"; */
+"3Kg-w0-xWs.title" = "設定";
+
+/* Class = "IBUILabel"; text = "Name "; ObjectID = "6GP-wg-tpR"; */
+"6GP-wg-tpR.text" = "姓名 ";
+
+/* Class = "IBUILabel"; text = "Heart Rate Demo"; ObjectID = "85J-Cz-AhV"; */
+"85J-Cz-AhV.text" = "心跳偵測";
+
+/* Class = "IBUILabel"; text = "Max. HeartRate"; ObjectID = "9W9-Y0-yty"; */
+"9W9-Y0-yty.text" = "靜止最大心跳";
+
+/* Class = "IBUIButton"; normalTitle = "Test1"; ObjectID = "B3h-UP-12Y"; */
+"B3h-UP-12Y.normalTitle" = "測試";
+
+/* Class = "IBUILabel"; text = "Age"; ObjectID = "Bk3-N1-XK8"; */
+"Bk3-N1-XK8.text" = "年齡";
+
+/* Class = "IBUILabel"; text = "Resting Heart Rate"; ObjectID = "Ft4-N5-vKi"; */
+"Ft4-N5-vKi.text" = "靜止心跳";
+
+/* Class = "IBUILabel"; text = "時間 : 00時:00分:00秒"; ObjectID = "Gny-eZ-3Ih"; */
+"Gny-eZ-3Ih.text" = "時間 : 00時:00分:00秒";
+
+/* Class = "IBUILabel"; text = " 70"; ObjectID = "Jj5-2I-5RR"; */
+"Jj5-2I-5RR.text" = " 70";
+
+/* Class = "IBUILabel"; text = "Target Heart Rate = 110 ~ 140"; ObjectID = "N80-Nd-XrF"; */
+"N80-Nd-XrF.text" = "目標心跳區間 = 110 ~ 140";
+
+/* Class = "IBUITextView"; text = "Lorem ipsum dolor sit er elit lamet, consectetaur cillium adipisicing pecu, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum. Nam liber te conscient to factor tum poen legum odioque civiuda."; ObjectID = "NHG-54-z4h"; */
+"NHG-54-z4h.text" = "Lorem ipsum dolor sit er elit lamet, consectetaur cillium adipisicing pecu, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum. Nam liber te conscient to factor tum poen legum odioque civiuda.";
+
+/* Class = "IBUILabel"; text = "Target zone alarm"; ObjectID = "OwZ-mQ-Lap"; */
+"OwZ-mQ-Lap.text" = "目標區間警示";
+
+/* Class = "IBUILabel"; text = "Maximum Heart Rate = 220 - Age"; ObjectID = "PTR-5Z-1nT"; */
+"PTR-5Z-1nT.text" = "最大心跳 = 220 - Age";
+
+/* Class = "IBUILabel"; text = "MAX 90"; ObjectID = "RhN-Ua-I7J"; */
+"RhN-Ua-I7J.text" = "MAX 90";
+
+/* Class = "IBUILabel"; text = "100 bpm"; ObjectID = "St2-9p-HQs"; */
+"St2-9p-HQs.text" = "100 bpm";
+
+/* Class = "IBUIButton"; normalTitle = "MAP"; ObjectID = "WH3-5b-x46"; */
+"WH3-5b-x46.normalTitle" = "地圖";
+
+/* Class = "IBUILabel"; text = "時速 : 00公里/時"; ObjectID = "Wrd-x4-kQq"; */
+"Wrd-x4-kQq.text" = "時速 : 00公里/時";
+
+/* Class = "IBUIButton"; normalTitle = "HealthyCareView"; ObjectID = "ZDl-nN-eNJ"; */
+"ZDl-nN-eNJ.normalTitle" = "醫療保健_居家照護";
+
+/* Class = "IBUISegmentedControl"; aVv-VD-UJa.segmentTitles[0] = " Normal "; ObjectID = "aVv-VD-UJa"; */
+"aVv-VD-UJa.segmentTitles[0]" = "一般";
+
+/* Class = "IBUISegmentedControl"; aVv-VD-UJa.segmentTitles[1] = "Sport"; ObjectID = "aVv-VD-UJa"; */
+"aVv-VD-UJa.segmentTitles[1]" = "運動";
+
+/* Class = "IBUISegmentedControl"; aVv-VD-UJa.segmentTitles[2] = "Sleep"; ObjectID = "aVv-VD-UJa"; */
+"aVv-VD-UJa.segmentTitles[2]" = "睡眠";
+
+/* Class = "IBUINavigationItem"; title = "心率偵測"; ObjectID = "eX9-bD-UH5"; */
+"eX9-bD-UH5.title" = "心率偵測";
+
+/* Class = "IBUILabel"; text = "GPS定位"; ObjectID = "kt0-4V-RGy"; */
+"kt0-4V-RGy.text" = "GPS定位";
+
+/* Class = "IBUILabel"; text = "心率偵測"; ObjectID = "kug-cV-QYp"; */
+"kug-cV-QYp.text" = "心率偵測";
+
+/* Class = "IBUINavigationItem"; title = "HeartRate Monitor"; ObjectID = "l7H-AY-tR4"; */
+"l7H-AY-tR4.title" = "心率偵測";
+
+/* Class = "IBUIButton"; normalTitle = "Save"; ObjectID = "mWa-2l-2ph"; */
+"mWa-2l-2ph.normalTitle" = "儲存離開";
+
+/* Class = "IBUILabel"; text = "燃燒卡路里 : 00000卡"; ObjectID = "n6q-ou-I3G"; */
+"n6q-ou-I3G.text" = "燃燒卡路里 : 00000卡";
+
+/* Class = "IBUITextField"; text = "60 ~ 72"; ObjectID = "oDY-xp-axG"; */
+"oDY-xp-axG.text" = "60 ~ 72";
+
+/* Class = "IBUIButton"; normalTitle = "Test"; ObjectID = "oaR-KG-522"; */
+"oaR-KG-522.normalTitle" = "測試";
+
+/* Class = "IBUILabel"; text = "Notification"; ObjectID = "our-Gf-zuy"; */
+"our-Gf-zuy.text" = "心率警示功能";
+
+/* Class = "IBUIButton"; normalTitle = "Done"; ObjectID = "p0T-3d-hti"; */
+"p0T-3d-hti.normalTitle" = "結束";
+
+/* Class = "IBUILabel"; text = "心律偵測"; ObjectID = "pn6-C4-xee"; */
+"pn6-C4-xee.text" = "心率偵測";
+
+/* Class = "IBUITextView"; text = "心率是指心臟跳動的頻率,也就是心臟每分鐘跳動的次數                                                      正常成人的心跳在休息狀態下是規律的,次數介於每分鐘60至100次之間。但是一個人的心跳在一天之中是會波動的。                          在睡眠時,正常成人的心跳可能會變慢到介於每分鐘30至60次之間,運動時心跳會加速,心肺功能較好的運動員會比一般人的心跳要慢"; ObjectID = "qJp-wa-paO"; */
+"qJp-wa-paO.text" = "心率是指心臟跳動的頻率,也就是心臟每分鐘跳動的次數                                                      正常成人的心跳在休息狀態下是規律的,次數介於每分鐘60至100次之間。但是一個人的心跳在一天之中是會波動的。                          在睡眠時,正常成人的心跳可能會變慢到介於每分鐘30至60次之間,運動時心跳會加速,心肺功能較好的運動員會比一般人的心跳要慢";
+
+/* Class = "IBUIButton"; normalTitle = "Load"; ObjectID = "rDw-QZ-bFR"; */
+"rDw-QZ-bFR.normalTitle" = "Load";
+
+/* Class = "IBUILabel"; text = "MIN 50"; ObjectID = "tCR-T4-ckH"; */
+"tCR-T4-ckH.text" = "MIN 50";
+
+/* Class = "IBUILabel"; text = "里程數 : 00公里"; ObjectID = "uCz-1O-f1O"; */
+"uCz-1O-f1O.text" = "里程數 : 00公里";
+
+/* Class = "IBUILabel"; text = "Min.  HeartRate "; ObjectID = "vXA-h8-Mnf"; */
+"vXA-h8-Mnf.text" = "靜止最小心跳";
+
+/* Class = "IBUILabel"; text = "V1.2"; ObjectID = "wES-pR-e8L"; */
+"wES-pR-e8L.text" = "V1.2";
+
+/* Class = "IBUILabel"; text = "電力90%"; ObjectID = "xx3-mg-J57"; */
+"xx3-mg-J57.text" = "電力90%";
+
+/* Class = "IBUILabel"; text = " 45"; ObjectID = "yAj-SA-tK3"; */
+"yAj-SA-tK3.text" = " 45";
+
+/* Class = "IBUIButton"; normalTitle = "開始跑步"; ObjectID = "zxv-10-Wd5"; */
+"zxv-10-Wd5.normalTitle" = "開始跑步";

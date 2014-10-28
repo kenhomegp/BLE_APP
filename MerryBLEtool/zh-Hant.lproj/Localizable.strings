@@ -1,0 +1,11 @@
+/* 
+  Localizable.strings
+  MerryBLEtool
+
+  Created by merry on 14-10-28.
+  Copyright (c) 2014年 merry. All rights reserved.
+*/
+
+"HRM" = "心率偵測";
+"Device" = "無法找到裝置!";
+"End" = "結束";

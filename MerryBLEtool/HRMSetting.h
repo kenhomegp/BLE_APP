@@ -16,7 +16,12 @@
 #define Sports              0x08
 #define Sleep               0x0C
 
+#define BLE_Connected       0x10
+#define StartActivity       0x20
+
 #define UseNSUserDefaults
+
+#define DebugMode
 
 @protocol passUserSetting <NSObject>
 -(void)setName : (NSString *)User_Name;

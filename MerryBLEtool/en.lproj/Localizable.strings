@@ -1,0 +1,11 @@
+/* 
+  Localizable.strings
+  MerryBLEtool
+
+  Created by merry on 14-10-28.
+  Copyright (c) 2014年 merry. All rights reserved.
+*/
+
+"HRM" = "Heart Rate Monitor";
+"Device" = "Device not found!";
+"End" = "End";

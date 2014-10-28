@@ -9,5 +9,15 @@
 #import <UIKit/UIKit.h>
 #import <CoreLocation/CoreLocation.h>
 
+#import "HRMSetting.h"
+
+@protocol passMapPositionDelegate <NSObject>
+-(void) passDistance : (double)Map_distance;
+@end
+
 @interface HRMapView : UIViewController <CLLocationManagerDelegate>
+@property (nonatomic, assign) id<passMapPositionDelegate> delegate;
+@property (nonatomic) unsigned int APPConfig;
+//@property (nonatomic, retain) NSTimer *GetMyLocationTimer;
+//@property (nonatomic, retain) CLLocation *previousLocation;
 @end

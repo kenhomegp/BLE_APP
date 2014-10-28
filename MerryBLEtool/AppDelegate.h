@@ -7,9 +7,11 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "HRMViewController.h"
+#import "HRMSetting.h"
 
 @interface AppDelegate : UIResponder <UIApplicationDelegate>
 
 @property (strong, nonatomic) UIWindow *window;
-
+@property (nonatomic , strong) NSString *APPState;
 @end

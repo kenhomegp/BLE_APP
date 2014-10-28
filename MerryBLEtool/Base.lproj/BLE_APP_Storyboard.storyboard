@@ -17,7 +17,7 @@
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                         <subviews>
                             <label hidden="YES" opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Heart Rate Demo" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" minimumFontSize="10" translatesAutoresizingMaskIntoConstraints="NO" id="85J-Cz-AhV">
-                                <rect key="frame" x="20" y="60" width="76" height="23"/>
+                                <rect key="frame" x="20" y="61" width="76" height="23"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <accessibility key="accessibilityConfiguration" label=""/>
                                 <fontDescription key="fontDescription" type="boldSystem" pointSize="25"/>
@@ -127,7 +127,7 @@
                                 <rect key="frame" x="546" y="55" width="35" height="35"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                             </imageView>
-                            <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="心律偵測" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="kug-cV-QYp">
+                            <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="心率偵測" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="kug-cV-QYp">
                                 <rect key="frame" x="168" y="54" width="90" height="42"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="20"/>
@@ -203,7 +203,7 @@
                                     <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
                                 </state>
                                 <connections>
-                                    <segue destination="Gyx-aP-GxF" kind="push" id="NAK-dD-fUB"/>
+                                    <segue destination="Gyx-aP-GxF" kind="push" identifier="SegueForGoogleMap" id="NF0-34-VP2"/>
                                 </connections>
                             </button>
                         </subviews>
@@ -220,12 +220,15 @@
                     <nil key="simulatedStatusBarMetrics"/>
                     <connections>
                         <outlet property="BackgroundImage" destination="CBw-G1-7mF" id="TCr-7T-hi1"/>
+                        <outlet property="BurnCalorieLabel" destination="n6q-ou-I3G" id="Omf-QC-wyL"/>
                         <outlet property="CustomButton" destination="zxv-10-Wd5" id="V4u-TJ-4wy"/>
                         <outlet property="HR_bpm" destination="St2-9p-HQs" id="R4b-Ca-CiI"/>
                         <outlet property="HealthyCareViewButton" destination="ZDl-nN-eNJ" id="FKf-42-ynQ"/>
                         <outlet property="Image_Battery" destination="fnp-k7-UVF" id="13n-uv-sAU"/>
                         <outlet property="Image_Connected" destination="COa-ls-7pj" id="VAt-1n-M4v"/>
                         <outlet property="Image_GPS" destination="NQb-KR-dbU" id="hmO-zc-760"/>
+                        <outlet property="MileageLabel" destination="uCz-1O-f1O" id="6hD-pJ-lwW"/>
+                        <outlet property="RunSpeedLabel" destination="Wrd-x4-kQq" id="hDp-oi-NlZ"/>
                         <outlet property="SettingButton" destination="Hto-2i-nW5" id="GH7-PI-1wA"/>
                         <outlet property="SportsTimeLabel" destination="Gny-eZ-3Ih" id="dPf-vc-xEe"/>
                         <outlet property="Test1Button" destination="B3h-UP-12Y" id="gba-un-Uc8"/>
@@ -280,7 +283,7 @@
                                 <nil key="highlightedColor"/>
                             </label>
                             <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Age" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Bk3-N1-XK8">
-                                <rect key="frame" x="169" y="231" width="70" height="44"/>
+                                <rect key="frame" x="169" y="231" width="116" height="44"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <fontDescription key="fontDescription" type="boldSystem" pointSize="36"/>
                                 <nil key="highlightedColor"/>
@@ -427,6 +430,13 @@
                                 <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
                                 <nil key="highlightedColor"/>
                             </label>
+                            <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="V1.2" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="wES-pR-e8L">
+                                <rect key="frame" x="29" y="971" width="44" height="33"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <fontDescription key="fontDescription" type="italicSystem" pointSize="17"/>
+                                <color key="textColor" red="1" green="0.031278566350000002" blue="0.030864100339999999" alpha="1" colorSpace="calibratedRGB"/>
+                                <nil key="highlightedColor"/>
+                            </label>
                         </subviews>
                         <color key="backgroundColor" cocoaTouchSystemColor="groupTableViewBackgroundColor"/>
                         <connections>
@@ -484,26 +494,28 @@
                         <rect key="frame" x="0.0" y="0.0" width="768" height="1024"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                         <subviews>
-                            <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="yoy-32-ijb">
-                                <rect key="frame" x="589" y="679" width="140" height="110"/>
+                            <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" image="HeartRateDemo.jpg" translatesAutoresizingMaskIntoConstraints="NO" id="yoy-32-ijb">
+                                <rect key="frame" x="78" y="465" width="609" height="457"/>
                                 <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                             </imageView>
                             <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="心律偵測" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="pn6-C4-xee">
-                                <rect key="frame" x="248" y="695" width="268" height="78"/>
+                                <rect key="frame" x="337" y="992" width="80" height="20"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="50"/>
                                 <nil key="highlightedColor"/>
                             </label>
                             <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" fixedFrame="YES" showsHorizontalScrollIndicator="NO" translatesAutoresizingMaskIntoConstraints="NO" id="qJp-wa-paO">
-                                <rect key="frame" x="78" y="101" width="609" height="403"/>
+                                <rect key="frame" x="78" y="101" width="609" height="315"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
                                 <string key="text">心率是指心臟跳動的頻率,也就是心臟每分鐘跳動的次數                                                      正常成人的心跳在休息狀態下是規律的,次數介於每分鐘60至100次之間。但是一個人的心跳在一天之中是會波動的。                          在睡眠時,正常成人的心跳可能會變慢到介於每分鐘30至60次之間,運動時心跳會加速,心肺功能較好的運動員會比一般人的心跳要慢</string>
+                                <color key="textColor" red="0.0" green="0.47843137250000001" blue="1" alpha="1" colorSpace="calibratedRGB"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="30"/>
                                 <textInputTraits key="textInputTraits" autocapitalizationType="sentences"/>
                             </textView>
                         </subviews>
                         <color key="backgroundColor" cocoaTouchSystemColor="groupTableViewBackgroundColor"/>
+                        <color key="tintColor" red="0.0" green="0.47843137250000001" blue="1" alpha="1" colorSpace="calibratedRGB"/>
                     </view>
                     <navigationItem key="navigationItem" title="心率偵測" id="eX9-bD-UH5"/>
                     <connections>
@@ -519,6 +531,7 @@
     <resources>
         <image name="Distance.png" width="237" height="236"/>
         <image name="Energy.png" width="121" height="236"/>
+        <image name="HeartRateDemo.jpg" width="560" height="420"/>
         <image name="Speed.png" width="282" height="189"/>
         <image name="Time.png" width="213" height="213"/>
         <image name="button.png" width="280" height="36"/>
@@ -530,6 +543,6 @@
         <simulatedScreenMetrics key="destination"/>
     </simulatedMetricsContainer>
     <inferredMetricsTieBreakers>
-        <segue reference="Loy-7v-YAo"/>
+        <segue reference="R9s-ku-wTn"/>
     </inferredMetricsTieBreakers>
 </document>
