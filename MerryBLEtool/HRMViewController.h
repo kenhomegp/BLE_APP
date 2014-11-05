@@ -25,6 +25,7 @@
 #define POLARH7_HRM_MANUFACTURER_NAME_UUID @"2A29"
 
 
+//@interface HRMViewController : UIViewController <CBCentralManagerDelegate, CBPeripheralDelegate , MFMailComposeViewControllerDelegate ,CLLocationManagerDelegate ,passUserSetting , passMapPositionDelegate>
 @interface HRMViewController : UIViewController <CBCentralManagerDelegate, CBPeripheralDelegate , MFMailComposeViewControllerDelegate ,UITableViewDataSource, UITableViewDelegate,CLLocationManagerDelegate ,passUserSetting , passMapPositionDelegate>
 //@interface HRMViewController : UIViewController <CBCentralManagerDelegate, CBPeripheralDelegate , MFMailComposeViewControllerDelegate ,UITableViewDataSource, UITableViewDelegate, passUserSetting>
 //HeartRate Curve
@@ -34,8 +35,8 @@
 //Heart Rate APP Config data
 @property (strong, nonatomic) NSString *UserName;
 @property (strong, nonatomic) NSString *UserAge;
-@property (nonatomic) unsigned int APPConfig;
-@property (nonatomic) unsigned int RestHeartRate;
+@property (nonatomic) NSInteger APPConfig;
+@property (nonatomic) NSInteger RestHeartRate;
 
 @property (weak, nonatomic) IBOutlet UIButton *Test_button;
 

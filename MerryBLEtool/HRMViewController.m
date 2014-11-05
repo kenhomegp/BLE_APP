@@ -34,11 +34,12 @@ static double TotalCalories = 0;
     NSTimer *DrawHRCurve;
     AVAudioPlayer *SoftMusic;
     //AVQueuePlayer *_MyAudioPlayer;
-    int AlarmMaxHeartRate;
-    int AlarmMinHeartRate;
+    NSInteger AlarmMaxHeartRate;
+    NSInteger AlarmMinHeartRate;
     NSTimer *SportsTimer;    // Store the timer that fires after a certain time
     NSDate *startDate;      // Stores the date of the click on the start button
     UISwipeGestureRecognizer *swipeRight;
+    UITapGestureRecognizer *TapGesture;
     NSTimer *CaloriesBurnedTimer;
     CLLocationManager *locationManager;
     CLLocation *previousLocation;
@@ -98,11 +99,14 @@ static double TotalCalories = 0;
         }
         
         #ifdef DrawSimulationHRCurve
-        if((!([DrawHRCurve isValid])) && ((self.APPConfig & StartActivity) == StartActivity))
+        if(UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad)
         {
-            DrawHRCurve = [NSTimer scheduledTimerWithTimeInterval:drawHeartRateCurveTimeInterval target:self selector:@selector(timerRefresnFun) userInfo:nil repeats:YES];
+            if((!([DrawHRCurve isValid])) && ((self.APPConfig & StartActivity) == StartActivity))
+            {
+                DrawHRCurve = [NSTimer scheduledTimerWithTimeInterval:drawHeartRateCurveTimeInterval target:self selector:@selector(timerRefresnFun) userInfo:nil repeats:YES];
             
-            //NSLog(@"Timer unexpected stop");
+                //NSLog(@"Timer unexpected stop");
+            }
         }
         #endif
     }
@@ -125,20 +129,18 @@ static double TotalCalories = 0;
     AlarmMaxHeartRate = 70;//Default
     AlarmMinHeartRate = 50;
     
-    //Gesture Regognizer
+    //Gesture Regognizer (Swipe & Tap)
     swipeRight = [[UISwipeGestureRecognizer alloc] initWithTarget:self  action:@selector(swipeRecognized:)];
     [swipeRight setDirection:UISwipeGestureRecognizerDirectionRight];
     [self.view addGestureRecognizer:swipeRight];
+    TapGesture = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(TapRecognized:)];
+    [TapGesture setNumberOfTapsRequired:2];
+    [self.BackgroundImage addGestureRecognizer:TapGesture];
     
     //Navigation View title
-    //[self.navigationController.navigationBar.topItem setTitle:@"HeartRate_Sports"];
     self.title = @"心跳即時資訊";
     
-    //[self.navigationController.navigationBar setTintColor:[UIColor redColor]];
-    //self.view.backgroundColor = [UIColor colorWithPatternImage:[UIImage imageNamed:@"Jogging"]];
     [self.view setBackgroundColor:[UIColor colorWithPatternImage:[UIImage imageNamed:@"Jogging"]]];
-    
-    //self.view.backgroundColor = [UIColor colorWithPatternImage:[UIImage imageNamed:@"nav_bg_ios7"]];
     
     //Custom button
     [self.CustomButton setBackgroundImage:[UIImage imageNamed:@"button.png"] forState:UIControlStateNormal];
@@ -147,8 +149,6 @@ static double TotalCalories = 0;
     //Color,Image
 	[self.view setBackgroundColor:[UIColor groupTableViewBackgroundColor]];
 	[self.heartImage setImage:[UIImage imageNamed:@"HeartImage"]];
-    //[self.heartImage setImage:[UIImage imageNamed:@"Jogging"]];
-    //[self.Image_Connected setImage:[UIImage imageNamed:@"DeviceConnected"]];
     [self.Image_Connected setImage:[UIImage imageNamed:@"Disconnected"]];
     
     if([CLLocationManager locationServicesEnabled])
@@ -161,7 +161,6 @@ static double TotalCalories = 0;
     }
     
     [self.Image_Battery setImage:[UIImage imageNamed:@"Battery"]];
-    //[self.BackgroundImage setImage:[UIImage imageNamed:@"Jogging"]];
     [self.BackgroundImage setImage:[UIImage imageNamed:@"Jogging1"]];
     [self.BackgroundImage addSubview:self.heartImage];
     [self.BackgroundImage addSubview:self.HR_bpm];
@@ -186,9 +185,8 @@ static double TotalCalories = 0;
 	
 	// Scan for all available CoreBluetooth LE devices
 	NSArray *services = @[[CBUUID UUIDWithString:POLARH7_HRM_HEART_RATE_SERVICE_UUID], [CBUUID UUIDWithString:POLARH7_HRM_DEVICE_INFO_SERVICE_UUID]];
-	CBCentralManager *centralManager = [[CBCentralManager alloc] initWithDelegate:self queue:nil];
-	[centralManager scanForPeripheralsWithServices:services options:nil];
-	self.centralManager = centralManager;
+    self.centralManager = [[CBCentralManager alloc] initWithDelegate:self queue:nil];
+    [self.centralManager scanForPeripheralsWithServices:services options:nil];
     
     // Construct URL to sound file
     //NSString *path = [NSString stringWithFormat:@"%@/HRAlarm.mp3", [[NSBundle mainBundle] resourcePath]];
@@ -211,21 +209,24 @@ static double TotalCalories = 0;
     //AVPlayerItem *item2 = [AVPlayerItem playerItemWithURL:soundUrl2];
     //_MyAudioPlayer = [[AVQueuePlayer alloc] initWithItems:@[item1 , item2]];
     
-    //HeartRate Curve
-    [self.view addSubview:self.refreshMoniterView];
+    if(UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad)
+    {
+        //HeartRate Curve
+        [self.view addSubview:self.refreshMoniterView];
     
-    //Read HeartRate data from data.txt
-    void (^createData)(void) = ^{
-        NSString *tempString = [NSString stringWithContentsOfFile:[[NSBundle mainBundle] pathForResource:@"data" ofType:@"txt"] encoding:NSUTF8StringEncoding error:nil];
+        //Read HeartRate data from data.txt
+        void (^createData)(void) = ^{
+            NSString *tempString = [NSString stringWithContentsOfFile:[[NSBundle mainBundle] pathForResource:@"data" ofType:@"txt"] encoding:NSUTF8StringEncoding error:nil];
         
-        NSMutableArray *tempData = [[tempString componentsSeparatedByString:@","] mutableCopy];
-        [tempData enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
+            NSMutableArray *tempData = [[tempString componentsSeparatedByString:@","] mutableCopy];
+            [tempData enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
             NSNumber *tempDataa = @(-[obj integerValue] + 2048);
             [tempData replaceObjectAtIndex:idx withObject:tempDataa];
         }];
         self.dataSource = tempData;
     };
     createData();
+    }
     
     //Load User data(NSUserDefaults)
     if(!([self LoadUserData]))
@@ -238,6 +239,16 @@ static double TotalCalories = 0;
     locationManager.delegate = self;
     locationManager.distanceFilter = kCLDistanceFilterNone;
     locationManager.desiredAccuracy = kCLLocationAccuracyBest;
+}
+
+- (void)TapRecognized:(UITapGestureRecognizer *)Tap
+{
+    NSLog(@"Tap recognized");
+    if(self.polarH7HRMPeripheral == nil)
+    {
+        NSArray *services = @[[CBUUID UUIDWithString:POLARH7_HRM_HEART_RATE_SERVICE_UUID], [CBUUID UUIDWithString:POLARH7_HRM_DEVICE_INFO_SERVICE_UUID]];
+        [self.centralManager scanForPeripheralsWithServices:services options:nil];
+    }
 }
 
 - (void)swipeRecognized:(UISwipeGestureRecognizer *)swipe
@@ -338,17 +349,14 @@ static double TotalCalories = 0;
 - (bool) LoadUserData
 {
     NSString *name,*age;
-    int MaximumHR,SetRHR,UpperTHR,LowerTHR,SetMaxHR,SetMinHR,APPConfig;
+    //int MaximumHR,SetRHR,UpperTHR,LowerTHR,SetMaxHR,SetMinHR,APPConfig;
+    NSInteger MaximumHR,SetRHR,UpperTHR,LowerTHR,SetMaxHR,SetMinHR,APPConfig;
     
     NSUserDefaults *userDefaults = [NSUserDefaults standardUserDefaults];
     name = [userDefaults objectForKey:@"myHRMApp_Name"];
     age = [userDefaults objectForKey:@"myHRMApp_Age"];
-    //NSLog(@"%@",name);
-    //NSLog(@"%@",age);
     MaximumHR = [userDefaults integerForKey:@"myHRMApp_MaxHR"];
     SetRHR = [userDefaults integerForKey:@"myHRMApp_RHR"];
-    //NSLog(@"%d",MaximumHR);
-    //NSLog(@"%d",SetRHR);
     UpperTHR = [userDefaults integerForKey:@"myHRMApp_UpperTHR"];
     LowerTHR = [userDefaults integerForKey:@"myHRMApp_LowerTHR"];
     SetMaxHR = [userDefaults integerForKey:@"myHRMApp_SetMaxHR"];
@@ -489,9 +497,12 @@ static double TotalCalories = 0;
         else
         {
             #ifdef DrawSimulationHRCurve
-            [DrawHRCurve invalidate];
+            if(UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad)
+            {
+                [DrawHRCurve invalidate];
         
-            DrawHRCurve = [NSTimer scheduledTimerWithTimeInterval:drawHeartRateCurveTimeInterval target:self selector:@selector(timerRefresnFun) userInfo:nil repeats:YES];
+                DrawHRCurve = [NSTimer scheduledTimerWithTimeInterval:drawHeartRateCurveTimeInterval target:self selector:@selector(timerRefresnFun) userInfo:nil repeats:YES];
+            }
             #endif
             
             startDate = [NSDate date];
@@ -669,6 +680,7 @@ didDisconnectPeripheral:(CBPeripheral *)peripheral
 		{
 			// Request heart rate notifications
 			if ([aChar.UUID isEqual:[CBUUID UUIDWithString:POLARH7_HRM_NOTIFICATIONS_SERVICE_UUID]]) { // 2
+                
 				[self.polarH7HRMPeripheral setNotifyValue:YES forCharacteristic:aChar];
 			}
 			// Request body sensor location
@@ -728,10 +740,12 @@ didDisconnectPeripheral:(CBPeripheral *)peripheral
 
 #ifdef DrawRealHeartRateCurve
     
-    [[PointContainer sharedContainer] addPointAsRefreshChangeform:[self bubbleRefreshPoint]];
+    if(UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad)
+    {
+        [[PointContainer sharedContainer] addPointAsRefreshChangeform:[self bubbleRefreshPoint]];
     
-    [self.refreshMoniterView fireDrawingWithPoints:[PointContainer sharedContainer].refreshPointContainer pointsCount:[PointContainer sharedContainer].numberOfRefreshElements];
-
+        [self.refreshMoniterView fireDrawingWithPoints:[PointContainer sharedContainer].refreshPointContainer pointsCount:[PointContainer sharedContainer].numberOfRefreshElements];
+    }
 #endif
 }
 
@@ -750,6 +764,7 @@ didDisconnectPeripheral:(CBPeripheral *)peripheral
 	else {
 		bpm = CFSwapInt16LittleToHost(*(uint16_t *)(&reportData[1]));  // 3
 	}
+    
 	// Display the heart rate value to the UI if no error occurred
 	if( (characteristic.value)  || !error ) {   // 4
 		self.heartRate = bpm;
@@ -971,6 +986,7 @@ didDisconnectPeripheral:(CBPeripheral *)peripheral
 /****************************************************************************/
 /*							TableView Delegates								*/
 /****************************************************************************/
+
 - (UITableViewCell *) tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
 	UITableViewCell	*cell;
@@ -1090,8 +1106,8 @@ didDisconnectPeripheral:(CBPeripheral *)peripheral
 - (void) tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
 	CBPeripheral	*peripheral;
-	NSArray			*devices;
-	NSInteger		row	= [indexPath row];
+	//NSArray			*devices;
+	//NSInteger		row	= [indexPath row];
 	
 	if ([indexPath section] == 0) {
 //		devices = [[LeDiscovery sharedInstance] connectedServices];
@@ -1103,6 +1119,7 @@ didDisconnectPeripheral:(CBPeripheral *)peripheral
     
     peripheral = self.polarH7HRMPeripheral;
     
+    /*
 	if (![peripheral isConnected]) {
 		//[[LeDiscovery sharedInstance] connectPeripheral:peripheral];
         //[currentlyConnectedSensor setText:[peripheral name]];
@@ -1112,15 +1129,14 @@ didDisconnectPeripheral:(CBPeripheral *)peripheral
         //[maxAlarmLabel setEnabled:NO];
         //[minAlarmLabel setEnabled:NO];
     }
-    
-	else {
-        
+	else
+    {
         //if ( currentlyDisplayingService != nil ) {
         //    [currentlyDisplayingService release];
         //    currentlyDisplayingService = nil;
         //}
         
-        /*
+        
         currentlyDisplayingService = [self serviceForPeripheral:peripheral];
         [currentlyDisplayingService retain];
         
@@ -1134,15 +1150,16 @@ didDisconnectPeripheral:(CBPeripheral *)peripheral
         [currentTemperatureLabel setEnabled:YES];
         [maxAlarmLabel setEnabled:YES];
         [minAlarmLabel setEnabled:YES];
-         */
+        
     }
+     */
 }
 
 #pragma mark -
 #pragma mark MailComposeController delegates
 - (void) mailComposeController:(MFMailComposeViewController *)controller didFinishWithResult:(MFMailComposeResult)result error:(NSError *)error
 {
-    [self dismissModalViewControllerAnimated:YES];
+    //[self dismissModalViewControllerAnimated:YES];
     //NSLog(@"Email ok");
 }
 
@@ -1168,7 +1185,7 @@ didDisconnectPeripheral:(CBPeripheral *)peripheral
     _UserAge = User_Age;
 }
 
--(void)APPSetting : (int)Configdata;
+-(void)APPSetting : (NSInteger)Configdata;
 {
     _APPConfig = Configdata;
     
@@ -1209,16 +1226,8 @@ didDisconnectPeripheral:(CBPeripheral *)peripheral
     //NSLog(@"APP Config changed!");
 }
 
--(void)passHeartRateData:(int)MaxHR SetMaxHR:(int)MaxHeartRate SetMinHR:(int)MinHeartRate RestHeartRate:(int)RHR UpperTargetHeartRate:(int)UpperTHR LowerTargetHeartRate:(int)LowerTHR
+-(void)passHeartRateData:(NSInteger)MaxHR SetMaxHR:(NSInteger)MaxHeartRate SetMinHR:(NSInteger)MinHeartRate RestHeartRate:(NSInteger)RHR UpperTargetHeartRate:(NSInteger)UpperTHR LowerTargetHeartRate:(NSInteger)LowerTHR
 {
-    /*int i = MaxHR;
-    int j = MaxHeartRate;
-    int k = MinHeartRate;
-    int a = RHR;
-    int b = UpperTHR;
-    int c = LowerTHR;
-    NSLog(@"%d,%d,%d,%d,%d,%d",i,j,k,a,b,c);*/
-    
     AlarmMaxHeartRate = MaxHeartRate;
     AlarmMinHeartRate = MinHeartRate;
     

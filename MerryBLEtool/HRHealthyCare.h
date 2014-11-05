@@ -20,6 +20,6 @@
 @interface HRHealthyCare : UIViewController
 @property (weak, nonatomic) IBOutlet UIImageView *BackgroundImage;
 @property (weak, nonatomic) IBOutlet UIImageView *HeartImage;
-@property (nonatomic) unsigned int APPConfig;
+@property (nonatomic) NSInteger APPConfig;
 @property (weak, nonatomic) IBOutlet UILabel *TitleLabel;
 @end

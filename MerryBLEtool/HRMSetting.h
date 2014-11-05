@@ -26,8 +26,8 @@
 @protocol passUserSetting <NSObject>
 -(void)setName : (NSString *)User_Name;
 -(void)setAge : (NSString *)User_Age;
--(void)APPSetting : (int)Configdata;
--(void)passHeartRateData:(int)MaxHR SetMaxHR:(int)MaxHeartRate SetMinHR:(int)MinHeartRate RestHeartRate:(int)RHR UpperTargetHeartRate:(int)UpperTHR LowerTargetHeartRate:(int)LowerTHR;
+-(void)APPSetting : (NSInteger)Configdata;
+-(void)passHeartRateData:(NSInteger)MaxHR SetMaxHR:(NSInteger)MaxHeartRate SetMinHR:(NSInteger)MinHeartRate RestHeartRate:(NSInteger)RHR UpperTargetHeartRate:(NSInteger)UpperTHR LowerTargetHeartRate:(NSInteger)LowerTHR;
 @end
 
 @interface HRMSetting : UIViewController
@@ -41,19 +41,19 @@
 @property (weak, nonatomic) IBOutlet UISwitch *HRNotifiction;
 @property (strong, nonatomic) NSString *HR_UserName;
 @property (strong, nonatomic) NSString *HR_UserAge;
-@property (nonatomic) unsigned int APPConfig;
+@property (nonatomic) NSInteger APPConfig;
 //@property (nonatomic) unsigned int RestHR;
 @property (nonatomic, assign) id <passUserSetting> delegate;
 - (IBAction)APPModeChange:(id)sender;
 @property (weak, nonatomic) IBOutlet UILabel *MaxHR;
 - (IBAction)SaveData:(id)sender;
-@property (assign) int MaximumHR;
-@property (assign) int SetMaxHR;
-@property (assign) int SetMinHR;
-@property (assign) int UpperTHR;
-@property (assign) int LowerTHR;
-@property (assign) int SetRHR;
-@property (assign) int UserAgeValue;
+@property (nonatomic) NSInteger MaximumHR;
+@property (nonatomic) NSInteger SetMaxHR;
+@property (nonatomic) NSInteger SetMinHR;
+@property (nonatomic) NSInteger UpperTHR;
+@property (nonatomic) NSInteger LowerTHR;
+@property (nonatomic) NSInteger SetRHR;
+@property (nonatomic) NSInteger UserAgeValue;
 - (IBAction)SaveHRData:(id)sender;
 - (IBAction)LoadHRData:(id)sender;
 @property (weak, nonatomic) IBOutlet UILabel *NormalMaxHR;

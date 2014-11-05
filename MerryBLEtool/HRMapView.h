@@ -17,7 +17,7 @@
 
 @interface HRMapView : UIViewController <CLLocationManagerDelegate>
 @property (nonatomic, assign) id<passMapPositionDelegate> delegate;
-@property (nonatomic) unsigned int APPConfig;
+@property (nonatomic) NSInteger APPConfig;
 //@property (nonatomic, retain) NSTimer *GetMyLocationTimer;
 //@property (nonatomic, retain) CLLocation *previousLocation;
 @end

@@ -83,6 +83,7 @@
     //NSLog(@"SaveUserData");
 }
 
+/*
 - (void)LoadUserData
 {
     NSUserDefaults *userDefaults = [NSUserDefaults standardUserDefaults];
@@ -105,12 +106,13 @@
     
     NSLog(@"LoadUserData");
 }
+*/
 
 - (void) CalculateHRData
 {
     _HR_UserAge = UserAge.text;
     
-    int tmpAge = [_HR_UserAge intValue];
+    NSInteger tmpAge = [_HR_UserAge intValue];
     if(tmpAge != self.UserAgeValue)
         self.UserAgeValue = tmpAge;
     
@@ -119,12 +121,12 @@
     //if(!([self.HR_UserAge isEqualToString:@""]))
     if(tmpAge != 0)
     {
-        int tempMaxHR,tempRHR,tempUpperTHR,tempLowerTHR,tempHRReserve = 0;
+        NSInteger tempMaxHR,tempRHR,tempUpperTHR,tempLowerTHR,tempHRReserve = 0;
         
         tempMaxHR = 220 - ([self.HR_UserAge intValue]);
         self.MaximumHR = tempMaxHR;
         
-        self.MaxHR.text = [NSString stringWithFormat:@"Maximum Heart Rate = %d",tempMaxHR];
+        self.MaxHR.text = [NSString stringWithFormat:@"Maximum Heart Rate = %ld",(long)tempMaxHR];
         
         tempRHR = [self.UserRHR.text intValue];
         
@@ -151,7 +153,7 @@
                 tempLowerTHR = (tempHRReserve * 0.6) + tempRHR;
                 self.UpperTHR = tempUpperTHR;
                 self.LowerTHR = tempLowerTHR;
-                self.UserTHR.text = [NSString stringWithFormat:@"Target Heart Rate : %d ~ %d",tempLowerTHR , tempUpperTHR];
+                self.UserTHR.text = [NSString stringWithFormat:@"Target Heart Rate : %ld ~ %ld",(long)tempLowerTHR , (long)tempUpperTHR];
                 
             }
         }
@@ -184,7 +186,7 @@
         self.UserAgeValue = [UserAge.text intValue];
     }
     
-    self.UserRHR.text = [NSString stringWithFormat:@"%d",self.SetRHR];
+    self.UserRHR.text = [NSString stringWithFormat:@"%ld",(long)self.SetRHR];
     
     if((self.APPConfig & TargetZoneAlarm))
         [self.AlarmTHR setOn:YES];

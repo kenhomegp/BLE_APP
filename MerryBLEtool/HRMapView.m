@@ -77,6 +77,7 @@
     //NSLog(@"Mylocation= %@ , %@",latitude , longitude);
 }
 
+/*
 - (void) MoveCameraToMyLocation
 {
     Current_location_latitude = mapView_.myLocation.coordinate.latitude;
@@ -112,6 +113,7 @@
     
     //NSLog(@"Move Camera to MyLocation");
 }
+*/
 
 - (void) MoveCamera:(CLLocation *)Location
 {
