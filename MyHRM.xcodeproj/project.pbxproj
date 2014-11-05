@@ -92,6 +92,8 @@
 
 /* Begin PBXFileReference section */
 		C105A4B319E51C40007E34D1 /* SoftMusic.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = SoftMusic.mp3; sourceTree = "<group>"; };
+		C107C7F71A09C84200418536 /* 640_960.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = 640_960.png; path = ../640_960.png; sourceTree = "<group>"; };
+		C107C7F81A09C86000418536 /* 640_1136.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = 640_1136.png; path = ../640_1136.png; sourceTree = "<group>"; };
 		C108E4EC19D10CC20097B920 /* MessageUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MessageUI.framework; path = System/Library/Frameworks/MessageUI.framework; sourceTree = SDKROOT; };
 		C10B01EF19B7133F00325785 /* AVFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AVFoundation.framework; path = System/Library/Frameworks/AVFoundation.framework; sourceTree = SDKROOT; };
 		C10B01F619B71C9E00325785 /* HRAlarm.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = HRAlarm.mp3; sourceTree = "<group>"; };
@@ -287,6 +289,8 @@
 		C1DF28B0186147DA00000695 /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
+				C107C7F71A09C84200418536 /* 640_960.png */,
+				C107C7F81A09C86000418536 /* 640_1136.png */,
 				C19A510219F8D87D00FC8DE4 /* HeartRateDemo.jpg */,
 				C19A510019F8CEE900FC8DE4 /* sleepy.jpg */,
 				C11F946119F4F2A300DA0CD1 /* APPLaunch.png */,
@@ -536,7 +540,7 @@
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNINITIALIZED_AUTOS = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 6.1;
+				IPHONEOS_DEPLOYMENT_TARGET = 7.1;
 				OTHER_CFLAGS = "-DNS_BLOCK_ASSERTIONS=1";
 				SDKROOT = iphoneos;
 				VALIDATE_PRODUCT = YES;
@@ -587,7 +591,7 @@
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNINITIALIZED_AUTOS = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 6.1;
+				IPHONEOS_DEPLOYMENT_TARGET = 7.1;
 				ONLY_ACTIVE_ARCH = YES;
 				"OTHER_LDFLAGS[arch=*]" = "-ObjC";
 				SDKROOT = iphoneos;
@@ -612,7 +616,7 @@
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNINITIALIZED_AUTOS = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 6.1;
+				IPHONEOS_DEPLOYMENT_TARGET = 7.1;
 				OTHER_CFLAGS = "-DNS_BLOCK_ASSERTIONS=1";
 				SDKROOT = iphoneos;
 				VALIDATE_PRODUCT = YES;

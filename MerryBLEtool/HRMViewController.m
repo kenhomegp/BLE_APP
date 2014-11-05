@@ -43,6 +43,7 @@ static double TotalCalories = 0;
     NSTimer *CaloriesBurnedTimer;
     CLLocationManager *locationManager;
     CLLocation *previousLocation;
+    NSTimer *CSR8670_BLE_Tester;
 }
 @end
 
@@ -436,6 +437,7 @@ static double TotalCalories = 0;
     }
 }
 
+#pragma mark - Timer Selector
 - (void)updateTimer
 {
     // Create date from the elapsed time
@@ -475,6 +477,71 @@ static double TotalCalories = 0;
     
     self.BurnCalorieLabel.text = [NSString stringWithFormat:@"燃燒卡路里 : %5.1f",TotalCalories];
     
+}
+
+
+- (void) GetBHC1307Data
+{
+    CBUUID *cu = [CBUUID UUIDWithString:POLARH7_HRM_NOTIFICATIONS_SERVICE_UUID];
+    CBUUID *su = [CBUUID UUIDWithString:POLARH7_HRM_HEART_RATE_SERVICE_UUID];
+    
+    if(self.polarH7HRMPeripheral == nil)
+    {
+        [CSR8670_BLE_Tester invalidate];
+        return;
+    }
+    
+    CBService *service = [self findServiceFromUUID:su p:self.polarH7HRMPeripheral];
+    
+    if(!service)
+    {
+        //NSLog(@"Can't find service");
+        return;
+    }
+    
+    CBCharacteristic *characteristic = [self findCharacteristicFromUUID:cu service:service];
+    
+    if(!characteristic)
+    {
+        //NSLog(@"Can't find characteristic");
+        return;
+    }
+    
+    [self.polarH7HRMPeripheral setNotifyValue:YES forCharacteristic:characteristic];
+    
+    //NSLog(@"SetNotify...");
+}
+
+// instance method to simulate our pulsating Heart Beat
+- (void) doHeartBeat
+{
+    if(self.polarH7HRMPeripheral == nil)
+        return;
+    
+	CALayer *layer = [self heartImage].layer;
+	CABasicAnimation *pulseAnimation = [CABasicAnimation animationWithKeyPath:@"transform.scale"];
+	pulseAnimation.toValue = [NSNumber numberWithFloat:1.1];
+	pulseAnimation.fromValue = [NSNumber numberWithFloat:1.0];
+	
+#ifdef StartAnimationIfConnected
+    pulseAnimation.duration = AnimationDuration;
+#else
+    pulseAnimation.duration = 60. / self.heartRate / 2.;
+#endif
+    
+    pulseAnimation.repeatCount = 1;
+	pulseAnimation.autoreverses = YES;
+	pulseAnimation.timingFunction = [CAMediaTimingFunction functionWithName:kCAMediaTimingFunctionEaseIn];
+	[layer addAnimation:pulseAnimation forKey:@"scale"];
+	
+#ifdef StartAnimationIfConnected
+    self.pulseTimer = [NSTimer scheduledTimerWithTimeInterval:(60. / HeartRatePulseTimer) target:self selector:@selector(doHeartBeat) userInfo:nil repeats:NO];
+    //NSLog(@"%d,%f",self.heartRate,pulseAnimation.duration);
+#else
+    self.pulseTimer = [NSTimer scheduledTimerWithTimeInterval:(60. / self.heartRate) target:self selector:@selector(doHeartBeat) userInfo:nil repeats:NO];
+#endif
+    
+    //NSLog(@"%d,%f",self.heartRate,pulseAnimation.duration);
 }
 
 - (IBAction)DrawHeartRateCurve:(id)sender {
@@ -563,6 +630,7 @@ static double TotalCalories = 0;
     }
 }
 
+#pragma mark - BLE function
 // method called whenever the device state changes.
 - (void)centralManagerDidUpdateState:(CBCentralManager *)central
 {
@@ -655,7 +723,7 @@ didDisconnectPeripheral:(CBPeripheral *)peripheral
 	if (![localName isEqual:@""]) {
         //if ([localName isEqual:@"HR Sensor306125"]) {
         //if (([localName isEqual:@"HR Sensor306125"]) || ([localName isEqual:@"CSR HR Sensor"])) {
-        if (([localName isEqual:@"HR Sensor306125"]) || ([localName isEqual:@"CSR HR Sensor"]) || ([localName isEqual:@"HRM"])) {
+        if (([localName isEqual:@"HR Sensor306125"]) || ([localName isEqual:@"CSR8670 Test5"]) || ([localName isEqual:@"HRM"])) {
             // We found the Heart Rate Monitor
             [self.centralManager stopScan];
             if(self.polarH7HRMPeripheral == nil)
@@ -753,20 +821,35 @@ didDisconnectPeripheral:(CBPeripheral *)peripheral
 - (void) getHeartBPMData:(CBCharacteristic *)characteristic error:(NSError *)error
 {
 	// Get the Heart Rate Monitor BPM
-	NSData *data = [characteristic value];      // 1
+	NSData *data = [characteristic value];
 	const uint8_t *reportData = [data bytes];
 	uint16_t bpm = 0;
 	
-	if ((reportData[0] & 0x01) == 0) {          // 2
-		// Retrieve the BPM value for the Heart Rate Monitor
-		bpm = reportData[1];
-	}
-	else {
-		bpm = CFSwapInt16LittleToHost(*(uint16_t *)(&reportData[1]));  // 3
-	}
+    if([self.DeviceName isEqualToString:@"CSR8670 Test5"])
+    {
+        bpm = reportData[0];
+        //NSLog(@"BHC1307 : %i",bpm);
+        
+        if(!([CSR8670_BLE_Tester isValid]))
+        {
+            CSR8670_BLE_Tester = [NSTimer scheduledTimerWithTimeInterval:3.0 target:self selector:@selector(GetBHC1307Data) userInfo:nil repeats:YES];
+            
+            //NSLog(@"Create BHC1307 Timer");
+        }
+    }
+    else
+    {
+        if ((reportData[0] & 0x01) == 0) {
+            // Retrieve the BPM value for the Heart Rate Monitor
+            bpm = reportData[1];
+        }
+        else {
+            bpm = CFSwapInt16LittleToHost(*(uint16_t *)(&reportData[1]));
+        }
+    }
     
 	// Display the heart rate value to the UI if no error occurred
-	if( (characteristic.value)  || !error ) {   // 4
+	if( (characteristic.value)  || !error ) {
 		self.heartRate = bpm;
         
 		//self.heartRateBPM.text = [NSString stringWithFormat:@"%i bpm", bpm];
@@ -925,36 +1008,65 @@ didDisconnectPeripheral:(CBPeripheral *)peripheral
     return UIInterfaceOrientationMaskPortrait;
 }
 
-// instance method to simulate our pulsating Heart Beat
-- (void) doHeartBeat
-{
-    if(self.polarH7HRMPeripheral == nil)
-        return;
-    
-	CALayer *layer = [self heartImage].layer;
-	CABasicAnimation *pulseAnimation = [CABasicAnimation animationWithKeyPath:@"transform.scale"];
-	pulseAnimation.toValue = [NSNumber numberWithFloat:1.1];
-	pulseAnimation.fromValue = [NSNumber numberWithFloat:1.0];
-	
-    #ifdef StartAnimationIfConnected
-        pulseAnimation.duration = AnimationDuration;
-    #else
-        pulseAnimation.duration = 60. / self.heartRate / 2.;
-    #endif
-    
-    pulseAnimation.repeatCount = 1;
-	pulseAnimation.autoreverses = YES;
-	pulseAnimation.timingFunction = [CAMediaTimingFunction functionWithName:kCAMediaTimingFunctionEaseIn];
-	[layer addAnimation:pulseAnimation forKey:@"scale"];
-	
-    #ifdef StartAnimationIfConnected
-        self.pulseTimer = [NSTimer scheduledTimerWithTimeInterval:(60. / HeartRatePulseTimer) target:self selector:@selector(doHeartBeat) userInfo:nil repeats:NO];
-            //NSLog(@"%d,%f",self.heartRate,pulseAnimation.duration);
-    #else
-        self.pulseTimer = [NSTimer scheduledTimerWithTimeInterval:(60. / self.heartRate) target:self selector:@selector(doHeartBeat) userInfo:nil repeats:NO];
-    #endif
-    
-    //NSLog(@"%d,%f",self.heartRate,pulseAnimation.duration);
+/*
+ *  @method compareCBUUID
+ *
+ *  @param UUID1 UUID 1 to compare
+ *  @param UUID2 UUID 2 to compare
+ *
+ *  @returns 1 (equal) 0 (not equal)
+ *
+ *  @discussion compareCBUUID compares two CBUUID's to each other and returns 1 if they are equal and 0 if they are not
+ *
+ */
+
+-(int) compareCBUUID:(CBUUID *) UUID1 UUID2:(CBUUID *)UUID2 {
+    char b1[16];
+    char b2[16];
+    [UUID1.data getBytes:b1];
+    [UUID2.data getBytes:b2];
+    if (memcmp(b1, b2, UUID1.data.length) == 0)return 1;
+    else return 0;
+}
+
+/*
+ *  @method findServiceFromUUID:
+ *
+ *  @param UUID CBUUID to find in service list
+ *  @param p Peripheral to find service on
+ *
+ *  @return pointer to CBService if found, nil if not
+ *
+ *  @discussion findServiceFromUUID searches through the services list of a peripheral to find a
+ *  service with a specific UUID
+ *
+ */
+-(CBService *) findServiceFromUUID:(CBUUID *)UUID p:(CBPeripheral *)p {
+    for(int i = 0; i < p.services.count; i++) {
+        CBService *s = [p.services objectAtIndex:i];
+        if ([self compareCBUUID:s.UUID UUID2:UUID]) return s;
+    }
+    return nil; //Service not found on this peripheral
+}
+
+/*
+ *  @method findCharacteristicFromUUID:
+ *
+ *  @param UUID CBUUID to find in Characteristic list of service
+ *  @param service Pointer to CBService to search for charateristics on
+ *
+ *  @return pointer to CBCharacteristic if found, nil if not
+ *
+ *  @discussion findCharacteristicFromUUID searches through the characteristic list of a given service
+ *  to find a characteristic with a specific UUID
+ *
+ */
+-(CBCharacteristic *) findCharacteristicFromUUID:(CBUUID *)UUID service:(CBService*)service {
+    for(int i=0; i < service.characteristics.count; i++) {
+        CBCharacteristic *c = [service.characteristics objectAtIndex:i];
+        if ([self compareCBUUID:c.UUID UUID2:UUID]) return c;
+    }
+    return nil; //Characteristic not found on this service
 }
 
 // handle memory warning errors
