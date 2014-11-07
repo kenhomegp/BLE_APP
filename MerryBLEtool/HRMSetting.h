@@ -31,6 +31,8 @@
 @end
 
 @interface HRMSetting : UIViewController
+@property (weak, nonatomic) IBOutlet UITextField *UserTHR1;
+@property (weak, nonatomic) IBOutlet UITextField *UserMaxHR;
 @property (weak, nonatomic) IBOutlet UITextField *UserName;
 @property (weak, nonatomic) IBOutlet UITextField *UserAge;
 - (IBAction)backgroundTap:(id)sender;

@@ -139,7 +139,8 @@ static double TotalCalories = 0;
     [self.BackgroundImage addGestureRecognizer:TapGesture];
     
     //Navigation View title
-    self.title = @"心跳即時資訊";
+    //self.title = @"心跳即時資訊";
+    self.title = NSLocalizedString(@"MainViewController", @"title");
     
     [self.view setBackgroundColor:[UIColor colorWithPatternImage:[UIImage imageNamed:@"Jogging"]]];
     
@@ -723,7 +724,7 @@ didDisconnectPeripheral:(CBPeripheral *)peripheral
 	if (![localName isEqual:@""]) {
         //if ([localName isEqual:@"HR Sensor306125"]) {
         //if (([localName isEqual:@"HR Sensor306125"]) || ([localName isEqual:@"CSR HR Sensor"])) {
-        if (([localName isEqual:@"HR Sensor306125"]) || ([localName isEqual:@"CSR8670 Test5"]) || ([localName isEqual:@"HRM"])) {
+        if (([localName isEqual:@"HR Sensor306125"]) || ([localName isEqual:@"CSR8670 Test5"]) || ([localName isEqual:@"HRM"]) || ([localName isEqual:@"HR Sensor306041"])) {
             // We found the Heart Rate Monitor
             [self.centralManager stopScan];
             if(self.polarH7HRMPeripheral == nil)

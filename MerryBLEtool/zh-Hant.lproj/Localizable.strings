@@ -9,3 +9,7 @@
 "HRM" = "心率偵測";
 "Device" = "無法找到裝置!";
 "End" = "結束";
+"MainViewController" = "心跳即時資訊";
+"HealthyCareVC" = "醫療保健";
+"HCLabel" = "心率偵測";
+"SettingVC" = "功能設定";

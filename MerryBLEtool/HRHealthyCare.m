@@ -31,13 +31,19 @@
     switch(self.APPConfig & ApplicationMode)
     {
         case (Normal):
-            self.TitleLabel.text = @"一般模式";
-            self.title = @"心率偵測_一般模式";
+            //self.TitleLabel.text = @"一般模式";
+            //self.title = @"心率偵測_一般模式";
+            self.TitleLabel.text = NSLocalizedString(@"HCLabel", @"none");
+            //self.title = NSLocalizedString(@"MainViewController", @"title");
+            self.title = NSLocalizedString(@"HealthyCareVC", @"none");
             [self.BackgroundImage setImage:[UIImage imageNamed:@"HeartRateDemo.jpg"]];
             break;
          case (Sleep):
-            self.TitleLabel.text = @"睡眠模式";
-            self.title = @"心率偵測_睡眠模式";
+            //self.TitleLabel.text = @"睡眠模式";
+            //self.title = @"心率偵測_睡眠模式";
+            self.TitleLabel.text = NSLocalizedString(@"HCLabel", @"none");
+            //self.title = NSLocalizedString(@"MainViewController", @"title");
+            self.title = NSLocalizedString(@"HealthyCareVC", @"none");
             [self.BackgroundImage setImage:[UIImage imageNamed:@"sleepy.jpg"]];
             break;
         default:

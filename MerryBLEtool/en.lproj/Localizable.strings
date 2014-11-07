@@ -9,3 +9,7 @@
 "HRM" = "Heart Rate Monitor";
 "Device" = "Device not found!";
 "End" = "End";
+"MainViewController" = "Merry HRM";
+"HealthyCareVC" = "HeartRate Monitor";
+"HCLabel" = "HeartRate Monitor";
+"SettingVC" = "Setting";

@@ -126,7 +126,9 @@
         tempMaxHR = 220 - ([self.HR_UserAge intValue]);
         self.MaximumHR = tempMaxHR;
         
-        self.MaxHR.text = [NSString stringWithFormat:@"Maximum Heart Rate = %ld",(long)tempMaxHR];
+        //self.MaxHR.text = [NSString stringWithFormat:@"Maximum Heart Rate = %ld",(long)tempMaxHR];
+        
+        self.UserMaxHR.text = [NSString stringWithFormat:@"%ld",(long)tempMaxHR];
         
         tempRHR = [self.UserRHR.text intValue];
         
@@ -153,7 +155,8 @@
                 tempLowerTHR = (tempHRReserve * 0.6) + tempRHR;
                 self.UpperTHR = tempUpperTHR;
                 self.LowerTHR = tempLowerTHR;
-                self.UserTHR.text = [NSString stringWithFormat:@"Target Heart Rate : %ld ~ %ld",(long)tempLowerTHR , (long)tempUpperTHR];
+                //self.UserTHR.text = [NSString stringWithFormat:@"Target Heart Rate : %ld ~ %ld",(long)tempLowerTHR , (long)tempUpperTHR];
+                self.UserTHR1.text = [NSString stringWithFormat:@"%ld ~ %ld",(long)tempLowerTHR , (long)tempUpperTHR];
                 
             }
         }
@@ -175,7 +178,8 @@
     // Do any additional setup after loading the view.
     
     //self.title = @"Setting";
-    self.title = @"功能設定";
+    //self.title = @"功能設定";
+    //self.title = NSLocalizedString(@"SettingVC", @"");
     
     if(!([self.HR_UserName isEqualToString:@""]))
         UserName.text = self.HR_UserName;

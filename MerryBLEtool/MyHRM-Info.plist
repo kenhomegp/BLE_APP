@@ -10,6 +10,12 @@
 	<string>${EXECUTABLE_NAME}</string>
 	<key>CFBundleGetInfoString</key>
 	<string></string>
+	<key>CFBundleIconFile</key>
+	<string></string>
+	<key>CFBundleIconFiles</key>
+	<array>
+		<string></string>
+	</array>
 	<key>CFBundleIcons</key>
 	<dict/>
 	<key>CFBundleIcons~ipad</key>
@@ -73,7 +79,7 @@
 	<key>UIMainStoryboardFile</key>
 	<string>HRM_iPhone</string>
 	<key>UIMainStoryboardFile~ipad</key>
-	<string>HRM_iPhone</string>
+	<string>BLE_APP_Storyboard</string>
 	<key>UIRequiredDeviceCapabilities</key>
 	<array>
 		<string>armv7</string>

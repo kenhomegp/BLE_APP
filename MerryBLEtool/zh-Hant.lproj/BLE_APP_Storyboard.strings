@@ -27,16 +27,16 @@
 "Jj5-2I-5RR.text" = " 70";
 
 /* Class = "IBUILabel"; text = "Target Heart Rate = 110 ~ 140"; ObjectID = "N80-Nd-XrF"; */
-"N80-Nd-XrF.text" = "目標心跳區間 = 110 ~ 140";
+"N80-Nd-XrF.text" = "目標心跳區間";
 
 /* Class = "IBUITextView"; text = "Lorem ipsum dolor sit er elit lamet, consectetaur cillium adipisicing pecu, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum. Nam liber te conscient to factor tum poen legum odioque civiuda."; ObjectID = "NHG-54-z4h"; */
-"NHG-54-z4h.text" = "Lorem ipsum dolor sit er elit lamet, consectetaur cillium adipisicing pecu, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum. Nam liber te conscient to factor tum poen legum odioque civiuda.";
+"NHG-54-z4h.text" = "心率是指心臟跳動的頻率,也就是心臟每分鐘跳動的次數                                                      正常成人的心跳在休息狀態下是規律的,次數介於每分鐘60至100次之間。但是一個人的心跳在一天之中是會波動的。在睡眠時,正常成人的心跳可能會變慢到介於每分鐘30至60次之間,運動時心跳會加速,心肺功能較好的運動員會比一般人的心跳要慢";
 
 /* Class = "IBUILabel"; text = "Target zone alarm"; ObjectID = "OwZ-mQ-Lap"; */
 "OwZ-mQ-Lap.text" = "目標區間警示";
 
 /* Class = "IBUILabel"; text = "Maximum Heart Rate = 220 - Age"; ObjectID = "PTR-5Z-1nT"; */
-"PTR-5Z-1nT.text" = "最大心跳 = 220 - Age";
+"PTR-5Z-1nT.text" = "最大心跳";
 
 /* Class = "IBUILabel"; text = "MAX 90"; ObjectID = "RhN-Ua-I7J"; */
 "RhN-Ua-I7J.text" = "MAX 90";
@@ -54,7 +54,7 @@
 "ZDl-nN-eNJ.normalTitle" = "醫療保健_居家照護";
 
 /* Class = "IBUISegmentedControl"; aVv-VD-UJa.segmentTitles[0] = " Normal "; ObjectID = "aVv-VD-UJa"; */
-"aVv-VD-UJa.segmentTitles[0]" = "一般";
+"aVv-VD-UJa.segmentTitles[0]" = "醫療保健";
 
 /* Class = "IBUISegmentedControl"; aVv-VD-UJa.segmentTitles[1] = "Sport"; ObjectID = "aVv-VD-UJa"; */
 "aVv-VD-UJa.segmentTitles[1]" = "運動";
