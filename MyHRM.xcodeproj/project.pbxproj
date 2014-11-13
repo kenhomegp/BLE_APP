@@ -11,6 +11,13 @@
 		C108E4ED19D10CC20097B920 /* MessageUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C108E4EC19D10CC20097B920 /* MessageUI.framework */; };
 		C10B01F019B7133F00325785 /* AVFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C10B01EF19B7133F00325785 /* AVFoundation.framework */; };
 		C10B01F719B71C9E00325785 /* HRAlarm.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = C10B01F619B71C9E00325785 /* HRAlarm.mp3 */; };
+		C11073611A0F0C9400FE3CFD /* Login.png in Resources */ = {isa = PBXBuildFile; fileRef = C11073601A0F0C9300FE3CFD /* Login.png */; };
+		C11073631A0F0CA200FE3CFD /* Loginhighlight.png in Resources */ = {isa = PBXBuildFile; fileRef = C11073621A0F0CA200FE3CFD /* Loginhighlight.png */; };
+		C11073661A0F573900FE3CFD /* HRStartViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = C11073651A0F573900FE3CFD /* HRStartViewController.m */; };
+		C11073681A0F5C0F00FE3CFD /* common_bg.png in Resources */ = {isa = PBXBuildFile; fileRef = C11073671A0F5C0F00FE3CFD /* common_bg.png */; };
+		C110736A1A0F5C8A00FE3CFD /* cell_bottom.png in Resources */ = {isa = PBXBuildFile; fileRef = C11073691A0F5C8A00FE3CFD /* cell_bottom.png */; };
+		C110736C1A0F5C9A00FE3CFD /* cell_middle.png in Resources */ = {isa = PBXBuildFile; fileRef = C110736B1A0F5C9A00FE3CFD /* cell_middle.png */; };
+		C110736E1A0F5CA800FE3CFD /* cell_top.png in Resources */ = {isa = PBXBuildFile; fileRef = C110736D1A0F5CA800FE3CFD /* cell_top.png */; };
 		C11742C019AADC1600721449 /* HRMViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = C11742BF19AADC1600721449 /* HRMViewController.m */; };
 		C11742C219AAE06A00721449 /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C11742C119AAE06A00721449 /* QuartzCore.framework */; };
 		C11F3A9B19EFC9C6008FBA7F /* CoreLocation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C11F3A9A19EFC9C6008FBA7F /* CoreLocation.framework */; };
@@ -23,7 +30,11 @@
 		C12529D719EE7576004AFA0F /* Time.png in Resources */ = {isa = PBXBuildFile; fileRef = C12529D619EE7576004AFA0F /* Time.png */; };
 		C12529D919EE759F004AFA0F /* Speed.png in Resources */ = {isa = PBXBuildFile; fileRef = C12529D819EE759F004AFA0F /* Speed.png */; };
 		C12529DB19EE75C1004AFA0F /* Energy.png in Resources */ = {isa = PBXBuildFile; fileRef = C12529DA19EE75C1004AFA0F /* Energy.png */; };
+		C12545FA1A133D0C001E0EBD /* AppDataObject.m in Sources */ = {isa = PBXBuildFile; fileRef = C12545F91A133D0C001E0EBD /* AppDataObject.m */; };
+		C12545FD1A133D77001E0EBD /* HRMDataObject.m in Sources */ = {isa = PBXBuildFile; fileRef = C12545FC1A133D77001E0EBD /* HRMDataObject.m */; };
 		C126725919D941CB00DDAB7D /* HRAlarm1.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = C126725819D941CB00DDAB7D /* HRAlarm1.mp3 */; };
+		C129436A1A10AAD100C433F8 /* AppSleep.png in Resources */ = {isa = PBXBuildFile; fileRef = C12943691A10AAD100C433F8 /* AppSleep.png */; };
+		C129436C1A10AADA00C433F8 /* AppHealthy.png in Resources */ = {isa = PBXBuildFile; fileRef = C129436B1A10AADA00C433F8 /* AppHealthy.png */; };
 		C12D6A8D19ECFD2800DBD768 /* DeviceConnected.png in Resources */ = {isa = PBXBuildFile; fileRef = C12D6A8C19ECFD2700DBD768 /* DeviceConnected.png */; };
 		C12D6A8F19ECFD3D00DBD768 /* GPS_On.png in Resources */ = {isa = PBXBuildFile; fileRef = C12D6A8E19ECFD3D00DBD768 /* GPS_On.png */; };
 		C12D6A9119ECFD6C00DBD768 /* Battery.png in Resources */ = {isa = PBXBuildFile; fileRef = C12D6A9019ECFD6C00DBD768 /* Battery.png */; };
@@ -90,6 +101,14 @@
 		C1F97CAC19D54E9900C753BE /* HeartLive.m in Sources */ = {isa = PBXBuildFile; fileRef = C1F97CAB19D54E9900C753BE /* HeartLive.m */; };
 		C1F97CAE19D5554300C753BE /* data.txt in Resources */ = {isa = PBXBuildFile; fileRef = C1F97CAD19D5554300C753BE /* data.txt */; };
 		C1FCFC5B1862CC6900DEA5AC /* CoreBluetooth.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C1FCFC5A1862CC6900DEA5AC /* CoreBluetooth.framework */; };
+		C1FF23A31A11B89700BE0C61 /* Button1.png in Resources */ = {isa = PBXBuildFile; fileRef = C1FF23A21A11B89600BE0C61 /* Button1.png */; };
+		C1FF23A51A11B89D00BE0C61 /* Button1Pressed.png in Resources */ = {isa = PBXBuildFile; fileRef = C1FF23A41A11B89D00BE0C61 /* Button1Pressed.png */; };
+		C1FF23AC1A11D87600BE0C61 /* Countdownpic1.png in Resources */ = {isa = PBXBuildFile; fileRef = C1FF23A61A11D87600BE0C61 /* Countdownpic1.png */; };
+		C1FF23AD1A11D87600BE0C61 /* Countdownpic2.png in Resources */ = {isa = PBXBuildFile; fileRef = C1FF23A71A11D87600BE0C61 /* Countdownpic2.png */; };
+		C1FF23AE1A11D87600BE0C61 /* Countdownpic3.png in Resources */ = {isa = PBXBuildFile; fileRef = C1FF23A81A11D87600BE0C61 /* Countdownpic3.png */; };
+		C1FF23AF1A11D87600BE0C61 /* Countdownpic4.png in Resources */ = {isa = PBXBuildFile; fileRef = C1FF23A91A11D87600BE0C61 /* Countdownpic4.png */; };
+		C1FF23B01A11D87600BE0C61 /* Countdownpic5.png in Resources */ = {isa = PBXBuildFile; fileRef = C1FF23AA1A11D87600BE0C61 /* Countdownpic5.png */; };
+		C1FF23B11A11D87600BE0C61 /* Countdownpic6.png in Resources */ = {isa = PBXBuildFile; fileRef = C1FF23AB1A11D87600BE0C61 /* Countdownpic6.png */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -97,6 +116,14 @@
 		C108E4EC19D10CC20097B920 /* MessageUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MessageUI.framework; path = System/Library/Frameworks/MessageUI.framework; sourceTree = SDKROOT; };
 		C10B01EF19B7133F00325785 /* AVFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AVFoundation.framework; path = System/Library/Frameworks/AVFoundation.framework; sourceTree = SDKROOT; };
 		C10B01F619B71C9E00325785 /* HRAlarm.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = HRAlarm.mp3; sourceTree = "<group>"; };
+		C11073601A0F0C9300FE3CFD /* Login.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Login.png; sourceTree = "<group>"; };
+		C11073621A0F0CA200FE3CFD /* Loginhighlight.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Loginhighlight.png; sourceTree = "<group>"; };
+		C11073641A0F573800FE3CFD /* HRStartViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HRStartViewController.h; sourceTree = "<group>"; };
+		C11073651A0F573900FE3CFD /* HRStartViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HRStartViewController.m; sourceTree = "<group>"; };
+		C11073671A0F5C0F00FE3CFD /* common_bg.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = common_bg.png; sourceTree = "<group>"; };
+		C11073691A0F5C8A00FE3CFD /* cell_bottom.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = cell_bottom.png; sourceTree = "<group>"; };
+		C110736B1A0F5C9A00FE3CFD /* cell_middle.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = cell_middle.png; sourceTree = "<group>"; };
+		C110736D1A0F5CA800FE3CFD /* cell_top.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = cell_top.png; sourceTree = "<group>"; };
 		C11742BE19AADC1600721449 /* HRMViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HRMViewController.h; sourceTree = "<group>"; };
 		C11742BF19AADC1600721449 /* HRMViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HRMViewController.m; sourceTree = "<group>"; };
 		C11742C119AAE06A00721449 /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
@@ -111,7 +138,14 @@
 		C12529D619EE7576004AFA0F /* Time.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Time.png; sourceTree = "<group>"; };
 		C12529D819EE759F004AFA0F /* Speed.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Speed.png; sourceTree = "<group>"; };
 		C12529DA19EE75C1004AFA0F /* Energy.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Energy.png; sourceTree = "<group>"; };
+		C12545F81A133D0C001E0EBD /* AppDataObject.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AppDataObject.h; sourceTree = "<group>"; };
+		C12545F91A133D0C001E0EBD /* AppDataObject.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AppDataObject.m; sourceTree = "<group>"; };
+		C12545FB1A133D77001E0EBD /* HRMDataObject.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HRMDataObject.h; sourceTree = "<group>"; };
+		C12545FC1A133D77001E0EBD /* HRMDataObject.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HRMDataObject.m; sourceTree = "<group>"; };
+		C12545FE1A1341CD001E0EBD /* AppDelegateProtocol.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegateProtocol.h; sourceTree = "<group>"; };
 		C126725819D941CB00DDAB7D /* HRAlarm1.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = HRAlarm1.mp3; sourceTree = "<group>"; };
+		C12943691A10AAD100C433F8 /* AppSleep.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = AppSleep.png; sourceTree = "<group>"; };
+		C129436B1A10AADA00C433F8 /* AppHealthy.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = AppHealthy.png; sourceTree = "<group>"; };
 		C12D6A8C19ECFD2700DBD768 /* DeviceConnected.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = DeviceConnected.png; sourceTree = "<group>"; };
 		C12D6A8E19ECFD3D00DBD768 /* GPS_On.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = GPS_On.png; sourceTree = "<group>"; };
 		C12D6A9019ECFD6C00DBD768 /* Battery.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Battery.png; sourceTree = "<group>"; };
@@ -191,6 +225,14 @@
 		C1F97CAB19D54E9900C753BE /* HeartLive.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HeartLive.m; sourceTree = "<group>"; };
 		C1F97CAD19D5554300C753BE /* data.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = data.txt; sourceTree = "<group>"; };
 		C1FCFC5A1862CC6900DEA5AC /* CoreBluetooth.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreBluetooth.framework; path = System/Library/Frameworks/CoreBluetooth.framework; sourceTree = SDKROOT; };
+		C1FF23A21A11B89600BE0C61 /* Button1.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Button1.png; sourceTree = "<group>"; };
+		C1FF23A41A11B89D00BE0C61 /* Button1Pressed.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Button1Pressed.png; sourceTree = "<group>"; };
+		C1FF23A61A11D87600BE0C61 /* Countdownpic1.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Countdownpic1.png; sourceTree = "<group>"; };
+		C1FF23A71A11D87600BE0C61 /* Countdownpic2.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Countdownpic2.png; sourceTree = "<group>"; };
+		C1FF23A81A11D87600BE0C61 /* Countdownpic3.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Countdownpic3.png; sourceTree = "<group>"; };
+		C1FF23A91A11D87600BE0C61 /* Countdownpic4.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Countdownpic4.png; sourceTree = "<group>"; };
+		C1FF23AA1A11D87600BE0C61 /* Countdownpic5.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Countdownpic5.png; sourceTree = "<group>"; };
+		C1FF23AB1A11D87600BE0C61 /* Countdownpic6.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Countdownpic6.png; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -222,6 +264,18 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		C12545FF1A13482E001E0EBD /* ViewControllerDataSharing */ = {
+			isa = PBXGroup;
+			children = (
+				C12545F91A133D0C001E0EBD /* AppDataObject.m */,
+				C12545F81A133D0C001E0EBD /* AppDataObject.h */,
+				C12545FC1A133D77001E0EBD /* HRMDataObject.m */,
+				C12545FE1A1341CD001E0EBD /* AppDelegateProtocol.h */,
+				C12545FB1A133D77001E0EBD /* HRMDataObject.h */,
+			);
+			name = ViewControllerDataSharing;
+			sourceTree = "<group>";
+		};
 		C1DF289D186147DA00000695 = {
 			isa = PBXGroup;
 			children = (
@@ -268,6 +322,9 @@
 		C1DF28AF186147DA00000695 /* MerryBLEtool */ = {
 			isa = PBXGroup;
 			children = (
+				C12545FF1A13482E001E0EBD /* ViewControllerDataSharing */,
+				C11073641A0F573800FE3CFD /* HRStartViewController.h */,
+				C11073651A0F573900FE3CFD /* HRStartViewController.m */,
 				C1F97CAD19D5554300C753BE /* data.txt */,
 				C10B01F619B71C9E00325785 /* HRAlarm.mp3 */,
 				C1DF28B8186147DB00000695 /* AppDelegate.h */,
@@ -294,6 +351,22 @@
 		C1DF28B0186147DA00000695 /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
+				C1FF23A41A11B89D00BE0C61 /* Button1Pressed.png */,
+				C1FF23A61A11D87600BE0C61 /* Countdownpic1.png */,
+				C1FF23A71A11D87600BE0C61 /* Countdownpic2.png */,
+				C1FF23A81A11D87600BE0C61 /* Countdownpic3.png */,
+				C1FF23A91A11D87600BE0C61 /* Countdownpic4.png */,
+				C1FF23AA1A11D87600BE0C61 /* Countdownpic5.png */,
+				C1FF23AB1A11D87600BE0C61 /* Countdownpic6.png */,
+				C1FF23A21A11B89600BE0C61 /* Button1.png */,
+				C129436B1A10AADA00C433F8 /* AppHealthy.png */,
+				C12943691A10AAD100C433F8 /* AppSleep.png */,
+				C110736D1A0F5CA800FE3CFD /* cell_top.png */,
+				C110736B1A0F5C9A00FE3CFD /* cell_middle.png */,
+				C11073691A0F5C8A00FE3CFD /* cell_bottom.png */,
+				C11073671A0F5C0F00FE3CFD /* common_bg.png */,
+				C11073621A0F0CA200FE3CFD /* Loginhighlight.png */,
+				C11073601A0F0C9300FE3CFD /* Login.png */,
 				C15420F81A0CB2060096E954 /* 640_960.png */,
 				C15420FC1A0CB2260096E954 /* 640_1136.png */,
 				C19A510219F8D87D00FC8DE4 /* HeartRateDemo.jpg */,
@@ -418,9 +491,11 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				C110736A1A0F5C8A00FE3CFD /* cell_bottom.png in Resources */,
 				C1F60B88198B37610032A497 /* Icon-Small-50.png in Resources */,
 				C1F60B8D198B37610032A497 /* Icon@2x.png in Resources */,
 				C1F60B83198B37610032A497 /* Icon-72@2x.png in Resources */,
+				C1FF23A51A11B89D00BE0C61 /* Button1Pressed.png in Resources */,
 				C1F624BB19C92E7100565830 /* bluetooth.png in Resources */,
 				C19A510119F8CEE900FC8DE4 /* sleepy.jpg in Resources */,
 				C15420FE1A0CB23A0096E954 /* 640_1136.png in Resources */,
@@ -430,15 +505,22 @@
 				C1F60B80198B37610032A497 /* apple-touch-icon-72x72-precomposed.png in Resources */,
 				C130E60119F0E22B00550957 /* Jogging1.png in Resources */,
 				C1DF28B4186147DA00000695 /* InfoPlist.strings in Resources */,
+				C11073611A0F0C9400FE3CFD /* Login.png in Resources */,
+				C1FF23A31A11B89700BE0C61 /* Button1.png in Resources */,
 				C1216F3119DA64A600C78FEA /* HRAlarm2.mp3 in Resources */,
 				C12529D519EE7556004AFA0F /* Distance.png in Resources */,
 				C18300B71A0C615E00CAAB55 /* HRM_iPhone.storyboard in Resources */,
+				C1FF23B01A11D87600BE0C61 /* Countdownpic5.png in Resources */,
+				C110736E1A0F5CA800FE3CFD /* cell_top.png in Resources */,
 				C1F624B519C92E5C00565830 /* heart_monitor.png in Resources */,
 				C10B01F719B71C9E00325785 /* HRAlarm.mp3 in Resources */,
 				C1E017D219FF90E400F5FA46 /* Localizable.strings in Resources */,
 				C1DF28BC186147DB00000695 /* Default.png in Resources */,
 				C1F60B7F198B37610032A497 /* apple-touch-icon-144x144-precomposed.png in Resources */,
 				C1F60B91198B378B0032A497 /* Images.xcassets in Resources */,
+				C1FF23B11A11D87600BE0C61 /* Countdownpic6.png in Resources */,
+				C11073631A0F0CA200FE3CFD /* Loginhighlight.png in Resources */,
+				C1FF23AC1A11D87600BE0C61 /* Countdownpic1.png in Resources */,
 				C1F60B8A198B37610032A497 /* Icon-Small.png in Resources */,
 				C126725919D941CB00DDAB7D /* HRAlarm1.mp3 in Resources */,
 				C1216F2D19DA589800C78FEA /* button.png in Resources */,
@@ -454,7 +536,9 @@
 				C1216F2F19DA58A100C78FEA /* buttonHighlighted.png in Resources */,
 				C12D6A9119ECFD6C00DBD768 /* Battery.png in Resources */,
 				C1DF28C0186147DB00000695 /* Default-568h@2x.png in Resources */,
+				C1FF23AD1A11D87600BE0C61 /* Countdownpic2.png in Resources */,
 				C1F60B87198B37610032A497 /* Icon-Small-30@2x.png in Resources */,
+				C1FF23AF1A11D87600BE0C61 /* Countdownpic4.png in Resources */,
 				C1F97CAE19D5554300C753BE /* data.txt in Resources */,
 				C1E017C619FF77C600F5FA46 /* BLE_APP_Storyboard.storyboard in Resources */,
 				C19A510319F8D87D00FC8DE4 /* HeartRateDemo.jpg in Resources */,
@@ -467,11 +551,16 @@
 				C1DF28D81861507700000695 /* 2.png in Resources */,
 				C1F60B84198B37610032A497 /* Icon-Small-20.png in Resources */,
 				C11F946219F4F2A300DA0CD1 /* APPLaunch.png in Resources */,
+				C129436C1A10AADA00C433F8 /* AppHealthy.png in Resources */,
 				C12529D919EE759F004AFA0F /* Speed.png in Resources */,
+				C1FF23AE1A11D87600BE0C61 /* Countdownpic3.png in Resources */,
 				C105A4B419E51C40007E34D1 /* SoftMusic.mp3 in Resources */,
 				C1F60B81198B37610032A497 /* apple-touch-icon-precomposed.png in Resources */,
 				C1DF28D91861507700000695 /* 3.png in Resources */,
 				C1F60B85198B37610032A497 /* Icon-Small-20@2x.png in Resources */,
+				C129436A1A10AAD100C433F8 /* AppSleep.png in Resources */,
+				C11073681A0F5C0F00FE3CFD /* common_bg.png in Resources */,
+				C110736C1A0F5C9A00FE3CFD /* cell_middle.png in Resources */,
 				C1F60B8F198B37610032A497 /* iTunesArtwork@2x.png in Resources */,
 				C1F60B8E198B37610032A497 /* iTunesArtwork.png in Resources */,
 				C1F60B8B198B37610032A497 /* Icon-Small@2x.png in Resources */,
@@ -486,12 +575,15 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				C12545FA1A133D0C001E0EBD /* AppDataObject.m in Sources */,
 				C12529D319EE11EB004AFA0F /* HRHealthyCare.m in Sources */,
+				C11073661A0F573900FE3CFD /* HRStartViewController.m in Sources */,
 				C1DF28B6186147DB00000695 /* main.m in Sources */,
 				C1DF28BA186147DB00000695 /* AppDelegate.m in Sources */,
 				C130E61A19F1025A00550957 /* HRMapView.m in Sources */,
 				C1F97CAC19D54E9900C753BE /* HeartLive.m in Sources */,
 				C11742C019AADC1600721449 /* HRMViewController.m in Sources */,
+				C12545FD1A133D77001E0EBD /* HRMDataObject.m in Sources */,
 				C1E700CC19D2747400410667 /* HRMSetting.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

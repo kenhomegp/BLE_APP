@@ -180,6 +180,10 @@
     //self.title = @"Setting";
     //self.title = @"功能設定";
     //self.title = NSLocalizedString(@"SettingVC", @"");
+
+    //Custom button
+    [self.LoginButton setBackgroundImage:[UIImage imageNamed:@"Login.png"] forState:UIControlStateNormal];
+    [self.LoginButton setBackgroundImage:[UIImage imageNamed:@"Loginhighlight.png"] forState:UIControlStateHighlighted];
     
     if(!([self.HR_UserName isEqualToString:@""]))
         UserName.text = self.HR_UserName;
@@ -314,6 +318,7 @@
     [[self delegate] APPSetting:self.APPConfig];
     [[self delegate] passHeartRateData:self.MaximumHR SetMaxHR:self.SetMaxHR SetMinHR:self.SetMinHR RestHeartRate:self.SetRHR UpperTargetHeartRate:self.UpperTHR LowerTargetHeartRate:self.LowerTHR];
     [self dismissViewControllerAnimated:YES completion:nil];
+    //NSLog(@"Login...");
 }
 
 - (IBAction)LoadHRData:(id)sender {

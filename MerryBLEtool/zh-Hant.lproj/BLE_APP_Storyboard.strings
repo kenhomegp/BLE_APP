@@ -75,7 +75,7 @@
 "l7H-AY-tR4.title" = "心率偵測";
 
 /* Class = "IBUIButton"; normalTitle = "Save"; ObjectID = "mWa-2l-2ph"; */
-"mWa-2l-2ph.normalTitle" = "儲存離開";
+/*"mWa-2l-2ph.normalTitle" = "儲存離開";*/
 
 /* Class = "IBUILabel"; text = "燃燒卡路里 : 00000卡"; ObjectID = "n6q-ou-I3G"; */
 "n6q-ou-I3G.text" = "燃燒卡路里 : 00000卡";

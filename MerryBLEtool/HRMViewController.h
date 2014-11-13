@@ -37,6 +37,7 @@
 @property (strong, nonatomic) NSString *UserAge;
 @property (nonatomic) NSInteger APPConfig;
 @property (nonatomic) NSInteger RestHeartRate;
+@property (nonatomic) NSInteger SeguePassingData;
 
 @property (weak, nonatomic) IBOutlet UIButton *Test_button;
 

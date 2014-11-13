@@ -8,6 +8,8 @@
 
 #import "AppDelegate.h"
 #import <GoogleMaps/GoogleMaps.h>
+#import "AppDelegateProtocol.h"
+#import "HRMDataObject.h"
 
 #define UIColorFromRGB(rgbValue) [UIColor colorWithRed:((float)((rgbValue & 0xFF0000) >> 16))/255.0 green:((float)((rgbValue & 0xFF00) >> 8))/255.0 blue:((float)(rgbValue & 0xFF))/255.0 alpha:1.0]
 
@@ -15,6 +17,7 @@
 @implementation AppDelegate
 
 @synthesize APPState;
+@synthesize theAppDataObject;
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
@@ -49,10 +52,16 @@
     //Google Map service
     [GMSServices provideAPIKey:@"AIzaSyDs4IWNLiwvRicNC9-tuJvz7A347tQ-r8M"];
     
+    
     //Passing data from APP delegate to View Controller
+    /*
     UINavigationController *vc = (UINavigationController *)self.window.rootViewController;
     HRMViewController *myvc = (HRMViewController *)vc.topViewController;
     myvc.APPState = APPState;
+    */
+    
+    self.theAppDataObject = [[HRMDataObject alloc] init];
+    
     return YES;
 }
 							

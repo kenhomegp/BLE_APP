@@ -72,7 +72,7 @@
 "XFt-Vc-QWu.text" = "心率是指心臟跳動的頻率,也就是心臟每分鐘跳動的次數                                                      正常成人的心跳在休息狀態下是規律的,次數介於每分鐘60至100次之間。但是一個人的心跳在一天之中是會波動的。                          在睡眠時,正常成人的心跳可能會變慢到介於每分鐘30至60次之間,運動時心跳會加速,心肺功能較好的運動員會比一般人的心跳要慢";
 
 /* Class = "IBUIButton"; normalTitle = "Save"; ObjectID = "Xap-Zj-ndB"; */
-"Xap-Zj-ndB.normalTitle" = "儲存離開";
+/*"Xap-Zj-ndB.normalTitle" = "儲存離開";*/
 
 /* Class = "IBUILabel"; text = "Maximum Heart Rate"; ObjectID = "Xue-C5-szc"; */
 "Xue-C5-szc.text" = "最大心跳";

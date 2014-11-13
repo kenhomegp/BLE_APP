@@ -9,14 +9,17 @@
 #import "HRMViewController.h"
 #import <AVFoundation/AVFoundation.h>
 
-#define APPStateNormal          1
-#define APPStateUserConfig      2
+#import "AppDelegateProtocol.h"
+#import "HRMDataObject.h"
+
+#define APPStateNormal                  1
+#define APPStateUserConfig              2
 
 #define drawHeartRateCurveTimeInterval  0.01
 #define StartAnimationIfConnected
 
-#define AnimationDuration   0.25
-#define HeartRatePulseTimer 100
+#define AnimationDuration               0.25
+#define HeartRatePulseTimer             100
 
 #define DrawRealHeartRateCurve
 #define DrawSimulationHRCurvex
@@ -133,6 +136,8 @@ static double TotalCalories = 0;
     //Gesture Regognizer (Swipe & Tap)
     swipeRight = [[UISwipeGestureRecognizer alloc] initWithTarget:self  action:@selector(swipeRecognized:)];
     [swipeRight setDirection:UISwipeGestureRecognizerDirectionRight];
+    //[swipeRight setDirection:UISwipeGestureRecognizerDirectionLeft];
+    //[swipeRight setDirection:(UISwipeGestureRecognizerDirectionRight | UISwipeGestureRecognizerDirectionLeft)];
     [self.view addGestureRecognizer:swipeRight];
     TapGesture = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(TapRecognized:)];
     [TapGesture setNumberOfTapsRequired:2];
@@ -145,8 +150,12 @@ static double TotalCalories = 0;
     [self.view setBackgroundColor:[UIColor colorWithPatternImage:[UIImage imageNamed:@"Jogging"]]];
     
     //Custom button
-    [self.CustomButton setBackgroundImage:[UIImage imageNamed:@"button.png"] forState:UIControlStateNormal];
-    [self.CustomButton setBackgroundImage:[UIImage imageNamed:@"buttonHighlighted.png"] forState:UIControlStateHighlighted];
+    //[self.CustomButton setBackgroundImage:[UIImage imageNamed:@"button.png"] forState:UIControlStateNormal];
+    //[self.CustomButton setBackgroundImage:[UIImage imageNamed:@"buttonHighlighted.png"] forState:UIControlStateHighlighted];
+
+    [self.CustomButton setBackgroundImage:[UIImage imageNamed:@"Button1.png"] forState:UIControlStateNormal];
+    [self.CustomButton setBackgroundImage:[UIImage imageNamed:@"Button1Pressed.png"] forState:UIControlStateHighlighted];
+
     
     //Color,Image
 	[self.view setBackgroundColor:[UIColor groupTableViewBackgroundColor]];
@@ -241,6 +250,9 @@ static double TotalCalories = 0;
     locationManager.delegate = self;
     locationManager.distanceFilter = kCLDistanceFilterNone;
     locationManager.desiredAccuracy = kCLLocationAccuracyBest;
+    
+    //NSString *restorationId = self.restorationIdentifier;
+    //NSLog(@"RestorationID = %@",restorationId);
 }
 
 - (void)TapRecognized:(UITapGestureRecognizer *)Tap
@@ -261,9 +273,17 @@ static double TotalCalories = 0;
         
         //[self.navigationController pushViewController:[self.storyboard instantiateViewControllerWithIdentifier:@"GoogleMap"] animated:YES];
         
-        HRMapView *vc = [self.storyboard instantiateViewControllerWithIdentifier:@"GoogleMap"];
-        [vc setDelegate:self];
-        [self.navigationController pushViewController:vc animated:YES];
+        //HRMapView *vc = [self.storyboard instantiateViewControllerWithIdentifier:@"GoogleMap"];
+        //[vc setDelegate:self];
+        //[self.navigationController pushViewController:vc animated:YES];
+        
+        //Use Segue to pass data to HRMapView
+        [self performSegueWithIdentifier:@"SegueForGoogleMap" sender:self];
+        
+    }
+    else if(swipe.direction == UISwipeGestureRecognizerDirectionLeft)
+    {
+        //NSLog(@"Swipe Left Recognized");
     }
 }
 
@@ -426,6 +446,7 @@ static double TotalCalories = 0;
     {
         HRHealthyCare *vc = [segue destinationViewController];
         vc.APPConfig = self.APPConfig;
+        
         //NSLog(@"Segue To HealthyCare View");
     }
     
@@ -434,6 +455,7 @@ static double TotalCalories = 0;
         HRMapView *vc = [segue destinationViewController];
         [vc setDelegate:self];
         vc.APPConfig = self.APPConfig;
+        
         //NSLog(@"Segue To GoogleMap View");
     }
 }
@@ -449,18 +471,28 @@ static double TotalCalories = 0;
     // Create a date formatter
     NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
     //[dateFormatter setDateFormat:@"HH:mm:ss.SSS"];
-    [dateFormatter setDateFormat:@"時間 : HH時:mm分:ss秒"];
-    //[dateFormatter setDateFormat:@"HH:mm:ss"];
+    //[dateFormatter setDateFormat:@"時間 : HH時:mm分:ss秒"];
+    //[dateFormatter setDateFormat:@"Time:HH:mm:ss"];
+    
+    [dateFormatter setDateFormat:@"HH:mm:ss"];
+    
     [dateFormatter setTimeZone:[NSTimeZone timeZoneForSecondsFromGMT:0.0]];
     
     // Format the elapsed time and set it to the label
     NSString *timeString = [dateFormatter stringFromDate:timerDate];
     //self.stopwatchLabel.text = timeString;
     //NSLog(@"%@",timeString);
-    self.SportsTimeLabel.text = timeString;
+    
+    //self.SportsTimeLabel.text = timeString;
+    self.SportsTimeLabel.text = [@"Time: " stringByAppendingString:timeString];
     
     TotalTime = timeInterval;
     //NSLog(@"TT = %f",timeInterval);
+    
+    HRMDataObject* theDataObject = [self theAppDataObject];
+    theDataObject.TimeStr = self.SportsTimeLabel.text;
+    
+    theDataObject.HRM = self.heartRate;
 }
 
 - (void)CaloriesBurned
@@ -474,10 +506,19 @@ static double TotalCalories = 0;
         TotalCalories += calories;
     }
     
-    self.MileageLabel.text = [NSString stringWithFormat:@"里程數 : %2.2f公里",(TotalDistance/1000)];
+    HRMDataObject* theDataObject = [self theAppDataObject];
     
-    self.BurnCalorieLabel.text = [NSString stringWithFormat:@"燃燒卡路里 : %5.1f",TotalCalories];
+    //self.MileageLabel.text = [NSString stringWithFormat:@"里程數 : %2.2f公里",(TotalDistance/1000)];
     
+    self.MileageLabel.text = [NSString stringWithFormat:@"Distance:%2.2f km",(TotalDistance/1000)];
+    
+    theDataObject.DistanceStr = self.MileageLabel.text;
+    
+    //self.BurnCalorieLabel.text = [NSString stringWithFormat:@"燃燒卡路里 : %5.1f",TotalCalories];
+    
+    self.BurnCalorieLabel.text = [NSString stringWithFormat:@"Calories:%5.1f cal",TotalCalories];
+    
+    theDataObject.CaloriesStr = self.BurnCalorieLabel.text;
 }
 
 
@@ -545,10 +586,63 @@ static double TotalCalories = 0;
     //NSLog(@"%d,%f",self.heartRate,pulseAnimation.duration);
 }
 
+#pragma mark -
+#pragma mark instance methods
+
+- (HRMDataObject *) theAppDataObject;
+{
+    id<AppDelegateProtocol> theDelegate = (id<AppDelegateProtocol>) [UIApplication sharedApplication].delegate;
+    HRMDataObject *theDataObject;
+    theDataObject = (HRMDataObject*) theDelegate.theAppDataObject;
+    return theDataObject;
+}
+
+
+
+- (void) PerformSelectorMethod
+{
+    if(!([self.BackgroundImage isAnimating]))
+    {
+        self.HR_bpm.hidden = NO;
+        self.heartImage.hidden = NO;
+        [self.BackgroundImage setImage:[UIImage imageNamed:@"Jogging1"]];
+        
+        #ifdef DrawSimulationHRCurve
+        if(UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad)
+        {
+            [DrawHRCurve invalidate];
+            
+            DrawHRCurve = [NSTimer scheduledTimerWithTimeInterval:drawHeartRateCurveTimeInterval target:self selector:@selector(timerRefresnFun) userInfo:nil repeats:YES];
+        }
+        #endif
+        
+        startDate = [NSDate date];
+        SportsTimer = [NSTimer scheduledTimerWithTimeInterval:1.0/2.0
+                                                       target:self
+                                                     selector:@selector(updateTimer)
+                                                     userInfo:nil
+                                                      repeats:YES];
+        
+        [CaloriesBurnedTimer invalidate];
+        CaloriesBurnedTimer = [NSTimer scheduledTimerWithTimeInterval:5.0
+                                                               target:self
+                                                             selector:@selector         (CaloriesBurned)
+                                                             userInfo:nil
+                                                              repeats:YES];
+        
+        [self.CustomButton setTitle:NSLocalizedString(@"StopButton", @"") forState:UIControlStateNormal];
+        
+        self.APPConfig |= StartActivity;
+        
+        [locationManager startUpdatingLocation];
+    }
+}
+
 - (IBAction)DrawHeartRateCurve:(id)sender {
     
     //if([[self.CustomButton currentTitle] isEqualToString:@"Start"])
-    if([[self.CustomButton currentTitle] isEqualToString:@"開始跑步"])
+    //if([[self.CustomButton currentTitle] isEqualToString:@"開始跑步"])
+    if([[self.CustomButton currentTitle] isEqualToString:NSLocalizedString(@"StartButton", @"")])
     {
         if(self.polarH7HRMPeripheral == nil)
         {
@@ -559,11 +653,19 @@ static double TotalCalories = 0;
             UIAlertView *alert = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"HRM", @"AlertViewTitle") message:NSLocalizedString(@"Device", @"AlertMessage") delegate:self cancelButtonTitle:NSLocalizedString(@"End", @"Test") otherButtonTitles:nil, nil];
             
             [alert show];
-            
-            //NSLog(@"%@",self.APPState);
         }
         else
         {
+            self.HR_bpm.hidden = YES;
+            self.heartImage.hidden = YES;
+            self.BackgroundImage.image = nil;//Removing image from UIImageView
+            self.BackgroundImage.animationImages = [NSArray arrayWithObjects:[UIImage imageNamed:@"Countdownpic1"],[UIImage imageNamed:@"Countdownpic2"],[UIImage imageNamed:@"Countdownpic3"],[UIImage imageNamed:@"Countdownpic4"],[UIImage imageNamed:@"Countdownpic5"],[UIImage imageNamed:@"Countdownpic6"], nil];
+            self.BackgroundImage.animationDuration = 5.0f;
+            self.BackgroundImage.animationRepeatCount = 1;
+            [self.BackgroundImage startAnimating];
+            [self performSelector:@selector(PerformSelectorMethod) withObject:nil afterDelay:5.5f];
+
+            /*
             #ifdef DrawSimulationHRCurve
             if(UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad)
             {
@@ -588,15 +690,18 @@ static double TotalCalories = 0;
                                                                   repeats:YES];
         
             //[self.CustomButton setTitle:@"Stop" forState:UIControlStateNormal];
-            [self.CustomButton setTitle:@"運動結束" forState:UIControlStateNormal];
+            //[self.CustomButton setTitle:@"運動結束" forState:UIControlStateNormal];
+            [self.CustomButton setTitle:NSLocalizedString(@"StopButton", @"") forState:UIControlStateNormal];
             
             self.APPConfig |= StartActivity;
             
             [locationManager startUpdatingLocation];
+             */
         }
     }
     //else if([[self.CustomButton currentTitle] isEqualToString:@"Stop"])
-    else if([[self.CustomButton currentTitle] isEqualToString:@"運動結束"])
+    //else if([[self.CustomButton currentTitle] isEqualToString:@"運動結束"])
+    else if([[self.CustomButton currentTitle] isEqualToString:NSLocalizedString(@"StopButton", @"")])
     {
         #ifdef DrawSimulationHRCurve
             if([DrawHRCurve isValid])
@@ -607,7 +712,8 @@ static double TotalCalories = 0;
         {
             [SportsTimer invalidate];
             SportsTimer = nil;
-            self.SportsTimeLabel.text = @"時間 : 00時:00分:00秒";
+            //self.SportsTimeLabel.text = @"時間 : 00時:00分:00秒";
+            self.SportsTimeLabel.text = NSLocalizedString(@"ResetTime", @"");
         }
         
         if([CaloriesBurnedTimer isValid])
@@ -616,17 +722,26 @@ static double TotalCalories = 0;
             TotalDistance = 0;
             TotalTime = 0;
             TotalCalories = 0;
-            self.MileageLabel.text = @"里程數 : 00公里";
-            self.BurnCalorieLabel.text = @"燃燒卡路里 : 00000卡";
+            //self.MileageLabel.text = @"里程數 : 00公里";
+            //self.BurnCalorieLabel.text = @"燃燒卡路里 : 00000卡";
+            self.MileageLabel.text = NSLocalizedString(@"ResetDistance", @"");
+            self.BurnCalorieLabel.text = NSLocalizedString(@"ResetCalories", @"");
         }
         
         self.APPConfig &= ~(StartActivity);
         
         //[self.CustomButton setTitle:@"Start" forState:UIControlStateNormal];
-        [self.CustomButton setTitle:@"開始跑步" forState:UIControlStateNormal];
+        //[self.CustomButton setTitle:@"開始跑步" forState:UIControlStateNormal];
+        [self.CustomButton setTitle:NSLocalizedString(@"StartButton", @"") forState:UIControlStateNormal];
         
         // Stop Location Manager
         [locationManager stopUpdatingLocation];
+        
+        HRMDataObject* theDataObject = [self theAppDataObject];
+        theDataObject.TimeStr = nil;
+        theDataObject.DistanceStr = nil;
+        theDataObject.CaloriesStr = nil;
+        theDataObject.HRM = 0;
 
     }
 }
@@ -1280,9 +1395,28 @@ didDisconnectPeripheral:(CBPeripheral *)peripheral
 #pragma mark - passMapPositionDelegate methods
 -(void) passDistance : (double)Map_distance
 {
-    //NSLog(@"pass Map distance");
+    //NSLog(@"Passing data from HRMapView");
 }
 
+-(void)passCommand:(NSString *)string
+{
+    //NSLog(@"%@",string);
+    
+    if([string isEqualToString:@"BLE_Connect"])
+    {
+        if(self.polarH7HRMPeripheral == nil)
+        {
+            NSArray *services = @[[CBUUID UUIDWithString:POLARH7_HRM_HEART_RATE_SERVICE_UUID], [CBUUID UUIDWithString:POLARH7_HRM_DEVICE_INFO_SERVICE_UUID]];
+            [self.centralManager scanForPeripheralsWithServices:services options:nil];
+            
+        }
+    }
+    else if([string isEqualToString:@"Start_HRM_Timer"])
+    {
+        //[self.CustomButton sendActionsForControlEvents:UIControlEventTouchUpInside];
+        [self PerformSelectorMethod];
+    }
+}
 
 #pragma mark - passUserSetting protocol methods
 /****************************************************************************/
@@ -1482,6 +1616,7 @@ double getDistanceMetresBetweenLocationCoordinates(
             [_audioPlayer stop];
     }
      */
+    
     
     //[self.CustomButton sendActionsForControlEvents:UIControlEventTouchUpInside];
     

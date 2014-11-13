@@ -9,9 +9,16 @@
 #import <UIKit/UIKit.h>
 #import "HRMViewController.h"
 #import "HRMSetting.h"
+#import "HRStartViewController.h"
+#import "AppDelegateProtocol.h"
 
-@interface AppDelegate : UIResponder <UIApplicationDelegate>
+@class HRMDataObject;
 
+@interface AppDelegate : UIResponder <UIApplicationDelegate , AppDelegateProtocol>
+{
+    HRMDataObject *theAppDataObject;
+}
 @property (strong, nonatomic) UIWindow *window;
 @property (nonatomic , strong) NSString *APPState;
+@property (nonatomic , retain) HRMDataObject *theAppDataObject;
 @end

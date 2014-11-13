@@ -9,6 +9,9 @@
 #import "HRMapView.h"
 #import <GoogleMaps/GoogleMaps.h>
 
+#import "AppDelegateProtocol.h"
+#import "HRMDataObject.h"
+
 @interface HRMapView ()
 @end
 
@@ -22,7 +25,21 @@
     
     CLLocationDegrees Current_location_latitude;
     CLLocationDegrees Current_Location_longitude;
+    
+    NSTimer *HRMTimer;
 }
+
+#pragma mark -
+#pragma mark instance methods
+
+- (HRMDataObject *) theAppDataObject;
+{
+    id<AppDelegateProtocol> theDelegate = (id<AppDelegateProtocol>) [UIApplication sharedApplication].delegate;
+    HRMDataObject *theDataObject;
+    theDataObject = (HRMDataObject*) theDelegate.theAppDataObject;
+    return theDataObject;
+}
+
 
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
 {
@@ -33,10 +50,24 @@
     return self;
 }
 
+- (void)viewDidDisappear:(BOOL)animated
+{
+    //NSLog(@"viewDidDisappear");
+    [HRMTimer invalidate];
+}
+
 - (void)viewDidLoad
 {
     [super viewDidLoad];
     // Do any additional setup after loading the view.
+    
+    //Start/Stop button
+    [self.CustomButton setBackgroundImage:[UIImage imageNamed:@"Button1.png"] forState:UIControlStateNormal];
+    [self.CustomButton setBackgroundImage:[UIImage imageNamed:@"Button1Pressed.png"] forState:UIControlStateHighlighted];
+    
+    //[swipeRight setDirection:UISwipeGestureRecognizerDirectionRight];
+    [self.SwipeRecognizer setDirection:UISwipeGestureRecognizerDirectionLeft];
+    //[self.SwipeRecognizer setDirection:(UISwipeGestureRecognizerDirectionLeft | UISwipeGestureRecognizerDirectionRight)];
     
     locationManager = [[CLLocationManager alloc]init];
     locationManager.delegate = self;
@@ -51,10 +82,35 @@
     GMSCameraPosition *camera = [GMSCameraPosition cameraWithLatitude:-33.86
                                                             longitude:151.20
                                                                  zoom:6];
-    mapView_ = [GMSMapView mapWithFrame:CGRectZero camera:camera];
+    //mapView_ = [GMSMapView mapWithFrame:CGRectZero camera:camera];
+    mapView_ = [GMSMapView mapWithFrame:CGRectMake(0, 0, 320, 400) camera:camera];
     mapView_.myLocationEnabled = YES;
-    self.view = mapView_;
     
+    //self.view = mapView_; //Full screen
+    [self.view addSubview:mapView_];
+    
+    //NSString *restorationId = self.restorationIdentifier;
+    //NSLog(@"RestorationID = %@",restorationId);
+    
+    if((self.APPConfig & BLE_Connected) == 0)
+    {
+        //NSLog(@"BLE disconnected!");
+        
+        [[self delegate] passCommand:@"BLE_Connect"];
+    }
+    else{
+        //NSLog(@"BLE connected");
+    }
+    
+    if((self.APPConfig & StartActivity) == StartActivity)
+    {
+        //NSLog(@"Start HRM Timer!");
+    }
+    else{
+        //NSLog(@"HRM timer is stopped!");
+    }
+    
+
 /*
     // Creates a marker in the center of the map.
     GMSMarker *marker = [[GMSMarker alloc] init];
@@ -250,5 +306,53 @@ double getDistanceMetresBetweenLocationCoordinates(
     
     // Stop Location Manager
     //[locationManager stopUpdatingLocation];
+}
+- (IBAction)SwipeLeftAction:(id)sender {
+    //NSLog(@"Swipe  recognized");
+    
+    //[[self navigationController] popToRootViewControllerAnimated:YES];
+    
+    [self.navigationController popViewControllerAnimated:YES];
+}
+
+-(void) UpdateHRMData
+{
+    HRMDataObject* theDataObject = [self theAppDataObject];
+    //NSLog(@"t:%@,d:%@,c:%@",theDataObject.TimeStr,theDataObject.DistanceStr,theDataObject.CaloriesStr);
+    self.TimeLabel.text = theDataObject.TimeStr;
+    self.CaloriesLabel.text = theDataObject.CaloriesStr;
+    //[@"Time: " stringByAppendingString:timeString];
+    self.HeartRateLabel.text = [@"HR: " stringByAppendingString:[NSString stringWithFormat:@"%ld",theDataObject.HRM]];
+}
+
+-(IBAction)PressStartButton:(id)sender {
+    //[[self delegate] passDistance:10.0];//Test protocol
+    //NSLog(@"Test protocol");
+    
+    if((self.APPConfig & BLE_Connected) == 0)
+    {
+        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"HRM", @"AlertViewTitle") message:NSLocalizedString(@"Device", @"AlertMessage") delegate:self cancelButtonTitle:NSLocalizedString(@"End", @"Test") otherButtonTitles:nil, nil];
+        
+        [alert show];
+
+        return;
+    }
+    
+    if((self.APPConfig & StartActivity) == 0)
+    {
+        [[self delegate] passCommand:@"Start_HRM_Timer"];
+    }
+    
+    if(!([HRMTimer isValid]))
+    {
+        HRMTimer = [NSTimer scheduledTimerWithTimeInterval:1.0
+                                                               target:self
+                                                             selector:@selector         (UpdateHRMData)
+                                                             userInfo:nil
+                                                              repeats:YES];
+    }
+    else{
+        [HRMTimer invalidate];
+    }
 }
 @end

@@ -13,6 +13,7 @@
 
 @protocol passMapPositionDelegate <NSObject>
 -(void) passDistance : (double)Map_distance;
+-(void) passCommand : (NSString *)string;
 @end
 
 @interface HRMapView : UIViewController <CLLocationManagerDelegate>
@@ -20,4 +21,11 @@
 @property (nonatomic) NSInteger APPConfig;
 //@property (nonatomic, retain) NSTimer *GetMyLocationTimer;
 //@property (nonatomic, retain) CLLocation *previousLocation;
+@property (weak, nonatomic) IBOutlet UIButton *CustomButton;
+@property (strong, nonatomic) IBOutlet UISwipeGestureRecognizer *SwipeRecognizer;
+- (IBAction)SwipeLeftAction:(id)sender;
+- (IBAction)PressStartButton:(id)sender;
+@property (weak, nonatomic) IBOutlet UILabel *HeartRateLabel;
+@property (weak, nonatomic) IBOutlet UILabel *TimeLabel;
+@property (weak, nonatomic) IBOutlet UILabel *CaloriesLabel;
 @end

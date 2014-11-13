@@ -64,4 +64,5 @@
 - (IBAction)MinValueChanged:(id)sender;
 @property (weak, nonatomic) IBOutlet UISlider *SetNormalMaxHR;
 @property (weak, nonatomic) IBOutlet UISlider *SetNormalMinHR;
+@property (weak, nonatomic) IBOutlet UIButton *LoginButton;
 @end

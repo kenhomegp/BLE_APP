@@ -13,3 +13,9 @@
 "HealthyCareVC" = "HeartRate Monitor";
 "HCLabel" = "HeartRate Monitor";
 "SettingVC" = "Setting";
+"StartButton" = "START";
+"StopButton" = "STOP";
+"ResetDistance" = "Distance : 00km";
+"ResetTime" = "Time:00h:00m:00s";
+"ResetPace" = "Pace : 00 km/h";
+"ResetCalories" = "Calories: 00000 cal";

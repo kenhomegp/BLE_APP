@@ -87,7 +87,7 @@
                                 <rect key="frame" x="295" y="733" width="180" height="40"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <fontDescription key="fontDescription" type="italicSystem" pointSize="18"/>
-                                <state key="normal" title="START" backgroundImage="button.png">
+                                <state key="normal" title="START" backgroundImage="Button1.png">
                                     <color key="titleColor" red="0.50196081400000003" green="0.25098040700000002" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                                     <color key="titleShadowColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                                 </state>
@@ -397,9 +397,9 @@
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                             </switch>
                             <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="mWa-2l-2ph">
-                                <rect key="frame" x="340" y="949" width="73" height="34"/>
+                                <rect key="frame" x="288" y="929" width="176" height="40"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                <state key="normal" title="Save">
+                                <state key="normal">
                                     <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
                                 </state>
                                 <connections>
@@ -407,7 +407,7 @@
                                 </connections>
                             </button>
                             <button hidden="YES" opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="rDw-QZ-bFR">
-                                <rect key="frame" x="353" y="891" width="46" height="30"/>
+                                <rect key="frame" x="353" y="876" width="46" height="30"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <state key="normal" title="Load">
                                     <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
@@ -466,6 +466,7 @@
                         <outlet property="APPModeSelect" destination="aVv-VD-UJa" id="ZSx-cl-sJ5"/>
                         <outlet property="AlarmTHR" destination="PxF-Ti-60a" id="DVL-Ms-k4K"/>
                         <outlet property="HRNotifiction" destination="2lA-rP-6vP" id="tZh-aR-EEp"/>
+                        <outlet property="LoginButton" destination="mWa-2l-2ph" id="e8r-lC-bXf"/>
                         <outlet property="NormalMaxHR" destination="Jj5-2I-5RR" id="64P-Yk-Rh6"/>
                         <outlet property="NormalMinHR" destination="yAj-SA-tK3" id="44e-2z-7e7"/>
                         <outlet property="SetNormalMaxHR" destination="uqK-cS-xz1" id="QTd-Vs-TR4"/>
@@ -548,12 +549,12 @@
         </scene>
     </scenes>
     <resources>
+        <image name="Button1.png" width="908" height="297"/>
         <image name="Distance.png" width="237" height="236"/>
         <image name="Energy.png" width="121" height="236"/>
         <image name="HeartRateDemo.jpg" width="560" height="420"/>
         <image name="Speed.png" width="282" height="189"/>
         <image name="Time.png" width="213" height="213"/>
-        <image name="button.png" width="280" height="36"/>
         <image name="user.png" width="32" height="32"/>
     </resources>
     <simulatedMetricsContainer key="defaultSimulatedMetrics">

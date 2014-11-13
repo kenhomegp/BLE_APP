@@ -16,10 +16,10 @@
 #define Sports              0x08
 #define Sleep               0x0C
 
-
 @interface HRHealthyCare : UIViewController
 @property (weak, nonatomic) IBOutlet UIImageView *BackgroundImage;
 @property (weak, nonatomic) IBOutlet UIImageView *HeartImage;
 @property (nonatomic) NSInteger APPConfig;
+@property (nonatomic) NSInteger SeguePassingData;
 @property (weak, nonatomic) IBOutlet UILabel *TitleLabel;
 @end

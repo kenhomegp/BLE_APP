@@ -13,3 +13,9 @@
 "HealthyCareVC" = "醫療保健";
 "HCLabel" = "心率偵測";
 "SettingVC" = "功能設定";
+"StartButton" = "開始跑步";
+"StopButton" = "運動結束";
+"ResetDistance" = "里程數 : 00公里";
+"ResetTime" = "時間 : 00時:00分:00秒";
+"ResetPace" = "時速 : 00公里/時";
+"ResetCalories" = "燃燒卡路里 : 00000卡";
