@@ -15,9 +15,11 @@
     NSString    *DistanceStr;
     NSString    *CaloriesStr;
     NSInteger   HRM;
+    NSInteger   APPConfig;
 }
 @property (nonatomic , copy) NSString *TimeStr;
 @property (nonatomic , copy) NSString *DistanceStr;
 @property (nonatomic , copy) NSString *CaloriesStr;
 @property (nonatomic) NSInteger HRM;
+@property (nonatomic) NSInteger APPConfig;
 @end

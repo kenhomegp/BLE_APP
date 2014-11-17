@@ -11,6 +11,10 @@
 #import "HRHealthyCare.h"
 #import "HRMSetting.h"
 
+#import "HRMSetting.h"
+#import "AppDelegateProtocol.h"
+#import "HRMDataObject.h"
+
 @interface HRStartViewController ()
 
 @end
@@ -53,11 +57,21 @@
 - (void) prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
 {
     NSIndexPath *indexPath = nil;
+    
+    //HRMDataObject* theDataObject = [self theAppDataObject];
+    HRMDataObject* theDataObject = [self theAppDataObject];
+    theDataObject.APPConfig &= ~(ApplicationMode);
+    
     if ([segue.identifier isEqualToString:@"SegueForHRM"]) {
         //NSIndexPath *indexPath = nil;
-        
         //indexPath = [self.tableView indexPathForSelectedRow];
         //NSLog(@"HRM %ld",(long)indexPath.row);
+        
+        HRMViewController *vc = [segue destinationViewController];
+        vc.APPConfig &= ~(ApplicationMode);
+        vc.APPConfig |= Sports;
+        
+        theDataObject.APPConfig |= Sports;
     }
     else if([segue.identifier isEqualToString:@"SegueForTest"])
     {
@@ -71,10 +85,12 @@
         if(indexPath.row == 1)
         {
             vc.APPConfig |= Normal;
+            theDataObject.APPConfig |= Normal;
         }
         else if(indexPath.row == 2)
         {
             vc.APPConfig |= Sleep;
+            theDataObject.APPConfig |= Sleep;
         }
     }
 }
@@ -156,7 +172,6 @@
         APPUseFreq.text = @"10%";
     }
     
-    
     /*
     // Assign our own background image for the cell
     UIImage *background = [self cellBackgroundForRowAtIndexPath:indexPath];
@@ -200,7 +215,17 @@
     {
         [self performSegueWithIdentifier:@"SegueForTest" sender:[tableView cellForRowAtIndexPath:indexPath]];
     }
-    
+}
+
+#pragma mark -
+#pragma mark instance methods
+
+- (HRMDataObject *) theAppDataObject;
+{
+    id<AppDelegateProtocol> theDelegate = (id<AppDelegateProtocol>) [UIApplication sharedApplication].delegate;
+    HRMDataObject *theDataObject;
+    theDataObject = (HRMDataObject*) theDelegate.theAppDataObject;
+    return theDataObject;
 }
 
 /*

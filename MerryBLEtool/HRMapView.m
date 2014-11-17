@@ -54,12 +54,17 @@
 {
     //NSLog(@"viewDidDisappear");
     [HRMTimer invalidate];
+    [[UIApplication sharedApplication] setIdleTimerDisabled:NO];
 }
 
 - (void)viewDidLoad
 {
     [super viewDidLoad];
     // Do any additional setup after loading the view.
+    
+    //NSLog(@"HRMapViewDidLoad");
+    
+    [[UIApplication sharedApplication] setIdleTimerDisabled:YES];
     
     //Start/Stop button
     [self.CustomButton setBackgroundImage:[UIImage imageNamed:@"Button1.png"] forState:UIControlStateNormal];
@@ -92,25 +97,34 @@
     //NSString *restorationId = self.restorationIdentifier;
     //NSLog(@"RestorationID = %@",restorationId);
     
+    HRMDataObject* theDataObject = [self theAppDataObject];
+    self.APPConfig = theDataObject.APPConfig;
+    
     if((self.APPConfig & BLE_Connected) == 0)
     {
-        //NSLog(@"BLE disconnected!");
+        //NSLog(@"@@@BLE disconnected!");
         
         [[self delegate] passCommand:@"BLE_Connect"];
     }
     else{
-        //NSLog(@"BLE connected");
+        //NSLog(@"!!!BLE connected");
+        
+        if((self.APPConfig & StartActivity) == StartActivity)
+        {
+            //NSLog(@"Start HRMapView Timer!");
+            if(!([HRMTimer isValid]))
+            {
+                NSLog(@"Start HRMapView Timer!");
+                HRMTimer = [NSTimer scheduledTimerWithTimeInterval:1.0
+                                                            target:self
+                                                          selector:@selector         (UpdateHRMData)
+                                                          userInfo:nil
+                                                           repeats:YES];
+            }
+            
+        }
     }
     
-    if((self.APPConfig & StartActivity) == StartActivity)
-    {
-        //NSLog(@"Start HRM Timer!");
-    }
-    else{
-        //NSLog(@"HRM timer is stopped!");
-    }
-    
-
 /*
     // Creates a marker in the center of the map.
     GMSMarker *marker = [[GMSMarker alloc] init];
@@ -319,15 +333,32 @@ double getDistanceMetresBetweenLocationCoordinates(
 {
     HRMDataObject* theDataObject = [self theAppDataObject];
     //NSLog(@"t:%@,d:%@,c:%@",theDataObject.TimeStr,theDataObject.DistanceStr,theDataObject.CaloriesStr);
+    
     self.TimeLabel.text = theDataObject.TimeStr;
-    self.CaloriesLabel.text = theDataObject.CaloriesStr;
-    //[@"Time: " stringByAppendingString:timeString];
-    self.HeartRateLabel.text = [@"HR: " stringByAppendingString:[NSString stringWithFormat:@"%ld",theDataObject.HRM]];
+    
+    //self.CaloriesLabel.text = theDataObject.CaloriesStr;
+    //NSLog(@"ccc %@",self.CaloriesLabel.text);
+    if(theDataObject.CaloriesStr != nil)
+        self.CaloriesLabel.text = theDataObject.CaloriesStr;
+    
+    self.HeartRateLabel.text = [@"HR: " stringByAppendingString:[NSString stringWithFormat:@"%ld bpm",theDataObject.HRM]];
+    
+    if((theDataObject.APPConfig & BLE_Connected) == 0)
+    {
+        [HRMTimer invalidate];
+        self.APPConfig = theDataObject.APPConfig;
+        self.HeartRateLabel.text = @"HR: 095 bpm";
+        self.CaloriesLabel.text = @"Calories: 00000 cal";
+        self.TimeLabel.text = @"Time:00h:00m:00s";
+    }
 }
 
 -(IBAction)PressStartButton:(id)sender {
     //[[self delegate] passDistance:10.0];//Test protocol
     //NSLog(@"Test protocol");
+    
+    HRMDataObject* theDataObject = [self theAppDataObject];
+    self.APPConfig = theDataObject.APPConfig;
     
     if((self.APPConfig & BLE_Connected) == 0)
     {

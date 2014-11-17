@@ -11,6 +11,7 @@
 		C108E4ED19D10CC20097B920 /* MessageUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C108E4EC19D10CC20097B920 /* MessageUI.framework */; };
 		C10B01F019B7133F00325785 /* AVFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C10B01EF19B7133F00325785 /* AVFoundation.framework */; };
 		C10B01F719B71C9E00325785 /* HRAlarm.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = C10B01F619B71C9E00325785 /* HRAlarm.mp3 */; };
+		C10C35011A1605BE008F3E5D /* rsz_arrow.png in Resources */ = {isa = PBXBuildFile; fileRef = C10C35001A1605BE008F3E5D /* rsz_arrow.png */; };
 		C11073611A0F0C9400FE3CFD /* Login.png in Resources */ = {isa = PBXBuildFile; fileRef = C11073601A0F0C9300FE3CFD /* Login.png */; };
 		C11073631A0F0CA200FE3CFD /* Loginhighlight.png in Resources */ = {isa = PBXBuildFile; fileRef = C11073621A0F0CA200FE3CFD /* Loginhighlight.png */; };
 		C11073661A0F573900FE3CFD /* HRStartViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = C11073651A0F573900FE3CFD /* HRStartViewController.m */; };
@@ -116,6 +117,7 @@
 		C108E4EC19D10CC20097B920 /* MessageUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MessageUI.framework; path = System/Library/Frameworks/MessageUI.framework; sourceTree = SDKROOT; };
 		C10B01EF19B7133F00325785 /* AVFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AVFoundation.framework; path = System/Library/Frameworks/AVFoundation.framework; sourceTree = SDKROOT; };
 		C10B01F619B71C9E00325785 /* HRAlarm.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = HRAlarm.mp3; sourceTree = "<group>"; };
+		C10C35001A1605BE008F3E5D /* rsz_arrow.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = rsz_arrow.png; sourceTree = "<group>"; };
 		C11073601A0F0C9300FE3CFD /* Login.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Login.png; sourceTree = "<group>"; };
 		C11073621A0F0CA200FE3CFD /* Loginhighlight.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Loginhighlight.png; sourceTree = "<group>"; };
 		C11073641A0F573800FE3CFD /* HRStartViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HRStartViewController.h; sourceTree = "<group>"; };
@@ -351,6 +353,7 @@
 		C1DF28B0186147DA00000695 /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
+				C10C35001A1605BE008F3E5D /* rsz_arrow.png */,
 				C1FF23A41A11B89D00BE0C61 /* Button1Pressed.png */,
 				C1FF23A61A11D87600BE0C61 /* Countdownpic1.png */,
 				C1FF23A71A11D87600BE0C61 /* Countdownpic2.png */,
@@ -516,6 +519,7 @@
 				C10B01F719B71C9E00325785 /* HRAlarm.mp3 in Resources */,
 				C1E017D219FF90E400F5FA46 /* Localizable.strings in Resources */,
 				C1DF28BC186147DB00000695 /* Default.png in Resources */,
+				C10C35011A1605BE008F3E5D /* rsz_arrow.png in Resources */,
 				C1F60B7F198B37610032A497 /* apple-touch-icon-144x144-precomposed.png in Resources */,
 				C1F60B91198B378B0032A497 /* Images.xcassets in Resources */,
 				C1FF23B11A11D87600BE0C61 /* Countdownpic6.png in Resources */,

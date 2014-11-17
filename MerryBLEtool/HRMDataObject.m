@@ -9,7 +9,7 @@
 #import "HRMDataObject.h"
 
 @implementation HRMDataObject
-@synthesize TimeStr,DistanceStr,CaloriesStr,HRM;
+@synthesize TimeStr,DistanceStr,CaloriesStr,HRM,APPConfig;
 
 - (void)dealloc
 {
@@ -17,6 +17,7 @@
     DistanceStr = nil;
     CaloriesStr = nil;
     HRM = 0;
+    APPConfig = 0;
 }
 
 @end

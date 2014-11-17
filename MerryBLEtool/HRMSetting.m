@@ -182,8 +182,8 @@
     //self.title = NSLocalizedString(@"SettingVC", @"");
 
     //Custom button
-    [self.LoginButton setBackgroundImage:[UIImage imageNamed:@"Login.png"] forState:UIControlStateNormal];
-    [self.LoginButton setBackgroundImage:[UIImage imageNamed:@"Loginhighlight.png"] forState:UIControlStateHighlighted];
+    [self.LoginButton setBackgroundImage:[UIImage imageNamed:@"Button1.png"] forState:UIControlStateNormal];
+    [self.LoginButton setBackgroundImage:[UIImage imageNamed:@"Button1Pressed.png"] forState:UIControlStateHighlighted];
     
     if(!([self.HR_UserName isEqualToString:@""]))
         UserName.text = self.HR_UserName;
@@ -289,6 +289,7 @@
     [self dismissViewControllerAnimated:YES completion:nil];
 }
 - (IBAction)APPModeChange:(id)sender {
+    
     switch([sender selectedSegmentIndex])
     {
         case 0:

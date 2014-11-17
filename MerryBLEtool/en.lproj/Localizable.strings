@@ -11,7 +11,8 @@
 "End" = "End";
 "MainViewController" = "Merry HRM";
 "HealthyCareVC" = "HeartRate Monitor";
-"HCLabel" = "HeartRate Monitor";
+"HCNormalLabel" = "Monitor heartbeat any time";
+"HCSleepLabel" = "Relaxation and help sleep";
 "SettingVC" = "Setting";
 "StartButton" = "START";
 "StopButton" = "STOP";
