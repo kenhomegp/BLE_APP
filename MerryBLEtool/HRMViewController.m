@@ -279,6 +279,12 @@ static double TotalCalories = 0;
 - (void)handleBack:(id)sender
 {
     //NSLog(@"BackButton handler");
+    if(self.polarH7HRMPeripheral != nil)
+    {
+        [self.centralManager cancelPeripheralConnection:self.polarH7HRMPeripheral];
+        NSLog(@"Cancel active connection");
+    }
+    
     [self.navigationController popToRootViewControllerAnimated:YES];
 }
 
@@ -378,11 +384,8 @@ static double TotalCalories = 0;
 
 - (void) GotoUserConfig
 {
-    [self.Test1Button sendActionsForControlEvents:UIControlEventTouchUpInside];
-    
-    //HRMSetting *vc;
-    //vc = [self.storyboard instantiateViewControllerWithIdentifier:@"HRSetting"];
-    //[self presentModalViewController:vc animated:YES];
+    //[self.Test1Button sendActionsForControlEvents:UIControlEventTouchUpInside];
+    [self performSegueWithIdentifier:@"SegueTableSetting" sender:self];
 }
 
 - (bool) LoadUserData
@@ -449,9 +452,23 @@ static double TotalCalories = 0;
     
     //NSLog(@"Segue : passing data");
        
-    if([[segue identifier] isEqualToString:@"SegueForSetting"])
+    /*if([[segue identifier] isEqualToString:@"SegueForSetting"])
     {
         HRMSetting *User = [segue destinationViewController];
+        [User setDelegate:self];
+        
+        User.HR_UserAge = self.UserAge;
+        User.HR_UserName = self.UserName;
+        User.APPConfig = self.APPConfig;
+        User.SetRHR = self.RestHeartRate;
+        if(AlarmMaxHeartRate != 70)
+            User.SetMaxHR = AlarmMaxHeartRate;
+        if(AlarmMinHeartRate != 50)
+            User.SetMinHR = AlarmMinHeartRate;
+    }*/
+    if([[segue identifier] isEqualToString:@"SegueTableSetting"])
+    {
+        HRMTableSetting *User = [segue destinationViewController];
         [User setDelegate:self];
         
         User.HR_UserAge = self.UserAge;
@@ -813,7 +830,7 @@ static double TotalCalories = 0;
         HRMDataObject* theDataObject = [self theAppDataObject];
         theDataObject.APPConfig = self.APPConfig;
         
-        NSLog(@"###Connect to Device..");
+        //NSLog(@"###Connect to Device..");
     }
     
     #ifdef StartAnimationIfConnected
@@ -849,6 +866,10 @@ didDisconnectPeripheral:(CBPeripheral *)peripheral
                 theDataObject.APPConfig = self.APPConfig;
                 
                 [self.Image_Connected setImage:[UIImage imageNamed:@"Disconnected"]];
+                
+                self.polarH7HRMPeripheral = nil;
+                
+                NSLog(@"didDisconnectPeripheral");
 
             }
         }
@@ -875,9 +896,11 @@ didDisconnectPeripheral:(CBPeripheral *)peripheral
 {
 	NSString *localName = [advertisementData objectForKey:CBAdvertisementDataLocalNameKey];
 	if (![localName isEqual:@""]) {
-        //if ([localName isEqual:@"HR Sensor306125"]) {
-        //if (([localName isEqual:@"HR Sensor306125"]) || ([localName isEqual:@"CSR HR Sensor"])) {
+        #ifdef CSR8670_BLE
         if (([localName isEqual:@"HR Sensor306125"]) || ([localName isEqual:@"CSR8670 Test5"]) || ([localName isEqual:@"HRM"]) || ([localName isEqual:@"HR Sensor306041"])) {
+        #else
+        if (([localName isEqual:@"HR Sensor306125"]) || ([localName isEqual:@"HRM"]) || ([localName isEqual:@"HR Sensor306041"])) {
+        #endif
             // We found the Heart Rate Monitor
             [self.centralManager stopScan];
             if(self.polarH7HRMPeripheral == nil)
@@ -1517,6 +1540,7 @@ didDisconnectPeripheral:(CBPeripheral *)peripheral
             if(SoftMusic.playing == YES)
                 [SoftMusic stop];
             theDataObject.APPConfig |= Sports;
+            //NSLog(@"APP Config changed!,Sporty");
             break;
         case (Sleep):
             //[self.HealthyCareViewButton sendActionsForControlEvents:UIControlEventTouchUpInside];
@@ -1534,6 +1558,9 @@ didDisconnectPeripheral:(CBPeripheral *)peripheral
             break;
     }
     
+    if(self.APPConfig != theDataObject.APPConfig)
+        self.APPConfig = theDataObject.APPConfig;
+    
     //NSLog(@"APP Config changed!");
 }
 
@@ -1542,7 +1569,7 @@ didDisconnectPeripheral:(CBPeripheral *)peripheral
     AlarmMaxHeartRate = MaxHeartRate;
     AlarmMinHeartRate = MinHeartRate;
     
-    //NSLog(@"HeartRate data changed!");
+    //NSLog(@"HeartRate data changed!,%ld,%ld",(long)AlarmMaxHeartRate,(long)AlarmMinHeartRate);
 }
 
 #pragma mark - CLLocationManager delegate and related methods

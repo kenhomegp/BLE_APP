@@ -1,6 +1,7 @@
 
 /* Class = "IBUILabel"; text = "Age"; ObjectID = "1cf-b5-h8h"; */
 "1cf-b5-h8h.text" = "年齡";
+"U4f-Lb-GgC.text" = "年齡";
 
 /* Class = "IBUIButton"; normalTitle = "MAP"; ObjectID = "1kA-Dv-OhT"; */
 "1kA-Dv-OhT.normalTitle" = "地圖";
@@ -16,12 +17,15 @@
 
 /* Class = "IBUILabel"; text = "Target zone alarm"; ObjectID = "8Ri-hx-RoR"; */
 "8Ri-hx-RoR.text" = "目標區間警示";
+"YwI-Wf-h9N.text" = "目標區間警示";
 
 /* Class = "IBUILabel"; text = "Resting Heart Rate"; ObjectID = "AJr-DH-t3k"; */
 "AJr-DH-t3k.text" = "靜止心跳";
+"M3a-oG-fBK.text" = "靜止心跳";
 
 /* Class = "IBUILabel"; text = "Target Heart Rate"; ObjectID = "B7B-Pm-2yr"; */
 "B7B-Pm-2yr.text" = "目標心跳區間";
+"Fxw-aU-Dhr.text" = "目標心跳區間";
 
 /* Class = "IBUILabel"; text = "Heart Rate Demo"; ObjectID = "BXV-ik-aqG"; */
 "BXV-ik-aqG.text" = "心跳偵測";
@@ -34,6 +38,7 @@
 
 /* Class = "IBUILabel"; text = "Notification"; ObjectID = "HCY-qk-mAd"; */
 "HCY-qk-mAd.text" = "心率警示功能";
+"Hly-n6-phU.text" = "心率警示功能";
 
 /* Class = "IBUILabel"; text = "V1.2"; ObjectID = "Ijd-fs-lFw"; */
 "Ijd-fs-lFw.text" = "V1.2";
@@ -43,21 +48,26 @@
 
 /* Class = "IBUISegmentedControl"; L6b-Me-wfC.segmentTitles[0] = " Normal "; ObjectID = "L6b-Me-wfC"; */
 "L6b-Me-wfC.segmentTitles[0]" = "醫療保健";
+"dqj-2h-kg4.segmentTitles[0]" = "醫療保健";
 
 /* Class = "IBUISegmentedControl"; L6b-Me-wfC.segmentTitles[1] = "Sport"; ObjectID = "L6b-Me-wfC"; */
 "L6b-Me-wfC.segmentTitles[1]" = "運動";
+"dqj-2h-kg4.segmentTitles[1]" = "運動";
 
 /* Class = "IBUISegmentedControl"; L6b-Me-wfC.segmentTitles[2] = "Sleep"; ObjectID = "L6b-Me-wfC"; */
 "L6b-Me-wfC.segmentTitles[2]" = "睡眠";
+"dqj-2h-kg4.segmentTitles[2]" = "睡眠";
 
 /* Class = "IBUILabel"; text = "100 bpm"; ObjectID = "LHq-8q-xZc"; */
 "LHq-8q-xZc.text" = "100 bpm";
 
 /* Class = "IBUILabel"; text = "Min.  HeartRate "; ObjectID = "MxX-wc-CYc"; */
 "MxX-wc-CYc.text" = "靜止最小心跳";
+"B6b-sf-hQR.text" = "靜止最小心跳";
 
 /* Class = "IBUILabel"; text = "Max. HeartRate"; ObjectID = "NYh-mJ-Qob"; */
 "NYh-mJ-Qob.text" = "靜止最大心跳";
+"y0y-Dd-Sdd.text" = "靜止最大心跳";
 
 /* Class = "IBUIButton"; normalTitle = "Done"; ObjectID = "Qdt-hG-EX5"; */
 "Qdt-hG-EX5.normalTitle" = "結束";
@@ -76,6 +86,7 @@
 
 /* Class = "IBUILabel"; text = "Maximum Heart Rate"; ObjectID = "Xue-C5-szc"; */
 "Xue-C5-szc.text" = "最大心跳";
+"cA2-cZ-aie.text" = "最大心跳";
 
 /* Class = "IBUILabel"; text = " 70"; ObjectID = "bts-a9-Ycj"; */
 "bts-a9-Ycj.text" = " 70";
@@ -115,9 +126,20 @@
 
 /* Class = "IBUILabel"; text = "Name "; ObjectID = "uyO-NA-lpe"; */
 "uyO-NA-lpe.text" = "姓名";
+"57J-js-118.text" = "姓名";
 
 /* Class = "IBUIButton"; normalTitle = "Test1"; ObjectID = "wje-PP-av8"; */
 "wje-PP-av8.normalTitle" = "測試";
 
 /* Class = "IBUILabel"; text = "時間:00時:00分:00秒"; ObjectID = "wop-xn-jY4"; */
 "wop-xn-jY4.text" = "時間:00時:00分:00秒";
+
+/* Class = "IBUIButton"; normalTitle = "Change HR Threshold"; ObjectID = "P3Y-6R-LGL"; */
+"P3Y-6R-LGL.normalTitle" = "調整心跳監測值";
+
+/* Class = "IBUIButton"; normalTitle = "START"; ObjectID = "H0e-xh-tqb"; */
+"H0e-xh-tqb.normalTitle" = "開始跑步";
+
+/* Class = "IBUIButton"; normalTitle = "Login"; ObjectID = "Xap-Zj-ndB"; */
+"Xap-Zj-ndB.normalTitle" = "登入";
+"7Af-fX-Lhd.normalTitle" = "登入";

@@ -262,7 +262,7 @@
     // Pass the selected object to the new view controller.
 }
 */
-
+/*
 - (IBAction)SaveData:(id)sender {
     
     _HR_UserName = UserName.text;
@@ -288,6 +288,8 @@
     
     [self dismissViewControllerAnimated:YES completion:nil];
 }
+*/
+
 - (IBAction)APPModeChange:(id)sender {
     
     switch([sender selectedSegmentIndex])

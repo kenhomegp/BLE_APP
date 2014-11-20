@@ -57,6 +57,33 @@
     [[UIApplication sharedApplication] setIdleTimerDisabled:NO];
 }
 
+#ifdef BatteryLevel
+- (void)batteryLevelChanged:(NSNotification *)notification
+{
+    //Update Battery Level
+    float batteryLevel = [UIDevice currentDevice].batteryLevel;
+    if (batteryLevel < 0.0) {
+        // -1.0 means battery state is UIDeviceBatteryStateUnknown
+        self.BatteryLabel.text = @"Battery: 90%";
+        //NSLog(@"chk 1");
+    }
+    else {
+        static NSNumberFormatter *numberFormatter = nil;
+        if (numberFormatter == nil) {
+            numberFormatter = [[NSNumberFormatter alloc] init];
+            [numberFormatter setNumberStyle:NSNumberFormatterPercentStyle];
+            [numberFormatter setMaximumFractionDigits:1];
+        }
+        
+        NSNumber *levelObj = [NSNumber numberWithFloat:batteryLevel];
+        //self.BatteryLabel.text = [numberFormatter stringFromNumber:levelObj];
+        self.BatteryLabel.text = [@"Battery: " stringByAppendingString:[numberFormatter stringFromNumber:levelObj]];
+        //NSLog(@"chk 2");
+    }
+
+}
+#endif
+
 - (void)viewDidLoad
 {
     [super viewDidLoad];
@@ -65,6 +92,15 @@
     //NSLog(@"HRMapViewDidLoad");
     
     [[UIApplication sharedApplication] setIdleTimerDisabled:YES];
+    
+    #ifdef BatteryLevel
+    // Register for battery level and state change notifications.
+	[[NSNotificationCenter defaultCenter] addObserver:self
+											 selector:@selector(batteryLevelChanged:)
+												 name:UIDeviceBatteryLevelDidChangeNotification object:nil];
+    [UIDevice currentDevice].batteryMonitoringEnabled = YES;
+    //NSLog(@"BatteryMonitorEnabled!");
+    #endif
     
     //Start/Stop button
     [self.CustomButton setBackgroundImage:[UIImage imageNamed:@"Button1.png"] forState:UIControlStateNormal];
@@ -124,6 +160,8 @@
             
         }
     }
+    
+
     
 /*
     // Creates a marker in the center of the map.

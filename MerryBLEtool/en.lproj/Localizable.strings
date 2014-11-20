@@ -10,6 +10,7 @@
 "Device" = "Device not found!";
 "End" = "End";
 "MainViewController" = "Merry HRM";
+"StartViewController" = "Application Mode";
 "HealthyCareVC" = "HeartRate Monitor";
 "HCNormalLabel" = "Monitor heartbeat any time";
 "HCSleepLabel" = "Relaxation and help sleep";
@@ -20,3 +21,9 @@
 "ResetTime" = "Time:00h:00m:00s";
 "ResetPace" = "Pace : 00 km/h";
 "ResetCalories" = "Calories: 00000 cal";
+"TableViewCell1Title" = "Running";
+"TableViewCell1Detail" = "Strengthen the muscles";
+"TableViewCell2Title" = "Healthy care";
+"TableViewCell2Detail" = "Monitor heartbeat any time";
+"TableViewCell3Title" = "Sleeping";
+"TableViewCell3Detail" = "Relaxation and help sleep";

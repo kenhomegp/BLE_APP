@@ -45,7 +45,9 @@
     self.tableView.backgroundColor = [UIColor clearColor];
     
     //self.title = @"應用類型";
-    self.title = @"Application Mode";
+    //self.title = @"Application Mode";
+    
+    self.title = NSLocalizedString(@"StartViewController", @"title");
 }
 
 - (void)didReceiveMemoryWarning
@@ -128,6 +130,24 @@
     return background;
 }
 
+
+-(CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath*)indexPath
+{
+    if (indexPath.section == 0) {
+        if (indexPath.row == 0) {
+            return 150;
+        }
+        else if(indexPath.row == 1)
+            return 80;
+        else if (indexPath.row == 2)
+            return 80;
+        else
+            return 70;
+    }
+    return 44;
+}
+
+
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
     static NSString *CellIdentifier = @"Cell";
@@ -148,8 +168,10 @@
         APPImage.image = [UIImage imageNamed:@"Distance.png"];
         //APPTitle.text = @"跑步";
         //APPDetail.text = @"加強肌肉與耐力";
-        APPTitle.text = @"Running";
-        APPDetail.text = @"Strengthen the muscles";
+        //APPTitle.text = @"Running";
+        //APPDetail.text = @"Strengthen the muscles";
+        APPTitle.text = NSLocalizedString(@"TableViewCell1Title", @"");
+        APPDetail.text = NSLocalizedString(@"TableViewCell1Detail", @"");
         APPUseFreq.text = @"60%";
     }
     else if(indexPath.row == 1)
@@ -157,8 +179,10 @@
         APPImage.image = [UIImage imageNamed:@"AppHealthy.png"];
         //APPTitle.text = @"保健";
         //APPDetail.text = @"隨時隨地監控心跳";
-        APPTitle.text = @"Healthy care";
-        APPDetail.text = @"Monitor heartbeat any time";
+        //APPTitle.text = @"Healthy care";
+        //APPDetail.text = @"Monitor heartbeat any time";
+        APPTitle.text = NSLocalizedString(@"TableViewCell2Title", @"");
+        APPDetail.text = NSLocalizedString(@"TableViewCell2Detail", @"");
         APPUseFreq.text = @"30%";
         
     }
@@ -167,8 +191,10 @@
         APPImage.image = [UIImage imageNamed:@"AppSleep.png"];
         //APPTitle.text = @"睡眠";
         //APPDetail.text = @"放鬆並輔助睡眠";
-        APPTitle.text = @"Sleeping";
-        APPDetail.text = @"Relaxation and help sleep";
+        //APPTitle.text = @"Sleeping";
+        //APPDetail.text = @"Relaxation and help sleep";
+        APPTitle.text = NSLocalizedString(@"TableViewCell3Title", @"");
+        APPDetail.text = NSLocalizedString(@"TableViewCell3Detail", @"");
         APPUseFreq.text = @"10%";
     }
     
@@ -209,11 +235,11 @@
     }
     else if(indexPath.row == 1)
     {
-        [self performSegueWithIdentifier:@"SegueForTest" sender:[tableView cellForRowAtIndexPath:indexPath]];
+        //[self performSegueWithIdentifier:@"SegueForTest" sender:[tableView cellForRowAtIndexPath:indexPath]];
     }
     else if(indexPath.row == 2)
     {
-        [self performSegueWithIdentifier:@"SegueForTest" sender:[tableView cellForRowAtIndexPath:indexPath]];
+        //[self performSegueWithIdentifier:@"SegueForTest" sender:[tableView cellForRowAtIndexPath:indexPath]];
     }
 }
 

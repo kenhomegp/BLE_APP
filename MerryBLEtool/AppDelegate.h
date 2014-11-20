@@ -8,7 +8,7 @@
 
 #import <UIKit/UIKit.h>
 #import "HRMViewController.h"
-#import "HRMSetting.h"
+#import "HRMTableSetting.h"
 #import "HRStartViewController.h"
 #import "AppDelegateProtocol.h"
 

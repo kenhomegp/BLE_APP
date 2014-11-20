@@ -9,7 +9,9 @@
 #import <UIKit/UIKit.h>
 #import <CoreLocation/CoreLocation.h>
 
-#import "HRMSetting.h"
+#import "HRMTableSetting.h"
+
+#define BatteryLevel
 
 @protocol passMapPositionDelegate <NSObject>
 -(void) passDistance : (double)Map_distance;
@@ -28,4 +30,5 @@
 @property (weak, nonatomic) IBOutlet UILabel *HeartRateLabel;
 @property (weak, nonatomic) IBOutlet UILabel *TimeLabel;
 @property (weak, nonatomic) IBOutlet UILabel *CaloriesLabel;
+@property (weak, nonatomic) IBOutlet UILabel *BatteryLabel;
 @end

@@ -12,10 +12,12 @@
 #import <MessageUI/MessageUI.h>
 #import <CoreLocation/CoreLocation.h>
 
-#import "HRMSetting.h"
+//#import "HRMSetting.h"
+#import "HRMTableSetting.h"
 #import "HeartLive.h"
 #import "HRHealthyCare.h"
 #import "HRMapView.h"
+
 
 #define POLARH7_HRM_DEVICE_INFO_SERVICE_UUID @"180A"       // 180A = Device Information
 #define POLARH7_HRM_HEART_RATE_SERVICE_UUID @"180D"        // 180D = Heart Rate Service
@@ -25,8 +27,10 @@
 #define POLARH7_HRM_MANUFACTURER_NAME_UUID @"2A29"
 
 
+#define CSR8670_BLEx
+
 //@interface HRMViewController : UIViewController <CBCentralManagerDelegate, CBPeripheralDelegate , MFMailComposeViewControllerDelegate ,CLLocationManagerDelegate ,passUserSetting , passMapPositionDelegate>
-@interface HRMViewController : UIViewController <CBCentralManagerDelegate, CBPeripheralDelegate , MFMailComposeViewControllerDelegate ,UITableViewDataSource, UITableViewDelegate,CLLocationManagerDelegate ,passUserSetting , passMapPositionDelegate>
+@interface HRMViewController : UIViewController <CBCentralManagerDelegate, CBPeripheralDelegate , MFMailComposeViewControllerDelegate ,UITableViewDataSource, UITableViewDelegate,CLLocationManagerDelegate ,passUserSetting1 , passMapPositionDelegate>
 //@interface HRMViewController : UIViewController <CBCentralManagerDelegate, CBPeripheralDelegate , MFMailComposeViewControllerDelegate ,UITableViewDataSource, UITableViewDelegate, passUserSetting>
 //HeartRate Curve
 @property (nonatomic , strong) NSArray *dataSource;

@@ -50,6 +50,12 @@
     HRMDataObject* theDataObject = [self theAppDataObject];
     self.APPConfig = theDataObject.APPConfig;
     
+    //UIDevice = iPhone
+    //TextView
+    //X:0 , Y:45 , Width:320 , Height:163
+    //Image
+    //X:0 , Y:210 , Width:320 , Height:244
+    
     switch(self.APPConfig & ApplicationMode)
     {
         case (Normal):
@@ -82,6 +88,24 @@
     else{
         //NSLog(@"BLE connected!");
     }
+    
+    /*
+    NSString *html = @"<html><head><body><img src=\"HRM.gif\"><body></head></html>";
+    NSString *path = [[NSBundle mainBundle] resourcePath];
+    NSURL *baseURL = [NSURL fileURLWithPath:path];
+    [self.WebImage loadHTMLString:html baseURL:baseURL];
+    */
+    
+    //==获取gif文件路径
+    NSString *filePath=[[NSBundle mainBundle] pathForResource:@"HRM" ofType:@"gif"];
+    //==获取gif数据
+    NSData *gifData=[NSData dataWithContentsOfFile:filePath];
+    //==加载gif数据
+    [self.WebImage loadData:gifData
+             MIMEType:@"image/gif"
+     textEncodingName:nil
+              baseURL:nil];
+    
     
 }
 

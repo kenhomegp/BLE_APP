@@ -10,8 +10,10 @@
 "Device" = "無法找到裝置!";
 "End" = "結束";
 "MainViewController" = "心跳即時資訊";
+"StartViewController" = "應用類型";
 "HealthyCareVC" = "醫療保健";
-"HCLabel" = "心率偵測";
+"HCNormalLabel" = "隨時隨地偵測心跳";
+"HCSleepLabel" = "放鬆幫助睡眠";
 "SettingVC" = "功能設定";
 "StartButton" = "開始跑步";
 "StopButton" = "運動結束";
@@ -19,3 +21,10 @@
 "ResetTime" = "時間 : 00時:00分:00秒";
 "ResetPace" = "時速 : 00公里/時";
 "ResetCalories" = "燃燒卡路里 : 00000卡";
+"TableViewCell1Title" = "慢跑運動";
+"TableViewCell1Detail" = "加強你的肌肉與肌耐力";
+"TableViewCell2Title" = "醫療保健";
+"TableViewCell2Detail" = "隨時隨地量測心跳";
+"TableViewCell3Title" = "睡眠模式";
+"TableViewCell3Detail" = "放鬆幫助睡眠";
+

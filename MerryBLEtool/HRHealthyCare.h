@@ -8,7 +8,7 @@
 
 #import <UIKit/UIKit.h>
 
-#import "HRMSetting.h"
+#import "HRMTableSetting.h"
 
 #define TargetZoneAlarm     0x01
 #define HRNotification      0x02
@@ -30,4 +30,5 @@
 @property (nonatomic) NSInteger SeguePassingData;
 @property (weak, nonatomic) IBOutlet UILabel *TitleLabel;
 - (IBAction)ChgHRThreshold:(id)sender;
+@property (weak, nonatomic) IBOutlet UIWebView *WebImage;
 @end
