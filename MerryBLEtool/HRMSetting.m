@@ -79,8 +79,13 @@
 #endif
     
     [userDefaults synchronize];
+/*
+    NSString *version = [[NSBundle mainBundle] objectForInfoDictionaryKey:@"CFBundleShortVersionString"];
     
-    //NSLog(@"SaveUserData");
+    NSString *build = [[NSBundle mainBundle] objectForInfoDictionaryKey:(NSString *)kCFBundleVersionKey];
+    
+    NSLog(@"APP version = %@,%@",version,build);
+*/
 }
 
 /*

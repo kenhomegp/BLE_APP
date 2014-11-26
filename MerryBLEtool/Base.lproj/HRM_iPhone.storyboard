@@ -992,6 +992,7 @@
                         <outlet property="UserName" destination="Mmq-gh-Yvy" id="10x-cv-2xS"/>
                         <outlet property="UserRHR" destination="dLA-hf-0i4" id="e8T-Ys-2tA"/>
                         <outlet property="UserTHR1" destination="g4c-54-HOJ" id="Yj8-Q5-6va"/>
+                        <outlet property="Version" destination="HaN-aM-WNR" id="op2-cp-hS1"/>
                     </connections>
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="nmZ-3M-SB1" userLabel="First Responder" sceneMemberID="firstResponder"/>

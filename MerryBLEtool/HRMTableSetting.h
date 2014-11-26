@@ -60,4 +60,5 @@
 @property (nonatomic) NSInteger SetRHR;
 @property (nonatomic) NSInteger UserAgeValue;
 @property (nonatomic, assign) id <passUserSetting1> delegate;
+@property (weak, nonatomic) IBOutlet UILabel *Version;
 @end

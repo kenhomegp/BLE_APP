@@ -1363,6 +1363,11 @@ didDisconnectPeripheral:(CBPeripheral *)peripheral
                     if(_audioPlayer.playing == NO)
                         [_audioPlayer play];
                 }
+                else
+                {
+                    if(_audioPlayer.playing)
+                        [_audioPlayer stop];
+                }
                 
             }
             else if((self.APPConfig & ApplicationMode) == Sleep)
@@ -1371,6 +1376,10 @@ didDisconnectPeripheral:(CBPeripheral *)peripheral
                 {
                     if(SoftMusic.playing == NO)
                         [SoftMusic play];
+                }
+                else{
+                    if(SoftMusic.playing)
+                        [SoftMusic stop];
                 }
             }
         }
@@ -1391,6 +1400,10 @@ didDisconnectPeripheral:(CBPeripheral *)peripheral
                     if(_audioPlayer.playing == NO)
                         [_audioPlayer play];
                 }
+                else{
+                    if(_audioPlayer.playing)
+                        [_audioPlayer stop];
+                }
             }
             else if((self.APPConfig & ApplicationMode) == Sleep)
             {
@@ -1398,6 +1411,10 @@ didDisconnectPeripheral:(CBPeripheral *)peripheral
                 {
                     if(SoftMusic.playing == NO)
                         [SoftMusic play];
+                }
+                else{
+                    if(SoftMusic.playing)
+                        [SoftMusic stop];
                 }
             }
             
@@ -1407,10 +1424,14 @@ didDisconnectPeripheral:(CBPeripheral *)peripheral
     else
     {
         if(_audioPlayer.playing)
+        {
             [_audioPlayer stop];
+        }
         
         if(SoftMusic.playing)
+        {
             [SoftMusic stop];
+        }
         
         if(self.CountError < 3 && self.CountError != 0)
         {
@@ -1834,6 +1855,7 @@ didDisconnectPeripheral:(CBPeripheral *)peripheral
     
     HRMDataObject* theDataObject = [self theAppDataObject];
     theDataObject.APPConfig &= ~(ApplicationMode);
+    theDataObject.APPConfig &= ~(HRNotification);
     
     switch(self.APPConfig & ApplicationMode)
     {
@@ -1874,10 +1896,15 @@ didDisconnectPeripheral:(CBPeripheral *)peripheral
             break;
     }
     
+    if((Configdata & HRNotification) == HRNotification)
+    {
+        theDataObject.APPConfig |= HRNotification;
+    }
+    
     if(self.APPConfig != theDataObject.APPConfig)
         self.APPConfig = theDataObject.APPConfig;
     
-    //NSLog(@"APP Config changed!");
+    //NSLog(@"APP Config changed!,%ld,%ld",(long)Configdata,theDataObject.APPConfig);
 }
 
 -(void)passHeartRateData:(NSInteger)MaxHR SetMaxHR:(NSInteger)MaxHeartRate SetMinHR:(NSInteger)MinHeartRate RestHeartRate:(NSInteger)RHR UpperTargetHeartRate:(NSInteger)UpperTHR LowerTargetHeartRate:(NSInteger)LowerTHR
