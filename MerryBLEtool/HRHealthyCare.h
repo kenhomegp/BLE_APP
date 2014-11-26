@@ -31,4 +31,5 @@
 @property (weak, nonatomic) IBOutlet UILabel *TitleLabel;
 - (IBAction)ChgHRThreshold:(id)sender;
 @property (weak, nonatomic) IBOutlet UIWebView *WebImage;
+
 @end

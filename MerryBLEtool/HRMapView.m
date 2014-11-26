@@ -141,6 +141,8 @@
         //NSLog(@"@@@BLE disconnected!");
         
         [[self delegate] passCommand:@"BLE_Connect"];
+        
+        [self.CustomButton setTitle:NSLocalizedString(@"StartButton", @"") forState:UIControlStateNormal];
     }
     else{
         //NSLog(@"!!!BLE connected");
@@ -150,14 +152,15 @@
             //NSLog(@"Start HRMapView Timer!");
             if(!([HRMTimer isValid]))
             {
-                NSLog(@"Start HRMapView Timer!");
+                //NSLog(@"Start HRMapView Timer!");
                 HRMTimer = [NSTimer scheduledTimerWithTimeInterval:1.0
                                                             target:self
                                                           selector:@selector         (UpdateHRMData)
                                                           userInfo:nil
                                                            repeats:YES];
+                
+                [self.CustomButton setTitle:NSLocalizedString(@"PauseButton", @"") forState:UIControlStateNormal];
             }
-            
         }
     }
     
@@ -419,9 +422,12 @@ double getDistanceMetresBetweenLocationCoordinates(
                                                              selector:@selector         (UpdateHRMData)
                                                              userInfo:nil
                                                               repeats:YES];
+        [self.CustomButton setTitle:NSLocalizedString(@"PauseButton", @"") forState:UIControlStateNormal];
     }
     else{
         [HRMTimer invalidate];
+        
+        [self.CustomButton setTitle:NSLocalizedString(@"StartButton", @"") forState:UIControlStateNormal];
     }
 }
 @end

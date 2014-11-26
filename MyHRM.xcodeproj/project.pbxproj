@@ -36,6 +36,9 @@
 		C126725919D941CB00DDAB7D /* HRAlarm1.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = C126725819D941CB00DDAB7D /* HRAlarm1.mp3 */; };
 		C129436A1A10AAD100C433F8 /* AppSleep.png in Resources */ = {isa = PBXBuildFile; fileRef = C12943691A10AAD100C433F8 /* AppSleep.png */; };
 		C129436C1A10AADA00C433F8 /* AppHealthy.png in Resources */ = {isa = PBXBuildFile; fileRef = C129436B1A10AADA00C433F8 /* AppHealthy.png */; };
+		C12CA81D1A22C31F00F6CC76 /* HRM2.gif in Resources */ = {isa = PBXBuildFile; fileRef = C12CA81C1A22C31E00F6CC76 /* HRM2.gif */; };
+		C12CA8201A23099900F6CC76 /* CustomHeaderCell.m in Sources */ = {isa = PBXBuildFile; fileRef = C12CA81F1A23099900F6CC76 /* CustomHeaderCell.m */; };
+		C12CA8221A2314B900F6CC76 /* TableTitle.png in Resources */ = {isa = PBXBuildFile; fileRef = C12CA8211A2314B900F6CC76 /* TableTitle.png */; };
 		C12D6A8D19ECFD2800DBD768 /* DeviceConnected.png in Resources */ = {isa = PBXBuildFile; fileRef = C12D6A8C19ECFD2700DBD768 /* DeviceConnected.png */; };
 		C12D6A8F19ECFD3D00DBD768 /* GPS_On.png in Resources */ = {isa = PBXBuildFile; fileRef = C12D6A8E19ECFD3D00DBD768 /* GPS_On.png */; };
 		C12D6A9119ECFD6C00DBD768 /* Battery.png in Resources */ = {isa = PBXBuildFile; fileRef = C12D6A9019ECFD6C00DBD768 /* Battery.png */; };
@@ -55,9 +58,9 @@
 		C130E61519F0F8B000550957 /* OpenGLES.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C130E61419F0F8B000550957 /* OpenGLES.framework */; };
 		C130E61719F0F8DE00550957 /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C130E61619F0F8DE00550957 /* SystemConfiguration.framework */; };
 		C130E61A19F1025A00550957 /* HRMapView.m in Sources */ = {isa = PBXBuildFile; fileRef = C130E61919F1025A00550957 /* HRMapView.m */; };
+		C13C3F991A242A9700E0DC58 /* transparentpic.png in Resources */ = {isa = PBXBuildFile; fileRef = C13C3F981A242A9700E0DC58 /* transparentpic.png */; };
 		C15420F91A0CB2170096E954 /* 640_960.png in Resources */ = {isa = PBXBuildFile; fileRef = C15420F81A0CB2060096E954 /* 640_960.png */; };
 		C15420FE1A0CB23A0096E954 /* 640_1136.png in Resources */ = {isa = PBXBuildFile; fileRef = C15420FC1A0CB2260096E954 /* 640_1136.png */; };
-		C16F68841A19E01D00EF9C77 /* HRM.gif in Resources */ = {isa = PBXBuildFile; fileRef = C16F68831A19E01D00EF9C77 /* HRM.gif */; };
 		C18300B71A0C615E00CAAB55 /* HRM_iPhone.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = C18300B91A0C615E00CAAB55 /* HRM_iPhone.storyboard */; };
 		C19A510119F8CEE900FC8DE4 /* sleepy.jpg in Resources */ = {isa = PBXBuildFile; fileRef = C19A510019F8CEE900FC8DE4 /* sleepy.jpg */; };
 		C19A510319F8D87D00FC8DE4 /* HeartRateDemo.jpg in Resources */ = {isa = PBXBuildFile; fileRef = C19A510219F8D87D00FC8DE4 /* HeartRateDemo.jpg */; };
@@ -150,6 +153,10 @@
 		C126725819D941CB00DDAB7D /* HRAlarm1.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = HRAlarm1.mp3; sourceTree = "<group>"; };
 		C12943691A10AAD100C433F8 /* AppSleep.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = AppSleep.png; sourceTree = "<group>"; };
 		C129436B1A10AADA00C433F8 /* AppHealthy.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = AppHealthy.png; sourceTree = "<group>"; };
+		C12CA81C1A22C31E00F6CC76 /* HRM2.gif */ = {isa = PBXFileReference; lastKnownFileType = image.gif; path = HRM2.gif; sourceTree = "<group>"; };
+		C12CA81E1A23099900F6CC76 /* CustomHeaderCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CustomHeaderCell.h; sourceTree = "<group>"; };
+		C12CA81F1A23099900F6CC76 /* CustomHeaderCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CustomHeaderCell.m; sourceTree = "<group>"; };
+		C12CA8211A2314B900F6CC76 /* TableTitle.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = TableTitle.png; sourceTree = "<group>"; };
 		C12D6A8C19ECFD2700DBD768 /* DeviceConnected.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = DeviceConnected.png; sourceTree = "<group>"; };
 		C12D6A8E19ECFD3D00DBD768 /* GPS_On.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = GPS_On.png; sourceTree = "<group>"; };
 		C12D6A9019ECFD6C00DBD768 /* Battery.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Battery.png; sourceTree = "<group>"; };
@@ -170,11 +177,11 @@
 		C130E61619F0F8DE00550957 /* SystemConfiguration.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SystemConfiguration.framework; path = System/Library/Frameworks/SystemConfiguration.framework; sourceTree = SDKROOT; };
 		C130E61819F1025900550957 /* HRMapView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HRMapView.h; sourceTree = "<group>"; };
 		C130E61919F1025A00550957 /* HRMapView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HRMapView.m; sourceTree = "<group>"; };
+		C13C3F981A242A9700E0DC58 /* transparentpic.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = transparentpic.png; sourceTree = "<group>"; };
 		C15420F71A0CB2060096E954 /* Base */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = Base; path = Base.lproj/640_960.png; sourceTree = "<group>"; };
 		C15420FA1A0CB21D0096E954 /* zh-Hant */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "zh-Hant"; path = "zh-Hant.lproj/640_960.png"; sourceTree = "<group>"; };
 		C15420FB1A0CB2260096E954 /* Base */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = Base; path = Base.lproj/640_1136.png; sourceTree = "<group>"; };
 		C15420FD1A0CB2350096E954 /* zh-Hant */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "zh-Hant"; path = "zh-Hant.lproj/640_1136.png"; sourceTree = "<group>"; };
-		C16F68831A19E01D00EF9C77 /* HRM.gif */ = {isa = PBXFileReference; lastKnownFileType = image.gif; path = HRM.gif; sourceTree = "<group>"; };
 		C18300B81A0C615E00CAAB55 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/HRM_iPhone.storyboard; sourceTree = "<group>"; };
 		C18300BB1A0C617F00CAAB55 /* zh-Hant */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hant"; path = "zh-Hant.lproj/HRM_iPhone.strings"; sourceTree = "<group>"; };
 		C19A510019F8CEE900FC8DE4 /* sleepy.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = sleepy.jpg; sourceTree = "<group>"; };
@@ -332,6 +339,8 @@
 				C12545FF1A13482E001E0EBD /* ViewControllerDataSharing */,
 				C11073641A0F573800FE3CFD /* HRStartViewController.h */,
 				C11073651A0F573900FE3CFD /* HRStartViewController.m */,
+				C12CA81E1A23099900F6CC76 /* CustomHeaderCell.h */,
+				C12CA81F1A23099900F6CC76 /* CustomHeaderCell.m */,
 				C1F97CAD19D5554300C753BE /* data.txt */,
 				C10B01F619B71C9E00325785 /* HRAlarm.mp3 */,
 				C1DF28B8186147DB00000695 /* AppDelegate.h */,
@@ -360,7 +369,9 @@
 		C1DF28B0186147DA00000695 /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
-				C16F68831A19E01D00EF9C77 /* HRM.gif */,
+				C13C3F981A242A9700E0DC58 /* transparentpic.png */,
+				C12CA8211A2314B900F6CC76 /* TableTitle.png */,
+				C12CA81C1A22C31E00F6CC76 /* HRM2.gif */,
 				C10C35001A1605BE008F3E5D /* rsz_arrow.png */,
 				C1FF23A41A11B89D00BE0C61 /* Button1Pressed.png */,
 				C1FF23A61A11D87600BE0C61 /* Countdownpic1.png */,
@@ -514,6 +525,7 @@
 				C1F60B86198B37610032A497 /* Icon-Small-30.png in Resources */,
 				C12529DB19EE75C1004AFA0F /* Energy.png in Resources */,
 				C1F60B80198B37610032A497 /* apple-touch-icon-72x72-precomposed.png in Resources */,
+				C12CA8221A2314B900F6CC76 /* TableTitle.png in Resources */,
 				C130E60119F0E22B00550957 /* Jogging1.png in Resources */,
 				C1DF28B4186147DA00000695 /* InfoPlist.strings in Resources */,
 				C11073611A0F0C9400FE3CFD /* Login.png in Resources */,
@@ -560,7 +572,6 @@
 				C1F60B82198B37610032A497 /* Icon-72.png in Resources */,
 				C12D6A9719ED148700DBD768 /* Setting.png in Resources */,
 				C1F624B919C92E6A00565830 /* factory.png in Resources */,
-				C16F68841A19E01D00EF9C77 /* HRM.gif in Resources */,
 				C1DF28D81861507700000695 /* 2.png in Resources */,
 				C1F60B84198B37610032A497 /* Icon-Small-20.png in Resources */,
 				C11F946219F4F2A300DA0CD1 /* APPLaunch.png in Resources */,
@@ -569,7 +580,9 @@
 				C1FF23AE1A11D87600BE0C61 /* Countdownpic3.png in Resources */,
 				C105A4B419E51C40007E34D1 /* SoftMusic.mp3 in Resources */,
 				C1F60B81198B37610032A497 /* apple-touch-icon-precomposed.png in Resources */,
+				C13C3F991A242A9700E0DC58 /* transparentpic.png in Resources */,
 				C1DF28D91861507700000695 /* 3.png in Resources */,
+				C12CA81D1A22C31F00F6CC76 /* HRM2.gif in Resources */,
 				C1F60B85198B37610032A497 /* Icon-Small-20@2x.png in Resources */,
 				C129436A1A10AAD100C433F8 /* AppSleep.png in Resources */,
 				C11073681A0F5C0F00FE3CFD /* common_bg.png in Resources */,
@@ -589,6 +602,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				C12545FA1A133D0C001E0EBD /* AppDataObject.m in Sources */,
+				C12CA8201A23099900F6CC76 /* CustomHeaderCell.m in Sources */,
 				C12529D319EE11EB004AFA0F /* HRHealthyCare.m in Sources */,
 				C11073661A0F573900FE3CFD /* HRStartViewController.m in Sources */,
 				C1DF28B6186147DB00000695 /* main.m in Sources */,
@@ -676,7 +690,8 @@
 				CLANG_WARN_ENUM_CONVERSION = YES;
 				CLANG_WARN_INT_CONVERSION = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				CODE_SIGN_IDENTITY = "iPhone Distribution: Ming lung Huang (6X2JBVCB26)";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution: Ming lung Huang (6X2JBVCB26)";
 				COPY_PHASE_STRIP = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
@@ -694,6 +709,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_IDENTITY = "iPhone Distribution: Ming lung Huang (6X2JBVCB26)";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution: Ming lung Huang (6X2JBVCB26)";
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)",
@@ -703,6 +719,7 @@
 				INFOPLIST_FILE = "MerryBLEtool/MyHRM-Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 7.1;
 				PRODUCT_NAME = MyHRM;
+				PROVISIONING_PROFILE = "";
 				TARGETED_DEVICE_FAMILY = "1,2";
 				WRAPPER_EXTENSION = app;
 			};
@@ -770,6 +787,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_IDENTITY = "iPhone Developer: Ming lung Huang (V3M8MT63U2)";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer: Ming lung Huang (V3M8MT63U2)";
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)",
@@ -779,6 +797,7 @@
 				INFOPLIST_FILE = "MerryBLEtool/MyHRM-Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 7.1;
 				PRODUCT_NAME = MyHRM;
+				PROVISIONING_PROFILE = "";
 				TARGETED_DEVICE_FAMILY = "1,2";
 				WRAPPER_EXTENSION = app;
 			};
@@ -789,6 +808,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_IDENTITY = "iPhone Developer: Ming lung Huang (V3M8MT63U2)";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer: Ming lung Huang (V3M8MT63U2)";
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)",
@@ -798,6 +818,7 @@
 				INFOPLIST_FILE = "MerryBLEtool/MyHRM-Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 7.1;
 				PRODUCT_NAME = MyHRM;
+				PROVISIONING_PROFILE = "";
 				TARGETED_DEVICE_FAMILY = "1,2";
 				WRAPPER_EXTENSION = app;
 			};

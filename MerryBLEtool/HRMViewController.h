@@ -96,4 +96,10 @@
 @property (weak, nonatomic) IBOutlet UILabel *BurnCalorieLabel;
 @property (weak, nonatomic) IBOutlet UILabel *MileageLabel;
 @property (weak, nonatomic) IBOutlet UILabel *RunSpeedLabel;
+@property (weak, nonatomic) IBOutlet UIWebView *HRGif;
+@property (weak, nonatomic) IBOutlet UIImageView *Image_Running;
+@property (weak, nonatomic) IBOutlet UIImageView *Image_Time;
+@property (weak, nonatomic) IBOutlet UIImageView *Image_Speed;
+@property (weak, nonatomic) IBOutlet UIImageView *Image_Calories;
+@property (weak, nonatomic) IBOutlet UIButton *Map_Button;
 @end

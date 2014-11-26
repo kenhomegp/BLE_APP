@@ -17,6 +17,7 @@
 "SettingVC" = "功能設定";
 "StartButton" = "開始跑步";
 "StopButton" = "運動結束";
+"PauseButton" = "暫停";
 "ResetDistance" = "里程數 : 00公里";
 "ResetTime" = "時間 : 00時:00分:00秒";
 "ResetPace" = "時速 : 00公里/時";

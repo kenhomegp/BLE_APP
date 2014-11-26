@@ -17,6 +17,7 @@
 "SettingVC" = "Setting";
 "StartButton" = "START";
 "StopButton" = "STOP";
+"PauseButton" = "PAUSE";
 "ResetDistance" = "Distance : 00km";
 "ResetTime" = "Time:00h:00m:00s";
 "ResetPace" = "Pace : 00 km/h";

@@ -96,8 +96,9 @@
     [self.WebImage loadHTMLString:html baseURL:baseURL];
     */
     
+    /*
     //==获取gif文件路径
-    NSString *filePath=[[NSBundle mainBundle] pathForResource:@"HRM" ofType:@"gif"];
+    NSString *filePath=[[NSBundle mainBundle] pathForResource:@"HRM2" ofType:@"gif"];
     //==获取gif数据
     NSData *gifData=[NSData dataWithContentsOfFile:filePath];
     //==加载gif数据
@@ -106,6 +107,7 @@
      textEncodingName:nil
               baseURL:nil];
     
+    */
     
 }
 

@@ -30,6 +30,16 @@
 {
     [textField resignFirstResponder];
     
+    //Set focus to next UITextField
+    if(textField.tag == 70)//Name
+    {
+        [self.UserAge becomeFirstResponder];
+    }
+    else if(textField.tag == 71)//Age
+    {
+        [self.UserRHR becomeFirstResponder];
+    }
+    
     [self CalculateHRData];
     return NO;
 }
@@ -133,6 +143,11 @@
         return 2;
     else
         return 0;
+}
+
+-(CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section
+{
+    return 30;
 }
 
 /*

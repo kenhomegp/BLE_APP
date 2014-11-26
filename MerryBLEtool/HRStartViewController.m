@@ -15,6 +15,8 @@
 #import "AppDelegateProtocol.h"
 #import "HRMDataObject.h"
 
+#import "CustomHeaderCell.h"
+
 @interface HRStartViewController ()
 
 @end
@@ -110,7 +112,7 @@
 {
 //#warning Incomplete method implementation.
     // Return the number of rows in the section.
-    return 3;
+    return 8;
 }
 
 - (UIImage *)cellBackgroundForRowAtIndexPath:(NSIndexPath *)indexPath
@@ -130,7 +132,31 @@
     return background;
 }
 
+-(CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section
+{
+    return 23.0;
+}
 
+-(UIView*)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section
+{
+    // 1. Dequeue the custom header cell
+    CustomHeaderCell* headerCell = [tableView dequeueReusableCellWithIdentifier:@"HeaderCell"];
+    
+    // 2. Set the various properties
+    headerCell.APP_Mode.text = @"Custom header from cell";
+    [headerCell.APP_Mode sizeToFit];
+    
+    headerCell.Run_Frequency.text = @"The subtitle";
+    [headerCell.Run_Frequency sizeToFit];
+    
+    headerCell.image.image = [UIImage imageNamed:@"TableTitle"];
+    
+    // 3. And return
+    return headerCell;
+}
+
+
+/*
 -(CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath*)indexPath
 {
     if (indexPath.section == 0) {
@@ -145,7 +171,7 @@
             return 70;
     }
     return 44;
-}
+}*/
 
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
@@ -196,6 +222,12 @@
         APPTitle.text = NSLocalizedString(@"TableViewCell3Title", @"");
         APPDetail.text = NSLocalizedString(@"TableViewCell3Detail", @"");
         APPUseFreq.text = @"10%";
+    }
+    else
+    {
+        APPTitle.text = nil;
+        APPDetail.text = nil;
+        APPUseFreq.text = nil;
     }
     
     /*
