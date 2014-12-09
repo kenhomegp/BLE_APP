@@ -18,6 +18,7 @@
 #import "HRHealthyCare.h"
 #import "HRMapView.h"
 
+#import "HRMCBTask.h"
 
 #define POLARH7_HRM_DEVICE_INFO_SERVICE_UUID @"180A"       // 180A = Device Information
 #define POLARH7_HRM_HEART_RATE_SERVICE_UUID @"180D"        // 180D = Heart Rate Service
@@ -26,12 +27,16 @@
 #define POLARH7_HRM_BODY_LOCATION_UUID @"2A38"
 #define POLARH7_HRM_MANUFACTURER_NAME_UUID @"2A29"
 
-
+//=====================================================
+#define BLE_AutoConnectx
 #define CSR8670_BLEx
+//=====================================================
 
-//@interface HRMViewController : UIViewController <CBCentralManagerDelegate, CBPeripheralDelegate , MFMailComposeViewControllerDelegate ,CLLocationManagerDelegate ,passUserSetting , passMapPositionDelegate>
+#ifdef BLE_AutoConnect
 @interface HRMViewController : UIViewController <CBCentralManagerDelegate, CBPeripheralDelegate , MFMailComposeViewControllerDelegate ,UITableViewDataSource, UITableViewDelegate,CLLocationManagerDelegate ,passUserSetting1 , passMapPositionDelegate>
-//@interface HRMViewController : UIViewController <CBCentralManagerDelegate, CBPeripheralDelegate , MFMailComposeViewControllerDelegate ,UITableViewDataSource, UITableViewDelegate, passUserSetting>
+#else
+@interface HRMViewController : UIViewController <MFMailComposeViewControllerDelegate ,UITableViewDataSource, UITableViewDelegate,CLLocationManagerDelegate ,passUserSetting1 , passMapPositionDelegate , HRMeasurement >
+#endif
 //HeartRate Curve
 @property (nonatomic , strong) NSArray *dataSource;
 @property (nonatomic , strong) HeartLive *refreshMoniterView;
@@ -52,8 +57,6 @@
 @property (nonatomic, strong) IBOutlet UIImageView *heartImage;
 @property (nonatomic, strong) IBOutlet UITextView  *deviceInfo;
 - (IBAction)HR_Test:(id)sender;
-//- (IBAction)HeartRateMinChanged:(id)sender;
-//- (IBAction)HeartRateMaxChanged:(id)sender;
 
 // Properties to hold data characteristics for the peripheral device
 @property (weak, nonatomic) IBOutlet UILabel *HR_bpm;
@@ -68,20 +71,20 @@
 // Properties to handle storing the BPM and heart beat
 @property (nonatomic, strong) UILabel    *heartRateBPM;
 @property (nonatomic, retain) NSTimer    *pulseTimer;
-//@property (weak, nonatomic) IBOutlet UIStepper *minAlarmStepper;
-//@property (weak, nonatomic) IBOutlet UIStepper *maxAlarmStepper;
 @property (weak, nonatomic) IBOutlet UILabel *minAlarmLabel;
 @property (weak, nonatomic) IBOutlet UILabel *maxAlarmLabel;
 @property (weak, nonatomic) IBOutlet UITableView *sensorsTable;
 @property (weak, nonatomic) IBOutlet UIButton *CustomButton;
 - (IBAction)DrawHeartRateCurve:(id)sender;
 
+/*
 // Instance method to get the heart rate BPM information
 - (void) getHeartBPMData:(CBCharacteristic *)characteristic error:(NSError *)error;
 
 // Instance methods to grab device Manufacturer Name, Body Location
 - (void) getManufacturerName:(CBCharacteristic *)characteristic;
 - (void) getBodyLocation:(CBCharacteristic *)characteristic;
+*/
 
 // Instance method to perform heart beat animations
 - (void) doHeartBeat;

@@ -12,6 +12,7 @@
 #import "HRMTableSetting.h"
 
 #define BatteryLevel
+#define iPhoneMapFullScreenx
 
 @protocol passMapPositionDelegate <NSObject>
 -(void) passDistance : (double)Map_distance;
@@ -21,9 +22,7 @@
 @interface HRMapView : UIViewController <CLLocationManagerDelegate>
 @property (nonatomic, assign) id<passMapPositionDelegate> delegate;
 @property (nonatomic) NSInteger APPConfig;
-//@property (nonatomic, retain) NSTimer *GetMyLocationTimer;
-//@property (nonatomic, retain) CLLocation *previousLocation;
-@property (weak, nonatomic) IBOutlet UIButton *CustomButton;
+@property (retain, nonatomic) IBOutlet UIButton *CustomButton;
 @property (strong, nonatomic) IBOutlet UISwipeGestureRecognizer *SwipeRecognizer;
 - (IBAction)SwipeLeftAction:(id)sender;
 - (IBAction)PressStartButton:(id)sender;

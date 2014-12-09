@@ -27,8 +27,10 @@
 #define DrawRealHeartRateCurve
 #define DrawSimulationHRCurvex
 
+#ifdef BLE_AutoConnect
 static uint16_t currentMaxHR = 0;
 static uint16_t currentMinHR = 0;
+#endif
 static double TotalDistance  = 0;
 static double TotalTime = 0;
 static double TotalCalories = 0;
@@ -119,7 +121,7 @@ static double TotalCalories = 0;
     }
 }
 
-/*
+/* UIDevice = iPad
 - (void)viewDidLoad
 {
     [super viewDidLoad];
@@ -276,6 +278,7 @@ static double TotalCalories = 0;
 }
 */
 
+/* UIDevice = iPhone
 - (void)viewDidLoad
 {
     [super viewDidLoad];
@@ -299,11 +302,6 @@ static double TotalCalories = 0;
     self.APPConfig &= ~(BLE_Connected);
     
     [self.view addSubview:self.HRGif];
-    
-    //Change the back button to cancel and add an event handler
-    //UIBarButtonItem *backButton = [[UIBarButtonItem alloc] initWithTitle:@"Back" style:UIBarButtonItemStyleBordered target:self action:@selector(handleBack:)];
-    UIBarButtonItem *backButton = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"rsz_arrow.png"] style:UIBarButtonItemStyleBordered target:self action:@selector(handleBack:)];
-    
     //==获取gif文件路径
     NSString *filePath=[[NSBundle mainBundle] pathForResource:@"HRM2" ofType:@"gif"];
     //==获取gif数据
@@ -312,6 +310,10 @@ static double TotalCalories = 0;
     [self.HRGif loadData:gifData MIMEType:@"image/gif"
         textEncodingName:nil
                  baseURL:nil];
+
+    //Change the back button to cancel and add an event handler
+    //UIBarButtonItem *backButton = [[UIBarButtonItem alloc] initWithTitle:@"Back" style:UIBarButtonItemStyleBordered target:self action:@selector(handleBack:)];
+    UIBarButtonItem *backButton = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"rsz_arrow.png"] style:UIBarButtonItemStyleBordered target:self action:@selector(handleBack:)];
     
     self.navigationItem.leftBarButtonItem = backButton;
     
@@ -450,9 +452,219 @@ static double TotalCalories = 0;
     //NSString *restorationId = self.restorationIdentifier;
     //NSLog(@"RestorationID = %@",restorationId);
 }
+*/
+
+- (void)viewDidLoad
+{
+    [super viewDidLoad];
+    
+    //NSLog(@"HRMViewControllerDidLoad");
+    
+    //NSLog(@"%@,%ld",[self platformString],(long)[self platformNumber]);
+    
+	// Do any additional setup after loading the view, typically from a nib.
+    self.DeviceName = nil;
+#ifdef BLE_AutoConnect
+    self.polarH7HRMPeripheral = nil;
+#endif
+    self.centralManager = nil;
+    self.connected = nil;
+    self.UserName = @"";
+    self.UserAge = @"";
+    self.RestHeartRate = 0;
+    self.APPConfig = 0;
+    AlarmMaxHeartRate = 70;//Default
+    AlarmMinHeartRate = 50;
+    self.CountError = 0;
+#ifdef BLE_AutoConnect
+    self.APPConfig &= ~(BLE_Connected);
+#endif
+    
+    if(UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad)
+    {
+        
+    }
+    else
+    {
+        [self.view addSubview:self.HRGif];
+        //==获取gif文件路径
+        NSString *filePath=[[NSBundle mainBundle] pathForResource:@"HRM2" ofType:@"gif"];
+        //==获取gif数据
+        NSData *gifData=[NSData dataWithContentsOfFile:filePath];
+        //==加载gif数据
+        [self.HRGif loadData:gifData MIMEType:@"image/gif"
+            textEncodingName:nil
+                 baseURL:nil];
+    }
+    
+    //Change the back button to cancel and add an event handler
+    //UIBarButtonItem *backButton = [[UIBarButtonItem alloc] initWithTitle:@"Back" style:UIBarButtonItemStyleBordered target:self action:@selector(handleBack:)];
+    UIBarButtonItem *backButton = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"rsz_arrow.png"] style:UIBarButtonItemStyleBordered target:self action:@selector(handleBack:)];
+    
+    self.navigationItem.leftBarButtonItem = backButton;
+    
+    //Gesture Regognizer (Swipe & Tap)
+    swipeRight = [[UISwipeGestureRecognizer alloc] initWithTarget:self  action:@selector(swipeRecognized:)];
+    [swipeRight setDirection:UISwipeGestureRecognizerDirectionRight];
+    if(UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad)
+        [self.view addGestureRecognizer:swipeRight];
+    else
+        [self.HRGif addGestureRecognizer:swipeRight];
+    TapGesture = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(TapRecognized:)];
+    [TapGesture setNumberOfTapsRequired:2];
+    if(UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad)
+        [self.BackgroundImage addGestureRecognizer:TapGesture];
+    else
+        [self.HRGif addGestureRecognizer:TapGesture];
+    
+    //Navigation View title
+    //self.title = @"心跳即時資訊";
+    self.title = NSLocalizedString(@"MainViewController", @"title");
+    
+    [self.view setBackgroundColor:[UIColor colorWithPatternImage:[UIImage imageNamed:@"Jogging"]]];
+    
+    [self.CustomButton setBackgroundImage:[UIImage imageNamed:@"Button1.png"] forState:UIControlStateNormal];
+    [self.CustomButton setBackgroundImage:[UIImage imageNamed:@"Button1Pressed.png"] forState:UIControlStateHighlighted];
+    if(UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPhone)
+        [self.HRGif addSubview:self.CustomButton];
+    
+    //Color,Image
+	[self.view setBackgroundColor:[UIColor groupTableViewBackgroundColor]];
+	[self.heartImage setImage:[UIImage imageNamed:@"HeartImage"]];
+    if(UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPhone)
+        [self.HRGif addSubview:self.heartImage];
+    
+#ifdef BLE_AutoConnect
+    [self.Image_Connected setImage:[UIImage imageNamed:@"Disconnected"]];
+#else
+    [self.Image_Connected setImage:[UIImage imageNamed:@"DeviceConnected"]];
+#endif
+    if([CLLocationManager locationServicesEnabled])
+    {
+        [self.Image_GPS setImage:[UIImage imageNamed:@"GPS_On"]];
+    }
+    else
+    {
+        [self.Image_GPS setImage:[UIImage imageNamed:@"GPS_Off"]];
+    }
+    
+    [self.Image_Battery setImage:[UIImage imageNamed:@"Battery"]];
+    if(UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPhone)
+    {
+        [self.HRGif addSubview:self.Image_Connected];
+        [self.HRGif addSubview:self.Image_GPS];
+        [self.HRGif addSubview:self.Image_Battery];
+    }
+    
+    if(UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad)
+    {
+        [self.BackgroundImage setImage:[UIImage imageNamed:@"Jogging1"]];
+        [self.BackgroundImage addSubview:self.heartImage];
+        [self.BackgroundImage addSubview:self.HR_bpm];
+    }
+    else
+    {
+        [self.HRGif addSubview:self.HR_bpm];
+        [self.HRGif addSubview:self.Image_Running];
+        [self.HRGif addSubview:self.MileageLabel];
+        [self.HRGif addSubview:self.Image_Time];
+        [self.HRGif addSubview:self.SportsTimeLabel];
+        [self.HRGif addSubview:self.Image_Speed];
+        [self.HRGif addSubview:self.RunSpeedLabel];
+        [self.HRGif addSubview:self.Image_Calories];
+        [self.HRGif addSubview:self.BurnCalorieLabel];
+        [self.HRGif addSubview:self.Map_Button];
+	}
+    
+	// Clear out textView
+	[self.deviceInfo setText:@""];
+	[self.deviceInfo setTextColor:[UIColor blueColor]];
+	[self.deviceInfo setBackgroundColor:[UIColor groupTableViewBackgroundColor]];
+	[self.deviceInfo setFont:[UIFont fontWithName:@"Futura-CondensedMedium" size:25]];
+	[self.deviceInfo setUserInteractionEnabled:NO];
+	
+#ifndef StartAnimationIfConnected
+	// Create our Heart Rate BPM Label
+	self.heartRateBPM = [[UILabel alloc] initWithFrame:CGRectMake(55, 30, 75, 50)];
+	[self.heartRateBPM setTextColor:[UIColor whiteColor]];
+	[self.heartRateBPM setText:[NSString stringWithFormat:@"%i", 0]];
+	[self.heartRateBPM setFont:[UIFont fontWithName:@"Futura-CondensedMedium" size:28]];
+	[self.heartImage addSubview:self.heartRateBPM];
+#endif
+    
+    //CoreBluetooth framework 
+    NSInteger PlatNumber = [self platformNumber];
+    //NSLog(@"%@,%d",[self platformString],PlatNumber);
+    //if((([self platformNumber]) >= 7) && (([self platformNumber]) != 0))
+    if(((UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) && PlatNumber != 0) || ((UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPhone) && PlatNumber > 6))
+    {
+#ifdef BLE_AutoConnect
+        // Scan for all available CoreBluetooth LE devices
+        NSArray *services = @[[CBUUID UUIDWithString:POLARH7_HRM_HEART_RATE_SERVICE_UUID], [CBUUID UUIDWithString:POLARH7_HRM_DEVICE_INFO_SERVICE_UUID]];
+        self.centralManager = [[CBCentralManager alloc] initWithDelegate:self queue:nil];
+        [self.centralManager scanForPeripheralsWithServices:services options:nil];
+        
+        //NSLog(@"Init CBCentralManager");
+#endif
+    }
+    
+    // Construct URL to sound file
+    NSString *path1 = [NSString stringWithFormat:@"%@/HRAlarm1.mp3", [[NSBundle mainBundle] resourcePath]];
+    
+    NSURL *soundUrl1 = [NSURL fileURLWithPath:path1];
+    
+    NSString *path2 = [NSString stringWithFormat:@"%@/SoftMusic.mp3", [[NSBundle mainBundle] resourcePath]];
+    
+    NSURL *soundUrl2 = [NSURL fileURLWithPath:path2];
+    
+    // Create audio player object and initialize with URL to sound
+    _audioPlayer = [[AVAudioPlayer alloc] initWithContentsOfURL:soundUrl1 error:nil];
+    
+    [_audioPlayer setVolume:1.0];
+    
+    SoftMusic = [[AVAudioPlayer alloc] initWithContentsOfURL:soundUrl2 error:nil];
+    
+    if(UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad)
+    {
+        //HeartRate Curve
+        [self.view addSubview:self.refreshMoniterView];
+        
+        //Read HeartRate data from data.txt
+        void (^createData)(void) = ^{
+            NSString *tempString = [NSString stringWithContentsOfFile:[[NSBundle mainBundle] pathForResource:@"data" ofType:@"txt"] encoding:NSUTF8StringEncoding error:nil];
+            
+            NSMutableArray *tempData = [[tempString componentsSeparatedByString:@","] mutableCopy];
+            [tempData enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
+                NSNumber *tempDataa = @(-[obj integerValue] + 2048);
+                [tempData replaceObjectAtIndex:idx withObject:tempDataa];
+            }];
+            self.dataSource = tempData;
+        };
+        createData();
+    }
+    
+    //Load User data(NSUserDefaults)
+    if(!([self LoadUserData]))
+    {
+        [NSTimer scheduledTimerWithTimeInterval:0.5 target:self selector:@selector(GotoUserConfig) userInfo:nil repeats:NO];
+    }
+    
+    HRMDataObject* theDataObject = [self theAppDataObject];
+    theDataObject.APPConfig = self.APPConfig;
+    
+    //Get GPS Location
+    locationManager = [[CLLocationManager alloc]init];
+    locationManager.delegate = self;
+    locationManager.distanceFilter = kCLDistanceFilterNone;
+    locationManager.desiredAccuracy = kCLLocationAccuracyBest;
+    
+    //NSString *restorationId = self.restorationIdentifier;
+    //NSLog(@"RestorationID = %@",restorationId);
+}
 
 - (void)TapRecognized:(UITapGestureRecognizer *)Tap
 {
+#ifdef BLE_AutoConnect
     //NSLog(@"Tap recognized");
     if(self.polarH7HRMPeripheral == nil)
     {
@@ -464,6 +676,7 @@ static double TotalCalories = 0;
             //NSLog(@"Reconnect..");
         }
     }
+#endif
 }
 
 - (NSString *) platform{
@@ -485,22 +698,39 @@ static double TotalCalories = 0;
 - (NSInteger) platformNumber
 {
     NSString *platform = [self platform];
-    if ([platform isEqualToString:@"iPhone1,1"])    return 1;
-    if ([platform isEqualToString:@"iPhone1,2"])    return 2;
-    if ([platform isEqualToString:@"iPhone2,1"])    return 3;
-    if ([platform isEqualToString:@"iPhone3,1"])    return 4;
-    if ([platform isEqualToString:@"iPhone3,2"])    return 5;
-    if ([platform isEqualToString:@"iPhone3,3"])    return 6;
-    if ([platform isEqualToString:@"iPhone4,1"])    return 7;
-    if ([platform isEqualToString:@"iPhone5,1"])    return 8;
-    if ([platform isEqualToString:@"iPhone5,2"])    return 9;
-    if ([platform isEqualToString:@"iPhone5,3"])    return 10;
-    if ([platform isEqualToString:@"iPhone5,4"])    return 11;
-    if ([platform isEqualToString:@"iPhone6,1"])    return 12;
-    if ([platform isEqualToString:@"iPhone6,2"])    return 13;
-    if ([platform isEqualToString:@"iPhone7,1"])    return 14;
-    if ([platform isEqualToString:@"iPhone7,2"])    return 15;
-    return 0;
+    if(UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad)
+    {
+        if ([platform isEqualToString:@"iPad3,1"])      return 1;
+        if ([platform isEqualToString:@"iPad3,2"])      return 2;
+        if ([platform isEqualToString:@"iPad3,3"])      return 3;
+        if ([platform isEqualToString:@"iPad3,4"])      return 4;
+        if ([platform isEqualToString:@"iPad3,5"])      return 5;
+        if ([platform isEqualToString:@"iPad3,6"])      return 6;
+        if ([platform isEqualToString:@"iPad4,1"])      return 7;
+        if ([platform isEqualToString:@"iPad4,2"])      return 8;
+        if ([platform isEqualToString:@"iPad4,4"])      return 9;
+        if ([platform isEqualToString:@"iPad4,5"])      return 10;
+        
+        return 0;
+    }
+    else{
+        if ([platform isEqualToString:@"iPhone1,1"])    return 1;
+        if ([platform isEqualToString:@"iPhone1,2"])    return 2;
+        if ([platform isEqualToString:@"iPhone2,1"])    return 3;
+        if ([platform isEqualToString:@"iPhone3,1"])    return 4;
+        if ([platform isEqualToString:@"iPhone3,2"])    return 5;
+        if ([platform isEqualToString:@"iPhone3,3"])    return 6;
+        if ([platform isEqualToString:@"iPhone4,1"])    return 7;
+        if ([platform isEqualToString:@"iPhone5,1"])    return 8;
+        if ([platform isEqualToString:@"iPhone5,2"])    return 9;
+        if ([platform isEqualToString:@"iPhone5,3"])    return 10;
+        if ([platform isEqualToString:@"iPhone5,4"])    return 11;
+        if ([platform isEqualToString:@"iPhone6,1"])    return 12;
+        if ([platform isEqualToString:@"iPhone6,2"])    return 13;
+        if ([platform isEqualToString:@"iPhone7,1"])    return 14;
+        if ([platform isEqualToString:@"iPhone7,2"])    return 15;
+        return 0;
+    }
 }
 
 - (NSString *) platformString{
@@ -553,12 +783,14 @@ static double TotalCalories = 0;
 
 - (void)handleBack:(id)sender
 {
+#ifdef BLE_AutoConnect
     //NSLog(@"BackButton handler");
     if(self.polarH7HRMPeripheral != nil)
     {
         [self.centralManager cancelPeripheralConnection:self.polarH7HRMPeripheral];
         //NSLog(@"Cancel active connection");
     }
+#endif
     
     [self.navigationController popToRootViewControllerAnimated:YES];
 }
@@ -637,26 +869,6 @@ static double TotalCalories = 0;
     return targetPointToAdd;
 }
 
-/*
-- (CGPoint)bubbleTranslationPoint
-{
-    static NSInteger dataSourceCounterIndex = -1;
-    dataSourceCounterIndex ++;
-    dataSourceCounterIndex %= [self.dataSource count];
-    
-    
-    NSInteger pixelPerPoint = 1;
-    static NSInteger xCoordinateInMoniter = 0;
-    
-    CGPoint targetPointToAdd = (CGPoint){xCoordinateInMoniter,[self.dataSource[dataSourceCounterIndex] integerValue] * 0.5 + 120};
-    xCoordinateInMoniter += pixelPerPoint;
-    //xCoordinateInMoniter %= (int)(CGRectGetWidth(self.translationMoniterView.frame));
-    
-    //    NSLog(@"吐出来的点:%@",NSStringFromCGPoint(targetPointToAdd));
-    return targetPointToAdd;
-}
-*/
-
 - (void) GotoUserConfig
 {
     //[self.Test1Button sendActionsForControlEvents:UIControlEventTouchUpInside];
@@ -668,7 +880,6 @@ static double TotalCalories = 0;
     NSString *name,*age;
     //int MaximumHR,SetRHR,UpperTHR,LowerTHR,SetMaxHR,SetMinHR,APPConfig;
     NSInteger MaximumHR,SetRHR,UpperTHR,LowerTHR,SetMaxHR,SetMinHR,APPConfig;
-    
 
     NSUserDefaults *userDefaults = [NSUserDefaults standardUserDefaults];
     name = [userDefaults objectForKey:@"myHRMApp_Name"];
@@ -688,7 +899,11 @@ static double TotalCalories = 0;
         self.UserAge = nil;
         self.RestHeartRate = 0;
         self.APPConfig = Sports + TargetZoneAlarm + HRNotification;
+        #ifdef BLE_AutoConnect
         self.APPConfig &= ~(BLE_Connected);
+        #else
+        self.APPConfig |= BLE_Connected;
+        #endif
         self.APPConfig &= ~(StartActivity);
         AlarmMaxHeartRate = 70;
         AlarmMinHeartRate = 50;
@@ -710,7 +925,11 @@ static double TotalCalories = 0;
         self.RestHeartRate = SetRHR;
         AlarmMaxHeartRate = SetMaxHR;
         AlarmMinHeartRate = SetMinHR;
+        #ifdef BLE_AutoConnect
         self.APPConfig &= ~(BLE_Connected);
+        #else
+        self.APPConfig |= BLE_Connected;
+        #endif
         self.APPConfig &= ~(StartActivity);
         //NSLog(@"loaduserdata,debug : %ld",(long)self.APPConfig);
         return TRUE;
@@ -918,8 +1137,9 @@ static double TotalCalories = 0;
     {
         self.BackgroundImage.hidden = YES;
         self.HRGif.hidden = NO;
-        /*
+        
         self.HR_bpm.hidden = NO;
+        /*
         self.heartImage.hidden = NO;
         [self.BackgroundImage setImage:[UIImage imageNamed:@"Jogging1"]];
         */
@@ -966,10 +1186,6 @@ static double TotalCalories = 0;
     {
         if(self.polarH7HRMPeripheral == nil)
         {
-            //UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"HeartRate Monitor" message:@"Heart Rate Sensor not found!" delegate:self cancelButtonTitle:@"YES" otherButtonTitles:@"NO", nil];
-            
-            //UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"心跳偵測" message:@"無法找到裝置!" delegate:self cancelButtonTitle:@"YES" otherButtonTitles:nil, nil];
-            
             UIAlertView *alert = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"HRM", @"AlertViewTitle") message:NSLocalizedString(@"Device", @"AlertMessage") delegate:self cancelButtonTitle:NSLocalizedString(@"End", @"Test") otherButtonTitles:nil, nil];
             
             [alert show];
@@ -1089,6 +1305,7 @@ static double TotalCalories = 0;
 }
 
 #pragma mark - BLE function
+#ifdef BLE_AutoConnect
 // method called whenever the device state changes.
 - (void)centralManagerDidUpdateState:(CBCentralManager *)central
 {
@@ -1213,8 +1430,6 @@ didDisconnectPeripheral:(CBPeripheral *)peripheral
             //NSLog(@"Find HRM-10");
         }
 	}
-    
-    //NSLog(@"***Found a device : %@",localName);
 }
 
 // Invoked when you discover the characteristics of a specified service.
@@ -1232,27 +1447,8 @@ didDisconnectPeripheral:(CBPeripheral *)peripheral
 			else if ([aChar.UUID isEqual:[CBUUID UUIDWithString:POLARH7_HRM_BODY_LOCATION_UUID]]) { // 3
 				[self.polarH7HRMPeripheral readValueForCharacteristic:aChar];
 			}
-//			else if ([aChar.UUID isEqual:[CBUUID UUIDWithString:POLARH7_HRM_ENABLE_SERVICE_UUID]]) { // 4
-//				// Read the value of the heart rate sensor
-//				UInt8 value = 0x01;
-//				NSData *data = [NSData dataWithBytes:&value length:sizeof(value)];
-//				[peripheral writeValue:data forCharacteristic:aChar type:CBCharacteristicWriteWithResponse];
-//			}
 		}
 	}
-    
-    /*
-	// Retrieve Device Information Services for the Manufacturer Name
-	if ([service.UUID isEqual:[CBUUID UUIDWithString:POLARH7_HRM_DEVICE_INFO_SERVICE_UUID]])  { // 5
-        for (CBCharacteristic *aChar in service.characteristics)
-        {
-            if ([aChar.UUID isEqual:[CBUUID UUIDWithString:POLARH7_HRM_MANUFACTURER_NAME_UUID]]) {
-                [self.polarH7HRMPeripheral readValueForCharacteristic:aChar];
-                NSLog(@"Found a Device Manufacturer Name Characteristic");
-            }
-        }
-	}
-    */
 }
 
 // Invoked when you retrieve a specified characteristic's value, or when the peripheral device notifies your app that the characteristic's value has changed.
@@ -1363,6 +1559,11 @@ didDisconnectPeripheral:(CBPeripheral *)peripheral
                     if(_audioPlayer.playing == NO)
                         [_audioPlayer play];
                 }
+                else
+                {
+                    if(_audioPlayer.playing)
+                        [_audioPlayer stop];
+                }
                 
             }
             else if((self.APPConfig & ApplicationMode) == Sleep)
@@ -1371,6 +1572,10 @@ didDisconnectPeripheral:(CBPeripheral *)peripheral
                 {
                     if(SoftMusic.playing == NO)
                         [SoftMusic play];
+                }
+                else{
+                    if(SoftMusic.playing)
+                        [SoftMusic stop];
                 }
             }
         }
@@ -1391,6 +1596,10 @@ didDisconnectPeripheral:(CBPeripheral *)peripheral
                     if(_audioPlayer.playing == NO)
                         [_audioPlayer play];
                 }
+                else{
+                    if(_audioPlayer.playing)
+                        [_audioPlayer stop];
+                }
             }
             else if((self.APPConfig & ApplicationMode) == Sleep)
             {
@@ -1398,6 +1607,10 @@ didDisconnectPeripheral:(CBPeripheral *)peripheral
                 {
                     if(SoftMusic.playing == NO)
                         [SoftMusic play];
+                }
+                else{
+                    if(SoftMusic.playing)
+                        [SoftMusic stop];
                 }
             }
             
@@ -1407,10 +1620,14 @@ didDisconnectPeripheral:(CBPeripheral *)peripheral
     else
     {
         if(_audioPlayer.playing)
+        {
             [_audioPlayer stop];
+        }
         
         if(SoftMusic.playing)
+        {
             [SoftMusic stop];
+        }
         
         if(self.CountError < 3 && self.CountError != 0)
         {
@@ -1493,6 +1710,7 @@ didDisconnectPeripheral:(CBPeripheral *)peripheral
 	}
 	return;
 }
+#endif
 
 // instance method to stop the device from rotating - only support the Portrait orientation
 - (NSUInteger) supportedInterfaceOrientations {
@@ -1759,6 +1977,13 @@ didDisconnectPeripheral:(CBPeripheral *)peripheral
     }
      */
 }
+    
+#pragma mark - HRMeasurement delegate
+- (void) HeartRateBPM:(NSInteger)HeartRate
+{
+    self.HR_bpm.text = [NSString stringWithFormat:@"%li bpm", (long)HeartRate];
+    self.heartRate = HeartRate;
+}
 
 #pragma mark -
 #pragma mark MailComposeController delegates
@@ -1834,6 +2059,7 @@ didDisconnectPeripheral:(CBPeripheral *)peripheral
     
     HRMDataObject* theDataObject = [self theAppDataObject];
     theDataObject.APPConfig &= ~(ApplicationMode);
+    theDataObject.APPConfig &= ~(HRNotification);
     
     switch(self.APPConfig & ApplicationMode)
     {
@@ -1874,10 +2100,15 @@ didDisconnectPeripheral:(CBPeripheral *)peripheral
             break;
     }
     
+    if((Configdata & HRNotification) == HRNotification)
+    {
+        theDataObject.APPConfig |= HRNotification;
+    }
+    
     if(self.APPConfig != theDataObject.APPConfig)
         self.APPConfig = theDataObject.APPConfig;
     
-    //NSLog(@"APP Config changed!");
+    //NSLog(@"APP Config changed!,%ld,%ld",(long)Configdata,theDataObject.APPConfig);
 }
 
 -(void)passHeartRateData:(NSInteger)MaxHR SetMaxHR:(NSInteger)MaxHeartRate SetMinHR:(NSInteger)MinHeartRate RestHeartRate:(NSInteger)RHR UpperTargetHeartRate:(NSInteger)UpperTHR LowerTargetHeartRate:(NSInteger)LowerTHR

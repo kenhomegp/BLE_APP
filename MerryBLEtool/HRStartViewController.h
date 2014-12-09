@@ -8,6 +8,15 @@
 
 #import <UIKit/UIKit.h>
 
-@interface HRStartViewController : UITableViewController
+#import "HRMCBTask.h"
 
+@interface HRStartViewController : UITableViewController <BLECBDelegate , UIAlertViewDelegate >
+{
+    HRMCBTask *CoreBTObj;
+}
+@property (nonatomic , strong) NSString *BLE_device1;
+@property (nonatomic , strong) NSString *BLE_device2;
+@property (nonatomic , strong) NSString *BLE_device3;
+@property (nonatomic , strong) NSString *CBStatus;
+@property (nonatomic , strong) NSString *LastConnectDevice;
 @end

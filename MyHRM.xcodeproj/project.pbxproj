@@ -62,6 +62,7 @@
 		C15420F91A0CB2170096E954 /* 640_960.png in Resources */ = {isa = PBXBuildFile; fileRef = C15420F81A0CB2060096E954 /* 640_960.png */; };
 		C15420FE1A0CB23A0096E954 /* 640_1136.png in Resources */ = {isa = PBXBuildFile; fileRef = C15420FC1A0CB2260096E954 /* 640_1136.png */; };
 		C18300B71A0C615E00CAAB55 /* HRM_iPhone.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = C18300B91A0C615E00CAAB55 /* HRM_iPhone.storyboard */; };
+		C19495601A303C8D00204ECE /* HRMCBTask.m in Sources */ = {isa = PBXBuildFile; fileRef = C194955F1A303C8D00204ECE /* HRMCBTask.m */; };
 		C19A510119F8CEE900FC8DE4 /* sleepy.jpg in Resources */ = {isa = PBXBuildFile; fileRef = C19A510019F8CEE900FC8DE4 /* sleepy.jpg */; };
 		C19A510319F8D87D00FC8DE4 /* HeartRateDemo.jpg in Resources */ = {isa = PBXBuildFile; fileRef = C19A510219F8D87D00FC8DE4 /* HeartRateDemo.jpg */; };
 		C1D5CD2C1A1A4C2F00AF72BB /* HRMTableSetting.m in Sources */ = {isa = PBXBuildFile; fileRef = C1D5CD2B1A1A4C2F00AF72BB /* HRMTableSetting.m */; };
@@ -184,6 +185,8 @@
 		C15420FD1A0CB2350096E954 /* zh-Hant */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "zh-Hant"; path = "zh-Hant.lproj/640_1136.png"; sourceTree = "<group>"; };
 		C18300B81A0C615E00CAAB55 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/HRM_iPhone.storyboard; sourceTree = "<group>"; };
 		C18300BB1A0C617F00CAAB55 /* zh-Hant */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hant"; path = "zh-Hant.lproj/HRM_iPhone.strings"; sourceTree = "<group>"; };
+		C194955E1A303C7E00204ECE /* HRMCBTask.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HRMCBTask.h; sourceTree = "<group>"; };
+		C194955F1A303C8D00204ECE /* HRMCBTask.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HRMCBTask.m; sourceTree = "<group>"; };
 		C19A510019F8CEE900FC8DE4 /* sleepy.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = sleepy.jpg; sourceTree = "<group>"; };
 		C19A510219F8D87D00FC8DE4 /* HeartRateDemo.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = HeartRateDemo.jpg; sourceTree = "<group>"; };
 		C1D5CD2A1A1A4C2F00AF72BB /* HRMTableSetting.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HRMTableSetting.h; sourceTree = "<group>"; };
@@ -339,6 +342,8 @@
 				C12545FF1A13482E001E0EBD /* ViewControllerDataSharing */,
 				C11073641A0F573800FE3CFD /* HRStartViewController.h */,
 				C11073651A0F573900FE3CFD /* HRStartViewController.m */,
+				C194955E1A303C7E00204ECE /* HRMCBTask.h */,
+				C194955F1A303C8D00204ECE /* HRMCBTask.m */,
 				C12CA81E1A23099900F6CC76 /* CustomHeaderCell.h */,
 				C12CA81F1A23099900F6CC76 /* CustomHeaderCell.m */,
 				C1F97CAD19D5554300C753BE /* data.txt */,
@@ -610,6 +615,7 @@
 				C1D5CD2C1A1A4C2F00AF72BB /* HRMTableSetting.m in Sources */,
 				C130E61A19F1025A00550957 /* HRMapView.m in Sources */,
 				C1F97CAC19D54E9900C753BE /* HeartLive.m in Sources */,
+				C19495601A303C8D00204ECE /* HRMCBTask.m in Sources */,
 				C11742C019AADC1600721449 /* HRMViewController.m in Sources */,
 				C12545FD1A133D77001E0EBD /* HRMDataObject.m in Sources */,
 				C1E700CC19D2747400410667 /* HRMSetting.m in Sources */,
@@ -699,6 +705,7 @@
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 7.1;
 				OTHER_CFLAGS = "-DNS_BLOCK_ASSERTIONS=1";
+				"OTHER_LDFLAGS[arch=*]" = "-ObjC";
 				SDKROOT = iphoneos;
 				VALIDATE_PRODUCT = YES;
 			};
@@ -777,6 +784,7 @@
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 7.1;
 				OTHER_CFLAGS = "-DNS_BLOCK_ASSERTIONS=1";
+				"OTHER_LDFLAGS[arch=*]" = "-ObjC";
 				SDKROOT = iphoneos;
 				VALIDATE_PRODUCT = YES;
 			};

@@ -17,11 +17,117 @@
 
 #import "CustomHeaderCell.h"
 
-@interface HRStartViewController ()
+#define BLEScanTime 16
+#define AlertViewTimeout 10.0
 
+@interface HRStartViewController ()
+{
+    NSTimer *ScanTimer;
+    NSTimer *AlertTimer;
+    NSInteger Count10sec;
+    NSInteger IndexSetAccessoryCheckmark;
+    UIAlertView *myAlert;
+}
 @end
 
 @implementation HRStartViewController
+
+- (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex
+{
+    if(buttonIndex == 0)//Button : No
+    {
+        //NSLog(@"btn index 0");
+        IndexSetAccessoryCheckmark = 0;
+    }
+    else{               //Button : Yes
+        //NSLog(@"btn index 1");
+        if([self.CBStatus isEqualToString:@"Scan..."])
+        {
+            if(IndexSetAccessoryCheckmark != 0)
+            {
+                //[CoreBTObj StopScanPeripheral];
+                [CoreBTObj ConnectHRMDevice:self.LastConnectDevice];
+            }
+        }
+        else if([self.CBStatus isEqualToString:@"Disconnected"])
+        {
+            self.CBStatus = @"Scan...";
+            self.BLE_device1 = nil;
+            self.BLE_device2 = nil;
+            self.BLE_device3 = nil;
+            IndexSetAccessoryCheckmark = 0;
+            [self.tableView reloadData];
+            [CoreBTObj ScanHRMDevice];
+            ScanTimer = [NSTimer scheduledTimerWithTimeInterval:1.0
+                                                     target:self selector:@selector(ScanBLEPeripheral)
+                                                   userInfo:nil repeats:YES];
+            Count10sec = BLEScanTime;
+        }
+        else if([self.CBStatus rangeOfString:@"Connected"].location != NSNotFound)
+        {
+            [CoreBTObj DisconnectHRM];
+        }
+    }
+}
+
+-(void) CBStatusUpdate:(NSString *)BLE_Status BLEData:(NSString *)payload
+{
+    //NSLog(@"Test protocol 2 :%@",BLE_Device);
+    if([BLE_Status isEqualToString:@"Scan"])
+    {
+        if(self.BLE_device1 == nil)
+        {
+            self.BLE_device1 = payload;
+            [self.tableView reloadData];
+        }
+        else if((self.BLE_device2 == nil) && (!([payload isEqualToString:self.BLE_device1])))
+        {
+            self.BLE_device2 = payload;
+            [self.tableView reloadData];
+        }
+        else if(self.BLE_device3 == nil)
+        {
+            if((!([payload isEqualToString:self.BLE_device1])) && (!([payload isEqualToString:self.BLE_device2])))
+            {
+                self.BLE_device3 = payload;
+                [self.tableView reloadData];
+            }
+        }
+        
+        self.CBStatus = @"Scan...";
+        //NSLog(@"Update device ,%@",payload);
+    }
+    else if([BLE_Status isEqualToString:@"Connected"])
+    {
+        self.CBStatus = [@"Connected : " stringByAppendingString:payload];
+        [self.tableView reloadData];
+        
+        if([payload isEqualToString:@"YES"])
+        {
+            HRMDataObject* theDataObject = [self theAppDataObject];
+            theDataObject.APPConfig |= BLE_Connected;
+            if([ScanTimer isValid])
+            {
+                [ScanTimer invalidate];
+                Count10sec = BLEScanTime;
+            }
+        }
+        else if([payload isEqualToString:@"NO"])
+        {
+            HRMDataObject* theDataObject = [self theAppDataObject];
+            theDataObject.APPConfig &= ~(BLE_Connected);
+        }
+    }
+    else if([BLE_Status isEqualToString:@"Disconnected"])
+    {
+        self.CBStatus = @"Disconnected";
+        self.BLE_device1 = nil;
+        self.BLE_device2 = nil;
+        self.BLE_device3 = nil;
+        IndexSetAccessoryCheckmark = 0;
+        [self.tableView reloadData];
+    }
+}
 
 - (id)initWithStyle:(UITableViewStyle)style
 {
@@ -30,6 +136,17 @@
         // Custom initialization
     }
     return self;
+}
+
+- (void)viewWillAppear:(BOOL)animated
+{
+    //NSLog(@"viewWillAppear");
+    [CoreBTObj setViewController:0];
+}
+
+- (void)viewWillDisappear:(BOOL)animated
+{
+    [ScanTimer invalidate];
 }
 
 - (void)viewDidLoad
@@ -42,6 +159,8 @@
     // Uncomment the following line to display an Edit button in the navigation bar for this view controller.
     // self.navigationItem.rightBarButtonItem = self.editButtonItem;
     
+    //NSLog(@"viewDidLoad");
+    
     // Assign our own backgroud for the view
     self.parentViewController.view.backgroundColor = [UIColor colorWithPatternImage:[UIImage imageNamed:@"common_bg"]];
     self.tableView.backgroundColor = [UIColor clearColor];
@@ -50,6 +169,109 @@
     //self.title = @"Application Mode";
     
     self.title = NSLocalizedString(@"StartViewController", @"title");
+    
+    //Initial CoreBluetooth Framework
+    self.BLE_device1 = nil;
+    self.BLE_device2 = nil;
+    self.BLE_device3 = nil;
+    self.CBStatus = @"Scan...";
+    self.LastConnectDevice = nil;
+    
+    CoreBTObj = [[HRMCBTask alloc] init];
+    [CoreBTObj controlSetup];
+    [CoreBTObj SetVC:0];
+    CoreBTObj.delegate1 = self;
+    
+    ScanTimer = [NSTimer scheduledTimerWithTimeInterval:1.0
+                target:self selector:@selector(ScanBLEPeripheral)
+                userInfo:nil repeats:YES];
+    Count10sec = BLEScanTime;
+    
+    NSUserDefaults *userDefaults = [NSUserDefaults standardUserDefaults];
+    self.LastConnectDevice = [userDefaults objectForKey:@"myHRMApp_Device"];
+    
+    //NSLog(@"Last connected : %@",self.LastConnectDevice);
+}
+
+- (void)DismissAlertView
+{
+    [myAlert dismissWithClickedButtonIndex:0 animated:YES];
+}
+
+- (NSInteger)CountBLEDevice
+{
+    NSInteger cc = 0;
+    if(self.BLE_device1 != nil)
+        cc++;
+    if(self.BLE_device2 != nil)
+        cc++;
+    if(self.BLE_device3 != nil)
+        cc++;
+    
+    //if(cc == 1)
+    //    IndexSetAccessoryCheckmark = 0;
+    
+    return cc;
+}
+
+- (void)ScanBLEPeripheral
+{
+    if(Count10sec != 0)
+    {
+        Count10sec--;
+        
+        if(Count10sec == 9)
+        {
+            if(([self CountBLEDevice]) > 1)
+            {
+            if([self.BLE_device1 isEqualToString:self.LastConnectDevice])
+            {
+                IndexSetAccessoryCheckmark = 5;
+                
+                myAlert = [[UIAlertView alloc] initWithTitle:self.BLE_device1 message:@"Reconnect Last_connected device" delegate:self cancelButtonTitle:@"No" otherButtonTitles:@"Yes", nil];
+                
+                [myAlert show];
+                
+                AlertTimer = [NSTimer scheduledTimerWithTimeInterval:AlertViewTimeout target:self selector:@selector(DismissAlertView) userInfo:nil repeats:NO];
+            }
+            if([self.BLE_device2 isEqualToString:self.LastConnectDevice])
+            {
+                IndexSetAccessoryCheckmark = 6;
+                
+                myAlert = [[UIAlertView alloc] initWithTitle:self.BLE_device2 message:@"Reconnect Last_connected device" delegate:self cancelButtonTitle:@"No" otherButtonTitles:@"Yes", nil];
+                
+                [myAlert show];
+                
+                AlertTimer = [NSTimer scheduledTimerWithTimeInterval:AlertViewTimeout target:self selector:@selector(DismissAlertView) userInfo:nil repeats:NO];
+            }
+            if([self.BLE_device3 isEqualToString:self.LastConnectDevice])
+            {
+                IndexSetAccessoryCheckmark = 7;
+                
+                myAlert = [[UIAlertView alloc] initWithTitle:self.BLE_device3 message:@"Reconnect Last_connected device" delegate:self cancelButtonTitle:@"No" otherButtonTitles:@"Yes", nil];
+                
+                [myAlert show];
+                
+                AlertTimer = [NSTimer scheduledTimerWithTimeInterval:AlertViewTimeout target:self selector:@selector(DismissAlertView) userInfo:nil repeats:NO];
+            }
+            }
+        }
+    }
+    else{
+        [ScanTimer invalidate];
+        Count10sec = BLEScanTime;
+        [CoreBTObj StopScanPeripheral];
+        if([self.CBStatus isEqualToString:@"Scan..."])
+        {
+            self.CBStatus = @"Disconnected";
+            self.BLE_device1 = nil;
+            self.BLE_device2 = nil;
+            self.BLE_device3 = nil;
+            IndexSetAccessoryCheckmark = 0;
+            [self.tableView reloadData];
+            //NSLog(@"Scan time-out");
+        }
+    }
 }
 
 - (void)didReceiveMemoryWarning
@@ -74,8 +296,13 @@
         HRMViewController *vc = [segue destinationViewController];
         vc.APPConfig &= ~(ApplicationMode);
         vc.APPConfig |= Sports;
+        vc.APPConfig |= BLE_Connected;
+        vc.polarH7HRMPeripheral = CoreBTObj.activePeripheral;
         
         theDataObject.APPConfig |= Sports;
+        
+        CoreBTObj.delegate2 = vc;
+        [CoreBTObj SetVC:1];
     }
     else if([segue.identifier isEqualToString:@"SegueForTest"])
     {
@@ -99,6 +326,17 @@
     }
 }
 
+#pragma mark -
+#pragma mark instance methods
+
+- (HRMDataObject *) theAppDataObject;
+{
+    id<AppDelegateProtocol> theDelegate = (id<AppDelegateProtocol>) [UIApplication sharedApplication].delegate;
+    HRMDataObject *theDataObject;
+    theDataObject = (HRMDataObject*) theDelegate.theAppDataObject;
+    return theDataObject;
+}
+
 #pragma mark - Table view data source
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
@@ -112,7 +350,11 @@
 {
 //#warning Incomplete method implementation.
     // Return the number of rows in the section.
-    return 8;
+    
+    if(UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad)
+        return 13;
+    else
+        return 11;
 }
 
 - (UIImage *)cellBackgroundForRowAtIndexPath:(NSIndexPath *)indexPath
@@ -134,8 +376,36 @@
 
 -(CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section
 {
-    return 23.0;
+    if(UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad)
+        return 55;
+    else
+        return 23.0;
 }
+
+- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    if(UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPhone)
+    {
+        if (indexPath.section == 0) {
+            if (indexPath.row == 0) {
+                return 70;
+            }
+            else if(indexPath.row == 1)
+                return 70;
+            else if (indexPath.row == 2)
+                return 70;
+            else
+                return 40;
+        }
+        else
+            return 0;
+    }
+    else
+    {
+        return 150;
+    }
+}
+
 
 -(UIView*)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section
 {
@@ -192,10 +462,6 @@
     if(indexPath.row == 0)
     {
         APPImage.image = [UIImage imageNamed:@"Distance.png"];
-        //APPTitle.text = @"跑步";
-        //APPDetail.text = @"加強肌肉與耐力";
-        //APPTitle.text = @"Running";
-        //APPDetail.text = @"Strengthen the muscles";
         APPTitle.text = NSLocalizedString(@"TableViewCell1Title", @"");
         APPDetail.text = NSLocalizedString(@"TableViewCell1Detail", @"");
         APPUseFreq.text = @"60%";
@@ -203,10 +469,6 @@
     else if(indexPath.row == 1)
     {
         APPImage.image = [UIImage imageNamed:@"AppHealthy.png"];
-        //APPTitle.text = @"保健";
-        //APPDetail.text = @"隨時隨地監控心跳";
-        //APPTitle.text = @"Healthy care";
-        //APPDetail.text = @"Monitor heartbeat any time";
         APPTitle.text = NSLocalizedString(@"TableViewCell2Title", @"");
         APPDetail.text = NSLocalizedString(@"TableViewCell2Detail", @"");
         APPUseFreq.text = @"30%";
@@ -215,13 +477,273 @@
     else if(indexPath.row == 2)
     {
         APPImage.image = [UIImage imageNamed:@"AppSleep.png"];
-        //APPTitle.text = @"睡眠";
-        //APPDetail.text = @"放鬆並輔助睡眠";
-        //APPTitle.text = @"Sleeping";
-        //APPDetail.text = @"Relaxation and help sleep";
         APPTitle.text = NSLocalizedString(@"TableViewCell3Title", @"");
         APPDetail.text = NSLocalizedString(@"TableViewCell3Detail", @"");
         APPUseFreq.text = @"10%";
+    }
+    else if(indexPath.row == 4)
+    {
+        APPTitle.text = self.CBStatus;
+        APPDetail.text = nil;
+        APPUseFreq.text = nil;
+    }
+    else if(indexPath.row == 5)//Update three BLE devices here.
+    {
+        if(self.BLE_device1 != nil)
+        {
+            [APPTitle setTextColor:[UIColor blueColor]];
+            APPTitle.text = self.BLE_device1;
+        }
+        else
+        {
+            APPTitle.text = nil;
+            [cell setAccessoryType:UITableViewCellAccessoryNone];
+        }
+        
+        /*
+        if([self.CBStatus isEqualToString:@"Connected : YES"])
+        {
+            if(self.LastConnectDevice == nil)
+            {
+                NSUserDefaults *userDefaults = [NSUserDefaults standardUserDefaults];
+                [userDefaults setObject:self.BLE_device1 forKey:@"myHRMApp_Device"];
+                [userDefaults synchronize];
+                
+                self.LastConnectDevice = self.BLE_device1;
+            }
+            else
+            {
+                if(!([self.LastConnectDevice isEqualToString:self.BLE_device1]))
+                {
+                    NSUserDefaults *userDefaults = [NSUserDefaults standardUserDefaults];
+                    [userDefaults setObject:self.BLE_device1 forKey:@"myHRMApp_Device"];
+                    [userDefaults synchronize];
+                    
+                    self.LastConnectDevice = self.BLE_device1;
+                }
+            }
+            
+            if((cell.accessoryType == UITableViewCellAccessoryNone) && (IndexSetAccessoryCheckmark == indexPath.row) )
+            {
+                [cell setAccessoryType:UITableViewCellAccessoryCheckmark];
+                IndexSetAccessoryCheckmark = 0;
+            }
+        }*/
+
+        if(cell.accessoryType == UITableViewCellAccessoryCheckmark)
+        {
+            if([self.CBStatus isEqualToString:@"Connected : YES"])
+            {
+                if(self.LastConnectDevice == nil)
+                {
+                    NSUserDefaults *userDefaults = [NSUserDefaults standardUserDefaults];
+                    [userDefaults setObject:self.BLE_device1 forKey:@"myHRMApp_Device"];
+                    [userDefaults synchronize];
+                    self.LastConnectDevice = self.BLE_device1;
+                }
+                else
+                {
+                    if(!([self.LastConnectDevice isEqualToString:self.BLE_device1]))
+                    {
+                        NSUserDefaults *userDefaults = [NSUserDefaults standardUserDefaults];
+                        [userDefaults setObject:self.BLE_device1 forKey:@"myHRMApp_Device"];
+                        [userDefaults synchronize];
+                        self.LastConnectDevice = self.BLE_device1;
+                    }
+                }
+            }
+        }
+        else
+        {
+            if([self.CBStatus isEqualToString:@"Connected : YES"])
+            {
+                if((cell.accessoryType == UITableViewCellAccessoryNone) && (IndexSetAccessoryCheckmark == indexPath.row) )
+                {
+                    [cell setAccessoryType:UITableViewCellAccessoryCheckmark];
+                    IndexSetAccessoryCheckmark = 0;
+                    
+                    NSUserDefaults *userDefaults = [NSUserDefaults standardUserDefaults];
+                    [userDefaults setObject:self.BLE_device1 forKey:@"myHRMApp_Device"];
+                    [userDefaults synchronize];
+                    self.LastConnectDevice = self.BLE_device1;
+                }
+            }
+        }
+        
+        APPDetail.text = nil;
+        APPUseFreq.text = nil;
+    }
+    else if(indexPath.row == 6)
+    {
+        if(self.BLE_device2 != nil)
+        {
+            [APPTitle setTextColor:[UIColor blueColor]];
+            APPTitle.text = self.BLE_device2;
+        }
+        else
+        {
+            APPTitle.text = nil;
+            [cell setAccessoryType:UITableViewCellAccessoryNone];
+        }
+        
+        /*
+        if([self.CBStatus isEqualToString:@"Connected : YES"])
+        {
+            if(self.LastConnectDevice == nil)
+            {
+                NSUserDefaults *userDefaults = [NSUserDefaults standardUserDefaults];
+                [userDefaults setObject:self.BLE_device2 forKey:@"myHRMApp_Device"];
+                [userDefaults synchronize];
+                
+                self.LastConnectDevice = self.BLE_device2;
+            }
+            else
+            {
+                if(!([self.LastConnectDevice isEqualToString:self.BLE_device2]))
+                {
+                    NSUserDefaults *userDefaults = [NSUserDefaults standardUserDefaults];
+                    [userDefaults setObject:self.BLE_device2 forKey:@"myHRMApp_Device"];
+                    [userDefaults synchronize];
+                    
+                    self.LastConnectDevice = self.BLE_device2;
+                }
+            }
+            
+            if((cell.accessoryType == UITableViewCellAccessoryNone) && (IndexSetAccessoryCheckmark == indexPath.row) )
+            {
+                [cell setAccessoryType:UITableViewCellAccessoryCheckmark];
+                IndexSetAccessoryCheckmark = 0;
+            }
+        }*/
+        
+        if(cell.accessoryType == UITableViewCellAccessoryCheckmark)
+        {
+            if([self.CBStatus isEqualToString:@"Connected : YES"])
+            {
+                if(self.LastConnectDevice == nil)
+                {
+                    NSUserDefaults *userDefaults = [NSUserDefaults standardUserDefaults];
+                    [userDefaults setObject:self.BLE_device2 forKey:@"myHRMApp_Device"];
+                    [userDefaults synchronize];
+                    self.LastConnectDevice = self.BLE_device2;
+                }
+                else
+                {
+                    if(!([self.LastConnectDevice isEqualToString:self.BLE_device2]))
+                    {
+                        NSUserDefaults *userDefaults = [NSUserDefaults standardUserDefaults];
+                        [userDefaults setObject:self.BLE_device2 forKey:@"myHRMApp_Device"];
+                        [userDefaults synchronize];
+                        self.LastConnectDevice = self.BLE_device2;
+                    }
+                }
+            }
+        }
+        else
+        {
+            if([self.CBStatus isEqualToString:@"Connected : YES"])
+            {
+                if((cell.accessoryType == UITableViewCellAccessoryNone) && (IndexSetAccessoryCheckmark == indexPath.row) )
+                {
+                    [cell setAccessoryType:UITableViewCellAccessoryCheckmark];
+                    IndexSetAccessoryCheckmark = 0;
+                    
+                    NSUserDefaults *userDefaults = [NSUserDefaults standardUserDefaults];
+                    [userDefaults setObject:self.BLE_device2 forKey:@"myHRMApp_Device"];
+                    [userDefaults synchronize];
+                    self.LastConnectDevice = self.BLE_device2;
+                }
+            }
+        }
+        
+        APPDetail.text = nil;
+        APPUseFreq.text = nil;
+    }
+    else if(indexPath.row == 7)
+    {
+        if(self.BLE_device3 != nil)
+        {
+            [APPTitle setTextColor:[UIColor blueColor]];
+            APPTitle.text = self.BLE_device3;
+        }
+        else
+        {
+            APPTitle.text = nil;
+            [cell setAccessoryType:UITableViewCellAccessoryNone];
+        }
+        
+        /*
+        if([self.CBStatus isEqualToString:@"Connected : YES"])
+        {
+            if(self.LastConnectDevice == nil)
+            {
+                NSUserDefaults *userDefaults = [NSUserDefaults standardUserDefaults];
+                [userDefaults setObject:self.BLE_device3 forKey:@"myHRMApp_Device"];
+                [userDefaults synchronize];
+                
+                self.LastConnectDevice = self.BLE_device3;
+            }
+            else
+            {
+                if(!([self.LastConnectDevice isEqualToString:self.BLE_device3]))
+                {
+                    NSUserDefaults *userDefaults = [NSUserDefaults standardUserDefaults];
+                    [userDefaults setObject:self.BLE_device3 forKey:@"myHRMApp_Device"];
+                    [userDefaults synchronize];
+                    
+                    self.LastConnectDevice = self.BLE_device3;
+                }
+            }
+            
+            if((cell.accessoryType == UITableViewCellAccessoryNone) && (IndexSetAccessoryCheckmark == indexPath.row) )
+            {
+                [cell setAccessoryType:UITableViewCellAccessoryCheckmark];
+                IndexSetAccessoryCheckmark = 0;
+            }
+        }*/
+        
+        if(cell.accessoryType == UITableViewCellAccessoryCheckmark)
+        {
+            if([self.CBStatus isEqualToString:@"Connected : YES"])
+            {
+                if(self.LastConnectDevice == nil)
+                {
+                    NSUserDefaults *userDefaults = [NSUserDefaults standardUserDefaults];
+                    [userDefaults setObject:self.BLE_device3 forKey:@"myHRMApp_Device"];
+                    [userDefaults synchronize];
+                    self.LastConnectDevice = self.BLE_device3;
+                }
+                else
+                {
+                    if(!([self.LastConnectDevice isEqualToString:self.BLE_device3]))
+                    {
+                        NSUserDefaults *userDefaults = [NSUserDefaults standardUserDefaults];
+                        [userDefaults setObject:self.BLE_device3 forKey:@"myHRMApp_Device"];
+                        [userDefaults synchronize];
+                        self.LastConnectDevice = self.BLE_device3;
+                    }
+                }
+             }
+        }
+        else
+        {
+            if([self.CBStatus isEqualToString:@"Connected : YES"])
+            {
+                if((cell.accessoryType == UITableViewCellAccessoryNone) && (IndexSetAccessoryCheckmark == indexPath.row) )
+                {
+                    [cell setAccessoryType:UITableViewCellAccessoryCheckmark];
+                    IndexSetAccessoryCheckmark = 0;
+                    
+                    NSUserDefaults *userDefaults = [NSUserDefaults standardUserDefaults];
+                    [userDefaults setObject:self.BLE_device3 forKey:@"myHRMApp_Device"];
+                    [userDefaults synchronize];
+                    self.LastConnectDevice = self.BLE_device3;
+                }
+            }
+        }
+        
+        APPDetail.text = nil;
+        APPUseFreq.text = nil;
     }
     else
     {
@@ -242,28 +764,36 @@
     return cell;
 }
 
+/*
 - (void) tableView:(UITableView *)tableView accessoryButtonTappedForRowWithIndexPath:(NSIndexPath *)indexPath
 {
     if(indexPath.row == 0)
     {
-        //NSLog(@"Test 0");
+        
     }
     else if(indexPath.row == 1)
     {
-        //NSLog(@"Test 1");
+        
     }
     else if(indexPath.row == 2)
     {
-        //NSLog(@"Test 2");
+        
     }
 }
+*/
 
 - (void) tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
+    UITableViewCell *cell = [tableView cellForRowAtIndexPath:indexPath];
+    //UILabel *BLEState = (UILabel *)[cell viewWithTag:101];
+    
     if(indexPath.row == 0)
     {
-        [self performSegueWithIdentifier:@"SegueForHRM" sender:[tableView cellForRowAtIndexPath:indexPath]];
-
+        if([self.CBStatus rangeOfString:@"Connected"].location !=
+           NSNotFound)
+        {
+            [self performSegueWithIdentifier:@"SegueForHRM" sender:[tableView cellForRowAtIndexPath:indexPath]];
+        }
     }
     else if(indexPath.row == 1)
     {
@@ -273,17 +803,88 @@
     {
         //[self performSegueWithIdentifier:@"SegueForTest" sender:[tableView cellForRowAtIndexPath:indexPath]];
     }
-}
+    /*else if(indexPath.row == 3)
+    {
+        //Debug
+        UIAlertView *alert5 = [[UIAlertView alloc] initWithTitle:@"Debug" message:self.LastConnectDevice delegate:self cancelButtonTitle:@"OK" otherButtonTitles:nil, nil];
+        
+        [alert5 show];
 
-#pragma mark -
-#pragma mark instance methods
-
-- (HRMDataObject *) theAppDataObject;
-{
-    id<AppDelegateProtocol> theDelegate = (id<AppDelegateProtocol>) [UIApplication sharedApplication].delegate;
-    HRMDataObject *theDataObject;
-    theDataObject = (HRMDataObject*) theDelegate.theAppDataObject;
-    return theDataObject;
+    }*/
+    else if(indexPath.row == 4)//BLE State (Scan , Connect , Disconnect)
+    {
+        UILabel *BLEState = (UILabel *)[cell viewWithTag:101];
+        //NSLog(@"%@",BLEState.text);
+        
+        if([BLEState.text isEqualToString:@"Scan..."])
+        {
+            if([ScanTimer isValid])
+            {
+                [ScanTimer invalidate];
+                Count10sec = BLEScanTime;
+            }
+            [CoreBTObj StopScanPeripheral];
+            self.CBStatus = @"Disconnected";
+            self.BLE_device1 = nil;
+            self.BLE_device2 = nil;
+            self.BLE_device3 = nil;
+            [self.tableView reloadData];
+        }
+        else if([BLEState.text rangeOfString:@"Connected"].location != NSNotFound)
+        {
+            myAlert = [[UIAlertView alloc] initWithTitle:@"Disconnect" message:@"CancelPeripheralConnection" delegate:self cancelButtonTitle:@"No" otherButtonTitles:@"Yes", nil];
+            
+            [myAlert show];
+            
+            AlertTimer = [NSTimer scheduledTimerWithTimeInterval:AlertViewTimeout target:self selector:@selector(DismissAlertView) userInfo:nil repeats:NO];
+        }
+        else if([BLEState.text isEqualToString:@"Disconnected"])
+        {
+            myAlert = [[UIAlertView alloc] initWithTitle:@"Scan PeripheralWithHRService" message:@"Scans HRM device for 15 seconds" delegate:self cancelButtonTitle:@"No" otherButtonTitles:@"Yes", nil];
+            [myAlert show];
+            
+            AlertTimer = [NSTimer scheduledTimerWithTimeInterval:AlertViewTimeout target:self selector:@selector(DismissAlertView) userInfo:nil repeats:NO];
+        }
+    }
+    else if(indexPath.row == 5)
+    {
+        if([self.CBStatus isEqualToString:@"Scan..."])
+        {
+            UILabel *Device1 = (UILabel *)[cell viewWithTag:101];
+            if(Device1.text != nil)
+            {
+                //NSLog(@"%@",Devece1.text);
+                [CoreBTObj ConnectHRMDevice:Device1.text];
+                [cell setAccessoryType:UITableViewCellAccessoryCheckmark];
+            }
+        }
+    }
+    else if(indexPath.row == 6)
+    {
+        if([self.CBStatus isEqualToString:@"Scan..."])
+        {
+            UILabel *Device2 = (UILabel *)[cell viewWithTag:101];
+            if(Device2.text != nil)
+            {
+                //NSLog(@"%@",Device2.text);
+                [CoreBTObj ConnectHRMDevice:Device2.text];
+                [cell setAccessoryType:UITableViewCellAccessoryCheckmark];
+            }
+        }
+    }
+    else if(indexPath.row == 7)
+    {
+        if([self.CBStatus isEqualToString:@"Scan..."])
+        {
+            UILabel *Device3 = (UILabel *)[cell viewWithTag:101];
+            if(Device3.text != nil)
+            {
+                //NSLog(@"%@",Device3.text);
+                [CoreBTObj ConnectHRMDevice:Device3.text];
+                [cell setAccessoryType:UITableViewCellAccessoryCheckmark];
+            }
+        }
+    }
 }
 
 /*

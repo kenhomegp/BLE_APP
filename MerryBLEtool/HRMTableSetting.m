@@ -114,6 +114,15 @@
     
     if(!([self.HR_UserAge isEqualToString:@""]) && self.SetRHR != 0)
         [self CalculateHRData];
+    
+    NSString *version = [[NSBundle mainBundle] objectForInfoDictionaryKey:@"CFBundleShortVersionString"];
+    
+    version = [version stringByAppendingString:@"."];
+    
+    NSString *build = [[NSBundle mainBundle] objectForInfoDictionaryKey:(NSString *)kCFBundleVersionKey];
+    
+    self.Version.text = [version stringByAppendingString:build];
+    
 }
 
 - (void)didReceiveMemoryWarning

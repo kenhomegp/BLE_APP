@@ -12,12 +12,15 @@
 #import "AppDelegateProtocol.h"
 #import "HRMDataObject.h"
 
+//#define iPhoneMapFullScreen
+
 @interface HRMapView ()
 @end
 
 @implementation HRMapView
 {
     GMSMapView *mapView_;
+    BOOL firstLocationUpdate_;
     
     CLLocationManager *locationManager;
     CLGeocoder *geocoder;
@@ -78,7 +81,6 @@
         NSNumber *levelObj = [NSNumber numberWithFloat:batteryLevel];
         //self.BatteryLabel.text = [numberFormatter stringFromNumber:levelObj];
         self.BatteryLabel.text = [@"Battery: " stringByAppendingString:[numberFormatter stringFromNumber:levelObj]];
-        //NSLog(@"chk 2");
     }
 
 }
@@ -89,7 +91,15 @@
     [super viewDidLoad];
     // Do any additional setup after loading the view.
     
-    //NSLog(@"HRMapViewDidLoad");
+    //Check iOS Version
+    /*
+    NSString *ver = [[UIDevice currentDevice] systemVersion];
+    int ver_int = [ver intValue];
+    float ver_float = [ver floatValue];
+    */
+    //NSLog(@"System version = %d,%f",ver_int , ver_float);
+    
+    //NSLog(@"%@",[@"Google MapSDK Ver:" stringByAppendingString:[NSString stringWithFormat:@"%@",[GMSServices SDKVersion]]]);
     
     [[UIApplication sharedApplication] setIdleTimerDisabled:YES];
     
@@ -106,47 +116,96 @@
     [self.CustomButton setBackgroundImage:[UIImage imageNamed:@"Button1.png"] forState:UIControlStateNormal];
     [self.CustomButton setBackgroundImage:[UIImage imageNamed:@"Button1Pressed.png"] forState:UIControlStateHighlighted];
     
-    //[swipeRight setDirection:UISwipeGestureRecognizerDirectionRight];
     [self.SwipeRecognizer setDirection:UISwipeGestureRecognizerDirectionLeft];
-    //[self.SwipeRecognizer setDirection:(UISwipeGestureRecognizerDirectionLeft | UISwipeGestureRecognizerDirectionRight)];
     
-    locationManager = [[CLLocationManager alloc]init];
-    locationManager.delegate = self;
-    locationManager.distanceFilter = kCLDistanceFilterNone;
-    locationManager.desiredAccuracy = kCLLocationAccuracyBest;
-    [locationManager startUpdatingLocation];
+    
+    if(UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPhone)
+    {
+        locationManager = [[CLLocationManager alloc]init];
+        locationManager.delegate = self;
+        //locationManager.distanceFilter = kCLDistanceFilterNone;
+        //locationManager.desiredAccuracy = kCLLocationAccuracyBest;
+        
+        // Check for iOS 8. Without this guard the code will crash with "unknown selector" on iOS 7.
+        if ([locationManager respondsToSelector:@selector(requestWhenInUseAuthorization)]) {
+            [locationManager requestWhenInUseAuthorization];
+        }
+        [locationManager startUpdatingLocation];
+        //NSLog(@"Init locationManager");
+        
+    }
+    
     
     geocoder = [[CLGeocoder alloc] init];
 
     // Create a GMSCameraPosition that tells the map to display the
-    // coordinate -33.86,151.20 at zoom level 6.
-    GMSCameraPosition *camera = [GMSCameraPosition cameraWithLatitude:-33.86
-                                                            longitude:151.20
-                                                                 zoom:6];
-    //mapView_ = [GMSMapView mapWithFrame:CGRectZero camera:camera];
-    mapView_ = [GMSMapView mapWithFrame:CGRectMake(0, 0, 320, 400) camera:camera];
-    mapView_.myLocationEnabled = YES;
+    // coordinate 24.161369,120.604799(Merry Electronics co., ltd.) at zoom level 6.
+    GMSCameraPosition *camera = [GMSCameraPosition cameraWithLatitude:24.161369 longitude:120.604799 zoom:6];
     
-    //self.view = mapView_; //Full screen
-    [self.view addSubview:mapView_];
-    
-    //NSString *restorationId = self.restorationIdentifier;
-    //NSLog(@"RestorationID = %@",restorationId);
+    if(UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad)
+    {
+        mapView_ = [GMSMapView mapWithFrame:CGRectZero camera:camera];
+        self.view = mapView_; //Full screen
+        //mapView_.myLocationEnabled = YES;
+        mapView_.settings.compassButton = YES;
+        mapView_.settings.myLocationButton = YES;
+        
+        
+        // Listen to the myLocation property of GMSMapView.
+        [mapView_ addObserver:self
+                   forKeyPath:@"myLocation"
+                      options:NSKeyValueObservingOptionNew
+                      context:NULL];
+
+        dispatch_async(dispatch_get_main_queue(), ^{
+            //NSLog(@"MyLocationEnabled");
+            mapView_.myLocationEnabled = YES;});
+        
+        
+        self.CustomButton.hidden = YES;
+        self.HeartRateLabel.hidden = YES;
+        self.TimeLabel.hidden = YES;
+        self.CaloriesLabel.hidden = YES;
+        self.BatteryLabel.hidden = YES;
+    }
+    else
+    {
+        #ifdef iPhoneMapFullScreen
+        mapView_ = [GMSMapView mapWithFrame:CGRectZero camera:camera];
+        self.view = mapView_; //Full screen
+        [self.view addSubview:self.HeartRateLabel];
+        [self.view addSubview:self.TimeLabel];
+        #else
+            mapView_ = [GMSMapView mapWithFrame:CGRectMake(0, 0, 320, 400) camera:camera];
+            [self.view addSubview:mapView_];
+        #endif
+        //mapView_.myLocationEnabled = YES;
+        mapView_.settings.myLocationButton = YES;
+        mapView_.settings.compassButton = YES;
+        mapView_.settings.zoomGestures = NO;
+        
+        // Listen to the myLocation property of GMSMapView.
+        [mapView_ addObserver:self
+                   forKeyPath:@"myLocation"
+                      options:NSKeyValueObservingOptionNew
+                      context:NULL];
+        
+        dispatch_async(dispatch_get_main_queue(), ^{
+            mapView_.myLocationEnabled = YES;
+            //NSLog(@"MyLocationEnabled");
+        });
+    }
     
     HRMDataObject* theDataObject = [self theAppDataObject];
     self.APPConfig = theDataObject.APPConfig;
     
     if((self.APPConfig & BLE_Connected) == 0)
     {
-        //NSLog(@"@@@BLE disconnected!");
-        
         [[self delegate] passCommand:@"BLE_Connect"];
         
         [self.CustomButton setTitle:NSLocalizedString(@"StartButton", @"") forState:UIControlStateNormal];
     }
-    else{
-        //NSLog(@"!!!BLE connected");
-        
+    else{        
         if((self.APPConfig & StartActivity) == StartActivity)
         {
             //NSLog(@"Start HRMapView Timer!");
@@ -163,8 +222,6 @@
             }
         }
     }
-    
-
     
 /*
     // Creates a marker in the center of the map.
@@ -325,6 +382,33 @@ double getDistanceMetresBetweenLocationCoordinates(
 }
 */
 
+
+- (void)dealloc {
+    [mapView_ removeObserver:self
+                  forKeyPath:@"myLocation"
+                     context:NULL];
+}
+
+
+#pragma mark - KVO updates
+
+- (void)observeValueForKeyPath:(NSString *)keyPath
+                      ofObject:(id)object
+                        change:(NSDictionary *)change
+                       context:(void *)context {
+    if (!firstLocationUpdate_) {
+        // If the first location update has not yet been recieved, then jump to that
+        // location.
+        firstLocationUpdate_ = YES;
+        CLLocation *location = [change objectForKey:NSKeyValueChangeNewKey];
+        mapView_.camera = [GMSCameraPosition cameraWithTarget:location.coordinate zoom:14];
+        //NSLog(@"FirstLocationUpdate");
+        
+    }
+    //NSLog(@"observerValueForKeyPath");
+}
+
+
 #pragma mark - CLLocationManager delegate
 
 - (void)locationManager:(CLLocationManager *)manager didFailWithError:(NSError *)error
@@ -352,11 +436,12 @@ double getDistanceMetresBetweenLocationCoordinates(
         
         //NSLog(@"MY HOME : %@",latitude);
         //NSLog(@"MY HOME : %@",longitude);
+        //NSLog(@"didUpdateToLocation");
         
         // Stop Location Manager
         [locationManager stopUpdatingLocation];
 
-        [self MoveCamera:currentLocation];
+        //[self MoveCamera:currentLocation];
     }
     
     // Stop Location Manager
@@ -406,6 +491,11 @@ double getDistanceMetresBetweenLocationCoordinates(
         UIAlertView *alert = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"HRM", @"AlertViewTitle") message:NSLocalizedString(@"Device", @"AlertMessage") delegate:self cancelButtonTitle:NSLocalizedString(@"End", @"Test") otherButtonTitles:nil, nil];
         
         [alert show];
+        
+        //Debug code
+        /* MoveCamera to "田中火車站"*/
+        GMSCameraPosition *currposition = [GMSCameraPosition cameraWithLatitude:23.858337 longitude:120.591495 zoom:15];
+        [mapView_ setCamera:currposition];
 
         return;
     }
