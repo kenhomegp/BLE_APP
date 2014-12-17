@@ -59,6 +59,7 @@
 		C130E61719F0F8DE00550957 /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C130E61619F0F8DE00550957 /* SystemConfiguration.framework */; };
 		C130E61A19F1025A00550957 /* HRMapView.m in Sources */ = {isa = PBXBuildFile; fileRef = C130E61919F1025A00550957 /* HRMapView.m */; };
 		C13C3F991A242A9700E0DC58 /* transparentpic.png in Resources */ = {isa = PBXBuildFile; fileRef = C13C3F981A242A9700E0DC58 /* transparentpic.png */; };
+		C143D9F11A414BDE00BF6AE4 /* history2.png in Resources */ = {isa = PBXBuildFile; fileRef = C143D9F01A414BDE00BF6AE4 /* history2.png */; };
 		C15420F91A0CB2170096E954 /* 640_960.png in Resources */ = {isa = PBXBuildFile; fileRef = C15420F81A0CB2060096E954 /* 640_960.png */; };
 		C15420FE1A0CB23A0096E954 /* 640_1136.png in Resources */ = {isa = PBXBuildFile; fileRef = C15420FC1A0CB2260096E954 /* 640_1136.png */; };
 		C18300B71A0C615E00CAAB55 /* HRM_iPhone.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = C18300B91A0C615E00CAAB55 /* HRM_iPhone.storyboard */; };
@@ -82,6 +83,10 @@
 		C1E017D219FF90E400F5FA46 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = C1E017D419FF90E400F5FA46 /* Localizable.strings */; };
 		C1E700CC19D2747400410667 /* HRMSetting.m in Sources */ = {isa = PBXBuildFile; fileRef = C1E700CB19D2747400410667 /* HRMSetting.m */; };
 		C1E700CE19D2798C00410667 /* user.png in Resources */ = {isa = PBXBuildFile; fileRef = C1E700CD19D2798C00410667 /* user.png */; };
+		C1EDD4C31A3A9CA4008E4E75 /* HistoryViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = C1EDD4C21A3A9CA4008E4E75 /* HistoryViewController.m */; };
+		C1EDD4C51A3AC4E4008E4E75 /* rsz_heartrate.png in Resources */ = {isa = PBXBuildFile; fileRef = C1EDD4C41A3AC4E4008E4E75 /* rsz_heartrate.png */; };
+		C1EDD4C71A3AC4F0008E4E75 /* rsz_time.png in Resources */ = {isa = PBXBuildFile; fileRef = C1EDD4C61A3AC4F0008E4E75 /* rsz_time.png */; };
+		C1EDD4C91A3AC4FB008E4E75 /* rsz_speed.png in Resources */ = {isa = PBXBuildFile; fileRef = C1EDD4C81A3AC4FB008E4E75 /* rsz_speed.png */; };
 		C1F60B7E198B37610032A497 /* apple-touch-icon-114x114-precomposed.png in Resources */ = {isa = PBXBuildFile; fileRef = C1F60B6C198B37610032A497 /* apple-touch-icon-114x114-precomposed.png */; };
 		C1F60B7F198B37610032A497 /* apple-touch-icon-144x144-precomposed.png in Resources */ = {isa = PBXBuildFile; fileRef = C1F60B6D198B37610032A497 /* apple-touch-icon-144x144-precomposed.png */; };
 		C1F60B80198B37610032A497 /* apple-touch-icon-72x72-precomposed.png in Resources */ = {isa = PBXBuildFile; fileRef = C1F60B6E198B37610032A497 /* apple-touch-icon-72x72-precomposed.png */; };
@@ -179,6 +184,7 @@
 		C130E61819F1025900550957 /* HRMapView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HRMapView.h; sourceTree = "<group>"; };
 		C130E61919F1025A00550957 /* HRMapView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HRMapView.m; sourceTree = "<group>"; };
 		C13C3F981A242A9700E0DC58 /* transparentpic.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = transparentpic.png; sourceTree = "<group>"; };
+		C143D9F01A414BDE00BF6AE4 /* history2.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = history2.png; sourceTree = "<group>"; };
 		C15420F71A0CB2060096E954 /* Base */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = Base; path = Base.lproj/640_960.png; sourceTree = "<group>"; };
 		C15420FA1A0CB21D0096E954 /* zh-Hant */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "zh-Hant"; path = "zh-Hant.lproj/640_960.png"; sourceTree = "<group>"; };
 		C15420FB1A0CB2260096E954 /* Base */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = Base; path = Base.lproj/640_1136.png; sourceTree = "<group>"; };
@@ -215,6 +221,11 @@
 		C1E700CA19D2747400410667 /* HRMSetting.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HRMSetting.h; sourceTree = "<group>"; };
 		C1E700CB19D2747400410667 /* HRMSetting.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HRMSetting.m; sourceTree = "<group>"; };
 		C1E700CD19D2798C00410667 /* user.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = user.png; sourceTree = "<group>"; };
+		C1EDD4C11A3A9CA4008E4E75 /* HistoryViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HistoryViewController.h; sourceTree = "<group>"; };
+		C1EDD4C21A3A9CA4008E4E75 /* HistoryViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HistoryViewController.m; sourceTree = "<group>"; };
+		C1EDD4C41A3AC4E4008E4E75 /* rsz_heartrate.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = rsz_heartrate.png; sourceTree = "<group>"; };
+		C1EDD4C61A3AC4F0008E4E75 /* rsz_time.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = rsz_time.png; sourceTree = "<group>"; };
+		C1EDD4C81A3AC4FB008E4E75 /* rsz_speed.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = rsz_speed.png; sourceTree = "<group>"; };
 		C1F60B6C198B37610032A497 /* apple-touch-icon-114x114-precomposed.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "apple-touch-icon-114x114-precomposed.png"; sourceTree = "<group>"; };
 		C1F60B6D198B37610032A497 /* apple-touch-icon-144x144-precomposed.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "apple-touch-icon-144x144-precomposed.png"; sourceTree = "<group>"; };
 		C1F60B6E198B37610032A497 /* apple-touch-icon-72x72-precomposed.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "apple-touch-icon-72x72-precomposed.png"; sourceTree = "<group>"; };
@@ -353,6 +364,8 @@
 				C11742BE19AADC1600721449 /* HRMViewController.h */,
 				C11742BF19AADC1600721449 /* HRMViewController.m */,
 				C18300B91A0C615E00CAAB55 /* HRM_iPhone.storyboard */,
+				C1EDD4C11A3A9CA4008E4E75 /* HistoryViewController.h */,
+				C1EDD4C21A3A9CA4008E4E75 /* HistoryViewController.m */,
 				C1D5CD2A1A1A4C2F00AF72BB /* HRMTableSetting.h */,
 				C1D5CD2B1A1A4C2F00AF72BB /* HRMTableSetting.m */,
 				C1E017C819FF77C600F5FA46 /* BLE_APP_Storyboard.storyboard */,
@@ -374,6 +387,10 @@
 		C1DF28B0186147DA00000695 /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
+				C143D9F01A414BDE00BF6AE4 /* history2.png */,
+				C1EDD4C81A3AC4FB008E4E75 /* rsz_speed.png */,
+				C1EDD4C61A3AC4F0008E4E75 /* rsz_time.png */,
+				C1EDD4C41A3AC4E4008E4E75 /* rsz_heartrate.png */,
 				C13C3F981A242A9700E0DC58 /* transparentpic.png */,
 				C12CA8211A2314B900F6CC76 /* TableTitle.png */,
 				C12CA81C1A22C31E00F6CC76 /* HRM2.gif */,
@@ -534,12 +551,14 @@
 				C130E60119F0E22B00550957 /* Jogging1.png in Resources */,
 				C1DF28B4186147DA00000695 /* InfoPlist.strings in Resources */,
 				C11073611A0F0C9400FE3CFD /* Login.png in Resources */,
+				C1EDD4C51A3AC4E4008E4E75 /* rsz_heartrate.png in Resources */,
 				C1FF23A31A11B89700BE0C61 /* Button1.png in Resources */,
 				C1216F3119DA64A600C78FEA /* HRAlarm2.mp3 in Resources */,
 				C12529D519EE7556004AFA0F /* Distance.png in Resources */,
 				C18300B71A0C615E00CAAB55 /* HRM_iPhone.storyboard in Resources */,
 				C1FF23B01A11D87600BE0C61 /* Countdownpic5.png in Resources */,
 				C110736E1A0F5CA800FE3CFD /* cell_top.png in Resources */,
+				C143D9F11A414BDE00BF6AE4 /* history2.png in Resources */,
 				C1F624B519C92E5C00565830 /* heart_monitor.png in Resources */,
 				C10B01F719B71C9E00325785 /* HRAlarm.mp3 in Resources */,
 				C1E017D219FF90E400F5FA46 /* Localizable.strings in Resources */,
@@ -577,6 +596,7 @@
 				C1F60B82198B37610032A497 /* Icon-72.png in Resources */,
 				C12D6A9719ED148700DBD768 /* Setting.png in Resources */,
 				C1F624B919C92E6A00565830 /* factory.png in Resources */,
+				C1EDD4C71A3AC4F0008E4E75 /* rsz_time.png in Resources */,
 				C1DF28D81861507700000695 /* 2.png in Resources */,
 				C1F60B84198B37610032A497 /* Icon-Small-20.png in Resources */,
 				C11F946219F4F2A300DA0CD1 /* APPLaunch.png in Resources */,
@@ -593,6 +613,7 @@
 				C11073681A0F5C0F00FE3CFD /* common_bg.png in Resources */,
 				C110736C1A0F5C9A00FE3CFD /* cell_middle.png in Resources */,
 				C1F60B8F198B37610032A497 /* iTunesArtwork@2x.png in Resources */,
+				C1EDD4C91A3AC4FB008E4E75 /* rsz_speed.png in Resources */,
 				C1F60B8E198B37610032A497 /* iTunesArtwork.png in Resources */,
 				C1F60B8B198B37610032A497 /* Icon-Small@2x.png in Resources */,
 				C1F624B719C92E6200565830 /* running.png in Resources */,
@@ -611,6 +632,7 @@
 				C12529D319EE11EB004AFA0F /* HRHealthyCare.m in Sources */,
 				C11073661A0F573900FE3CFD /* HRStartViewController.m in Sources */,
 				C1DF28B6186147DB00000695 /* main.m in Sources */,
+				C1EDD4C31A3A9CA4008E4E75 /* HistoryViewController.m in Sources */,
 				C1DF28BA186147DB00000695 /* AppDelegate.m in Sources */,
 				C1D5CD2C1A1A4C2F00AF72BB /* HRMTableSetting.m in Sources */,
 				C130E61A19F1025A00550957 /* HRMapView.m in Sources */,

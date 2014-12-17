@@ -118,8 +118,7 @@
     
     [self.SwipeRecognizer setDirection:UISwipeGestureRecognizerDirectionLeft];
     
-    
-    if(UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPhone)
+    //if(UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPhone)
     {
         locationManager = [[CLLocationManager alloc]init];
         locationManager.delegate = self;
@@ -135,7 +134,6 @@
         
     }
     
-    
     geocoder = [[CLGeocoder alloc] init];
 
     // Create a GMSCameraPosition that tells the map to display the
@@ -150,7 +148,6 @@
         mapView_.settings.compassButton = YES;
         mapView_.settings.myLocationButton = YES;
         
-        
         // Listen to the myLocation property of GMSMapView.
         [mapView_ addObserver:self
                    forKeyPath:@"myLocation"
@@ -160,7 +157,6 @@
         dispatch_async(dispatch_get_main_queue(), ^{
             //NSLog(@"MyLocationEnabled");
             mapView_.myLocationEnabled = YES;});
-        
         
         self.CustomButton.hidden = YES;
         self.HeartRateLabel.hidden = YES;

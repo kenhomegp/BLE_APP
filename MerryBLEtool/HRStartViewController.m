@@ -38,9 +38,11 @@
     {
         //NSLog(@"btn index 0");
         IndexSetAccessoryCheckmark = 0;
+        [AlertTimer invalidate];
     }
     else{               //Button : Yes
         //NSLog(@"btn index 1");
+        [AlertTimer invalidate];
         if([self.CBStatus isEqualToString:@"Scan..."])
         {
             if(IndexSetAccessoryCheckmark != 0)
@@ -147,6 +149,7 @@
 - (void)viewWillDisappear:(BOOL)animated
 {
     [ScanTimer invalidate];
+    [AlertTimer invalidate];
 }
 
 - (void)viewDidLoad
@@ -394,6 +397,8 @@
                 return 70;
             else if (indexPath.row == 2)
                 return 70;
+            else if (indexPath.row == 3)
+                return 70;
             else
                 return 40;
         }
@@ -402,7 +407,7 @@
     }
     else
     {
-        return 150;
+        return 100;
     }
 }
 
@@ -471,7 +476,7 @@
         APPImage.image = [UIImage imageNamed:@"AppHealthy.png"];
         APPTitle.text = NSLocalizedString(@"TableViewCell2Title", @"");
         APPDetail.text = NSLocalizedString(@"TableViewCell2Detail", @"");
-        APPUseFreq.text = @"30%";
+        APPUseFreq.text = @"20%";
         
     }
     else if(indexPath.row == 2)
@@ -480,6 +485,14 @@
         APPTitle.text = NSLocalizedString(@"TableViewCell3Title", @"");
         APPDetail.text = NSLocalizedString(@"TableViewCell3Detail", @"");
         APPUseFreq.text = @"10%";
+    }
+    else if(indexPath.row == 3)
+    {
+        APPImage.image = [UIImage imageNamed:@"history2.png"];
+        APPTitle.text = NSLocalizedString(@"TableViewCell4Title", @"");
+        APPDetail.text = NSLocalizedString(@"TableViewCell4Detail", @"");
+        APPUseFreq.text = @"10%";
+
     }
     else if(indexPath.row == 4)
     {
@@ -803,14 +816,39 @@
     {
         //[self performSegueWithIdentifier:@"SegueForTest" sender:[tableView cellForRowAtIndexPath:indexPath]];
     }
-    /*else if(indexPath.row == 3)
-    {
-        //Debug
-        UIAlertView *alert5 = [[UIAlertView alloc] initWithTitle:@"Debug" message:self.LastConnectDevice delegate:self cancelButtonTitle:@"OK" otherButtonTitles:nil, nil];
+    else if(indexPath.row == 3)
+    {        
+        NSString *path;
+        NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
+        //path = [[paths objectAtIndex:0] stringByAppendingPathComponent:@"./HRMdata.txt"];
+        path = [[paths objectAtIndex:0] stringByAppendingPathComponent:@"HRMdata.txt"];
+        [[NSFileManager defaultManager] changeCurrentDirectoryPath:path];
         
-        [alert5 show];
-
-    }*/
+        if ([[NSFileManager defaultManager] fileExistsAtPath:path])
+        {
+            //Get File Size
+            NSFileHandle *fileHandle = [NSFileHandle fileHandleForWritingAtPath:path];
+            int fileSize = (int)[fileHandle seekToEndOfFile];
+            [fileHandle closeFile];
+            //NSLog(@"File size = %i",fileSize);
+            
+            if(fileSize != 0)
+            {
+                [self performSegueWithIdentifier:@"HRHistory" sender:[tableView cellForRowAtIndexPath:indexPath]];
+            }
+            else{
+                UIAlertView *alert6 = [[UIAlertView alloc] initWithTitle:@"History" message:@"No history data!" delegate:self cancelButtonTitle:@"OK" otherButtonTitles:nil, nil];
+                
+                [alert6 show];
+            }
+        }
+        else{
+            UIAlertView *alert6 = [[UIAlertView alloc] initWithTitle:@"History" message:@"No history data!" delegate:self cancelButtonTitle:@"OK" otherButtonTitles:nil, nil];
+            
+            [alert6 show];
+            
+        }
+     }
     else if(indexPath.row == 4)//BLE State (Scan , Connect , Disconnect)
     {
         UILabel *BLEState = (UILabel *)[cell viewWithTag:101];

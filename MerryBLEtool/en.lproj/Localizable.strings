@@ -12,6 +12,7 @@
 "MainViewController" = "Merry HRM";
 "StartViewController" = "Application Mode";
 "HealthyCareVC" = "HeartRate Monitor";
+"HistoryVC" = "History";
 "HCNormalLabel" = "Monitor heartbeat any time";
 "HCSleepLabel" = "Relaxation and help sleep";
 "SettingVC" = "Setting";
@@ -28,3 +29,8 @@
 "TableViewCell2Detail" = "Monitor heartbeat any time";
 "TableViewCell3Title" = "Sleeping";
 "TableViewCell3Detail" = "Relaxation and help sleep";
+"TableViewCell4Title" = "History";
+"TableViewCell4Detail" = "History";
+"HistoryTableViewCell1" = "Average HeartRate : ";
+"HistoryTableViewCell2" = "Spend time : ";
+"HistoryTableViewCell3" = "Calorie expenditure : ";

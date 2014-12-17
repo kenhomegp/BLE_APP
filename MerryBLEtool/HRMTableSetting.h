@@ -20,6 +20,8 @@
 #define StartActivity       0x20
 
 #define UseNSUserDefaults
+#define SaveDataToFile
+#define NSFileHandleReadWrite
 
 #define DebugMode
 

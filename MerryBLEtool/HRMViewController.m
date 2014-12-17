@@ -647,6 +647,27 @@ static double TotalCalories = 0;
     if(!([self LoadUserData]))
     {
         [NSTimer scheduledTimerWithTimeInterval:0.5 target:self selector:@selector(GotoUserConfig) userInfo:nil repeats:NO];
+        
+#ifdef SaveDataToFile
+        //Create HRMdata.txt file
+        //NSLog(@"Create HRM database");
+        NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
+        NSString *documentsDirectory = [paths objectAtIndex:0];
+        NSFileManager *fileManager = [NSFileManager defaultManager];
+        //NSString *HRMDirectory = [documentsDirectory stringByAppendingString:@"HRM"];
+        //[fileManager createDirectoryAtPath:HRMDirectory withIntermediateDirectories:YES attributes:nil error:nil];
+        //NSString *HRMdataPath = [HRMDirectory stringByAppendingString:@"HRMdata.txt"];
+        //if(([fileManager createFileAtPath:HRMdataPath contents:nil attributes:nil]))
+        [fileManager changeCurrentDirectoryPath:documentsDirectory];
+        if(([fileManager createFileAtPath:@"./HRMdata.txt" contents:nil attributes:nil]))
+        {
+            //NSLog(@"Create file");
+        }
+        else
+        {
+            //NSLog(@"Create file Error!!");
+        }
+#endif
     }
     
     HRMDataObject* theDataObject = [self theAppDataObject];
@@ -1040,13 +1061,9 @@ static double TotalCalories = 0;
     
     HRMDataObject* theDataObject = [self theAppDataObject];
     
-    //self.MileageLabel.text = [NSString stringWithFormat:@"里程數 : %2.2f公里",(TotalDistance/1000)];
-    
     self.MileageLabel.text = [NSString stringWithFormat:@"Distance:%2.2f km",(TotalDistance/1000)];
     
     theDataObject.DistanceStr = self.MileageLabel.text;
-    
-    //self.BurnCalorieLabel.text = [NSString stringWithFormat:@"燃燒卡路里 : %5.1f",TotalCalories];
     
     self.BurnCalorieLabel.text = [NSString stringWithFormat:@"Calories:%5.1f cal",TotalCalories];
     
@@ -1180,8 +1197,6 @@ static double TotalCalories = 0;
 
 - (IBAction)DrawHeartRateCurve:(id)sender {
     
-    //if([[self.CustomButton currentTitle] isEqualToString:@"Start"])
-    //if([[self.CustomButton currentTitle] isEqualToString:@"開始跑步"])
     if([[self.CustomButton currentTitle] isEqualToString:NSLocalizedString(@"StartButton", @"")])
     {
         if(self.polarH7HRMPeripheral == nil)
@@ -1213,51 +1228,8 @@ static double TotalCalories = 0;
             self.BackgroundImage.animationRepeatCount = 1;
             [self.BackgroundImage startAnimating];
             [self performSelector:@selector(PerformSelectorMethod) withObject:nil afterDelay:5.5f];
-            /*
-            self.heartImage.hidden = YES;
-            self.BackgroundImage.image = nil;//Removing image from UIImageView
-            self.BackgroundImage.animationImages = [NSArray arrayWithObjects:[UIImage imageNamed:@"Countdownpic1"],[UIImage imageNamed:@"Countdownpic2"],[UIImage imageNamed:@"Countdownpic3"],[UIImage imageNamed:@"Countdownpic4"],[UIImage imageNamed:@"Countdownpic5"],[UIImage imageNamed:@"Countdownpic6"], nil];
-            self.BackgroundImage.animationDuration = 5.0f;
-            self.BackgroundImage.animationRepeatCount = 1;
-            [self.BackgroundImage startAnimating];
-            [self performSelector:@selector(PerformSelectorMethod) withObject:nil afterDelay:5.5f];
-            */
-            /*
-            #ifdef DrawSimulationHRCurve
-            if(UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad)
-            {
-                [DrawHRCurve invalidate];
-        
-                DrawHRCurve = [NSTimer scheduledTimerWithTimeInterval:drawHeartRateCurveTimeInterval target:self selector:@selector(timerRefresnFun) userInfo:nil repeats:YES];
-            }
-            #endif
-            
-            startDate = [NSDate date];
-            SportsTimer = [NSTimer scheduledTimerWithTimeInterval:1.0/2.0
-                                             target:self
-                                           selector:@selector(updateTimer)
-                                           userInfo:nil
-                                            repeats:YES];
-            
-            [CaloriesBurnedTimer invalidate];
-            CaloriesBurnedTimer = [NSTimer scheduledTimerWithTimeInterval:5.0
-                                                                   target:self
-                                                                 selector:@selector         (CaloriesBurned)
-                                                                 userInfo:nil
-                                                                  repeats:YES];
-        
-            //[self.CustomButton setTitle:@"Stop" forState:UIControlStateNormal];
-            //[self.CustomButton setTitle:@"運動結束" forState:UIControlStateNormal];
-            [self.CustomButton setTitle:NSLocalizedString(@"StopButton", @"") forState:UIControlStateNormal];
-            
-            self.APPConfig |= StartActivity;
-            
-            [locationManager startUpdatingLocation];
-             */
         }
     }
-    //else if([[self.CustomButton currentTitle] isEqualToString:@"Stop"])
-    //else if([[self.CustomButton currentTitle] isEqualToString:@"運動結束"])
     else if([[self.CustomButton currentTitle] isEqualToString:NSLocalizedString(@"StopButton", @"")])
     {
         #ifdef DrawSimulationHRCurve
@@ -1269,30 +1241,110 @@ static double TotalCalories = 0;
         {
             [SportsTimer invalidate];
             SportsTimer = nil;
-            //self.SportsTimeLabel.text = @"時間 : 00時:00分:00秒";
             self.SportsTimeLabel.text = NSLocalizedString(@"ResetTime", @"");
         }
         
         if([CaloriesBurnedTimer isValid])
         {
             [CaloriesBurnedTimer invalidate];
-            TotalDistance = 0;
-            TotalTime = 0;
-            TotalCalories = 0;
-            //self.MileageLabel.text = @"里程數 : 00公里";
-            //self.BurnCalorieLabel.text = @"燃燒卡路里 : 00000卡";
             self.MileageLabel.text = NSLocalizedString(@"ResetDistance", @"");
             self.BurnCalorieLabel.text = NSLocalizedString(@"ResetCalories", @"");
         }
         
         self.APPConfig &= ~(StartActivity);
         
-        //[self.CustomButton setTitle:@"Start" forState:UIControlStateNormal];
-        //[self.CustomButton setTitle:@"開始跑步" forState:UIControlStateNormal];
         [self.CustomButton setTitle:NSLocalizedString(@"StartButton", @"") forState:UIControlStateNormal];
         
         // Stop Location Manager
         [locationManager stopUpdatingLocation];
+        
+#ifdef SaveDataToFile
+        NSString *path;
+        NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
+        path = [[paths objectAtIndex:0] stringByAppendingPathComponent:@"HRMdata.txt"];
+        [[NSFileManager defaultManager] changeCurrentDirectoryPath:path];
+        
+        HRMDataObject* theDataObject = [self theAppDataObject];
+        
+        if ([[NSFileManager defaultManager] fileExistsAtPath:path])
+        {
+#ifdef NSFileHandleReadWrite
+            NSFileHandle *fileHandle = [NSFileHandle fileHandleForWritingAtPath:path];
+            if(fileHandle != nil)
+            {
+                //[fileHandle seekToEndOfFile];
+                NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
+                //[dateFormatter setDateFormat:@"yyyy-MM-dd"];
+                [dateFormatter setDateFormat:@"yyyy-MM-dd,HH:mm"];
+                NSString *strDate = [dateFormatter stringFromDate:[NSDate date]];
+                NSMutableData *writer = [[NSMutableData alloc]init];
+                //Date
+                [writer appendData:[strDate dataUsingEncoding:NSUTF8StringEncoding]];
+                //NSLog(@"w1 : %@,%lu",strDate,(unsigned long)[strDate length]);
+                //HeartRate
+                NSInteger tmp1 = theDataObject.HRM;
+                [writer appendBytes:&(tmp1) length:sizeof(tmp1)];
+                //NSLog(@"w2 : %lu,%lu",(unsigned long)tmp1, sizeof(tmp1));
+                //Calories
+                NSInteger tmp2 = (NSInteger)TotalCalories;
+                [writer appendBytes:&(tmp2) length:sizeof(tmp2)];
+                //NSLog(@"w3 : %lu,%lu",tmp2,sizeof(tmp2));
+                //Time
+                NSRange timeRange = NSMakeRange(6, 8);
+                NSString *TimeStr = [theDataObject.TimeStr substringWithRange:timeRange];
+                [writer appendData:[TimeStr dataUsingEncoding:NSUTF8StringEncoding]];
+                //NSLog(@"w4 : %@,%lu",TimeStr,(unsigned long)[TimeStr length]);
+                
+                int fileSize = (int)[fileHandle seekToEndOfFile];
+                
+                //if(fileSize < 340)
+                if(fileSize < 400)// 40 x 10 = 400
+                {
+                    [fileHandle writeData:writer];
+                    //NSLog(@"total w = %lu",(unsigned long)[writer length]);//Total write data length = 40;
+                }
+                [fileHandle closeFile];
+            }
+#else
+            NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
+            [dateFormatter setDateFormat:@"yyyy-MM-dd"];
+            NSString *strDate = [dateFormatter stringFromDate:[NSDate date]];
+            NSMutableData *writer = [[NSMutableData alloc]init];
+            //Date
+            [writer appendData:[strDate dataUsingEncoding:NSUTF8StringEncoding]];
+            //NSLog(@"w1 : %@,%lu",strDate,(unsigned long)[strDate length]);
+            //HeartRate
+            NSInteger tmp1 = theDataObject.HRM;
+            [writer appendBytes:&(tmp1) length:sizeof(tmp1)];
+            //NSLog(@"w2 : %lu,%lu",(unsigned long)tmp1, sizeof(tmp1));
+            //Calories
+            NSInteger tmp2 = (NSInteger)TotalCalories;
+            [writer appendBytes:&(tmp2) length:sizeof(tmp2)];
+            //NSLog(@"w3 : %lu,%lu",tmp2,sizeof(tmp2));
+            //Time
+            NSRange timeRange = NSMakeRange(6, 8);
+            NSString *TimeStr = [theDataObject.TimeStr substringWithRange:timeRange];
+            [writer appendData:[TimeStr dataUsingEncoding:NSUTF8StringEncoding]];
+            //NSLog(@"w4 : %@,%lu",TimeStr,(unsigned long)[TimeStr length]);
+            //Write data to File
+            [writer writeToFile:path atomically:YES];
+            //NSLog(@"total w = %lu",(unsigned long)[writer length]);
+#endif
+        }
+        
+        TotalDistance = 0;
+        TotalTime = 0;
+        TotalCalories = 0;
+        
+        theDataObject.TimeStr = nil;
+        theDataObject.DistanceStr = nil;
+        theDataObject.CaloriesStr = nil;
+        theDataObject.HRM = 0;
+        theDataObject.APPConfig = self.APPConfig;
+#else
+        TotalDistance = 0;
+        TotalTime = 0;
+        TotalCalories = 0;
         
         HRMDataObject* theDataObject = [self theAppDataObject];
         theDataObject.TimeStr = nil;
@@ -1300,7 +1352,7 @@ static double TotalCalories = 0;
         theDataObject.CaloriesStr = nil;
         theDataObject.HRM = 0;
         theDataObject.APPConfig = self.APPConfig;
-
+#endif
     }
 }
 
