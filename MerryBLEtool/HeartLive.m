@@ -176,8 +176,6 @@ static const NSInteger kMaxContainerCapacity = 300;
 		
 		CGContextStrokePath(context);
 	}
-    
-    
 }
 
 - (void)fireDrawingWithPoints:(CGPoint *)points pointsCount:(NSInteger)count
@@ -207,12 +205,6 @@ static const NSInteger kMaxContainerCapacity = 300;
         }
     }
 	CGContextStrokePath(UIGraphicsGetCurrentContext());
-
-    /*if(self.currentPointsCount != 300)
-        NSLog(@"drawCurve 1");
-    else
-        NSLog(@"drawCurve 2");
-     */
 }
 
 // Only override drawRect: if you perform custom drawing.

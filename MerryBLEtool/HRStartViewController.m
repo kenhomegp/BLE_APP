@@ -488,11 +488,19 @@
     }
     else if(indexPath.row == 3)
     {
-        APPImage.image = [UIImage imageNamed:@"history2.png"];
-        APPTitle.text = NSLocalizedString(@"TableViewCell4Title", @"");
-        APPDetail.text = NSLocalizedString(@"TableViewCell4Detail", @"");
-        APPUseFreq.text = @"10%";
-
+        if(UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPhone)
+        {
+            APPImage.image = [UIImage imageNamed:@"history2.png"];
+            APPTitle.text = NSLocalizedString(@"TableViewCell4Title", @"");
+            APPDetail.text = NSLocalizedString(@"TableViewCell4Detail", @"");
+            APPUseFreq.text = @"10%";
+        }
+        else
+        {
+            APPTitle.text = nil;
+            APPDetail.text = nil;
+            APPUseFreq.text = nil;
+        }
     }
     else if(indexPath.row == 4)
     {
@@ -802,11 +810,15 @@
     
     if(indexPath.row == 0)
     {
+#ifdef DebugWithoutBLEConnection
+        [self performSegueWithIdentifier:@"SegueForHRM" sender:[tableView cellForRowAtIndexPath:indexPath]];
+#else
         if([self.CBStatus rangeOfString:@"Connected"].location !=
            NSNotFound)
         {
             [self performSegueWithIdentifier:@"SegueForHRM" sender:[tableView cellForRowAtIndexPath:indexPath]];
         }
+#endif
     }
     else if(indexPath.row == 1)
     {
@@ -817,36 +829,39 @@
         //[self performSegueWithIdentifier:@"SegueForTest" sender:[tableView cellForRowAtIndexPath:indexPath]];
     }
     else if(indexPath.row == 3)
-    {        
-        NSString *path;
-        NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
-        //path = [[paths objectAtIndex:0] stringByAppendingPathComponent:@"./HRMdata.txt"];
-        path = [[paths objectAtIndex:0] stringByAppendingPathComponent:@"HRMdata.txt"];
-        [[NSFileManager defaultManager] changeCurrentDirectoryPath:path];
-        
-        if ([[NSFileManager defaultManager] fileExistsAtPath:path])
+    {
+        if(UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPhone)
         {
-            //Get File Size
-            NSFileHandle *fileHandle = [NSFileHandle fileHandleForWritingAtPath:path];
-            int fileSize = (int)[fileHandle seekToEndOfFile];
-            [fileHandle closeFile];
-            //NSLog(@"File size = %i",fileSize);
-            
-            if(fileSize != 0)
+            NSString *path;
+            NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
+            //path = [[paths objectAtIndex:0] stringByAppendingPathComponent:@"./HRMdata.txt"];
+            path = [[paths objectAtIndex:0] stringByAppendingPathComponent:@"HRMdata.txt"];
+            [[NSFileManager defaultManager] changeCurrentDirectoryPath:path];
+        
+            if ([[NSFileManager defaultManager] fileExistsAtPath:path])
             {
-                [self performSegueWithIdentifier:@"HRHistory" sender:[tableView cellForRowAtIndexPath:indexPath]];
+                //Get File Size
+                NSFileHandle *fileHandle = [NSFileHandle fileHandleForWritingAtPath:path];
+                int fileSize = (int)[fileHandle seekToEndOfFile];
+                [fileHandle closeFile];
+                //NSLog(@"File size = %i",fileSize);
+            
+                if(fileSize != 0)
+                {
+                    [self performSegueWithIdentifier:@"HRHistory" sender:[tableView cellForRowAtIndexPath:indexPath]];
+                }
+                else{
+                    UIAlertView *alert6 = [[UIAlertView alloc] initWithTitle:@"History" message:@"No history data!" delegate:self cancelButtonTitle:@"OK" otherButtonTitles:nil, nil];
+                
+                    [alert6 show];
+                }
             }
             else{
                 UIAlertView *alert6 = [[UIAlertView alloc] initWithTitle:@"History" message:@"No history data!" delegate:self cancelButtonTitle:@"OK" otherButtonTitles:nil, nil];
-                
+            
                 [alert6 show];
+            
             }
-        }
-        else{
-            UIAlertView *alert6 = [[UIAlertView alloc] initWithTitle:@"History" message:@"No history data!" delegate:self cancelButtonTitle:@"OK" otherButtonTitles:nil, nil];
-            
-            [alert6 show];
-            
         }
      }
     else if(indexPath.row == 4)//BLE State (Scan , Connect , Disconnect)

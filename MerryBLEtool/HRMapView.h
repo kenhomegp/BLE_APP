@@ -30,4 +30,6 @@
 @property (weak, nonatomic) IBOutlet UILabel *TimeLabel;
 @property (weak, nonatomic) IBOutlet UILabel *CaloriesLabel;
 @property (weak, nonatomic) IBOutlet UILabel *BatteryLabel;
+- (IBAction)DeleteTrackFile:(id)sender;
+- (IBAction)DebugFunction:(id)sender;
 @end

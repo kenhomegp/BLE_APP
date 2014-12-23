@@ -21,9 +21,10 @@
 
 #define UseNSUserDefaults
 #define SaveDataToFile
+#define SaveLocationToFile
 #define NSFileHandleReadWrite
-
-#define DebugMode
+#define GradientPolyline
+#define DebugWithoutBLEConnection
 
 @protocol passUserSetting1 <NSObject>
 -(void)setName : (NSString *)User_Name;

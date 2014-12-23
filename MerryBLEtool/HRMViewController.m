@@ -1152,14 +1152,23 @@ static double TotalCalories = 0;
 {
     if(!([self.BackgroundImage isAnimating]))
     {
-        self.BackgroundImage.hidden = YES;
-        self.HRGif.hidden = NO;
+        if(UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad)
+        {
+            self.BackgroundImage.hidden = NO;
+            self.HRGif.hidden = YES;
+            
+            self.HR_bpm.hidden = NO;
+            
+            self.heartImage.hidden = NO;
+            //[self.BackgroundImage setImage:[UIImage imageNamed:@"Jogging1"]];
+        }
+        else if(UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPhone)
+        {
+            self.BackgroundImage.hidden = YES;
+            self.HRGif.hidden = NO;
         
-        self.HR_bpm.hidden = NO;
-        /*
-        self.heartImage.hidden = NO;
-        [self.BackgroundImage setImage:[UIImage imageNamed:@"Jogging1"]];
-        */
+            self.HR_bpm.hidden = NO;
+        }
         
         #ifdef DrawSimulationHRCurve
         if(UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad)

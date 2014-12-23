@@ -12,7 +12,7 @@
 #import "AppDelegateProtocol.h"
 #import "HRMDataObject.h"
 
-//#define iPhoneMapFullScreen
+#define DebugMessagex
 
 @interface HRMapView ()
 @end
@@ -30,6 +30,16 @@
     CLLocationDegrees Current_Location_longitude;
     
     NSTimer *HRMTimer;
+#ifdef SaveLocationToFile
+    BOOL fileExist;
+    NSFileHandle *fileHandle;
+    NSInteger TimerCounter;
+#endif
+#ifdef GradientPolyline
+    GMSPolyline *polyline_;
+    GMSMutablePath *path;
+    NSMutableArray *trackData_;
+#endif
 }
 
 #pragma mark -
@@ -68,7 +78,6 @@
     if (batteryLevel < 0.0) {
         // -1.0 means battery state is UIDeviceBatteryStateUnknown
         self.BatteryLabel.text = @"Battery: 90%";
-        //NSLog(@"chk 1");
     }
     else {
         static NSNumberFormatter *numberFormatter = nil;
@@ -99,9 +108,12 @@
     */
     //NSLog(@"System version = %d,%f",ver_int , ver_float);
     
+    //Check SDK version
     //NSLog(@"%@",[@"Google MapSDK Ver:" stringByAppendingString:[NSString stringWithFormat:@"%@",[GMSServices SDKVersion]]]);
     
-    [[UIApplication sharedApplication] setIdleTimerDisabled:YES];
+    //Disable Idle Timer
+    //[[UIApplication sharedApplication] setIdleTimerDisabled:YES];
+    [UIApplication sharedApplication].idleTimerDisabled = YES;
     
     #ifdef BatteryLevel
     // Register for battery level and state change notifications.
@@ -129,22 +141,28 @@
         if ([locationManager respondsToSelector:@selector(requestWhenInUseAuthorization)]) {
             [locationManager requestWhenInUseAuthorization];
         }
-        [locationManager startUpdatingLocation];
-        //NSLog(@"Init locationManager");
         
+        //[locationManager startUpdatingLocation];
     }
     
     geocoder = [[CLGeocoder alloc] init];
 
     // Create a GMSCameraPosition that tells the map to display the
     // coordinate 24.161369,120.604799(Merry Electronics co., ltd.) at zoom level 6.
-    GMSCameraPosition *camera = [GMSCameraPosition cameraWithLatitude:24.161369 longitude:120.604799 zoom:6];
+    GMSCameraPosition *camera = [GMSCameraPosition cameraWithLatitude:24.161369 longitude:120.604799 zoom:8];
+    
+    //Debug
+    //GMSCameraPosition *camera = [GMSCameraPosition cameraWithLatitude:44.1314 longitude:9.6921 zoom:14.059f bearing:328.f viewingAngle:40.f];
+    //firstLocationUpdate_ = YES;
     
     if(UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad)
     {
-        mapView_ = [GMSMapView mapWithFrame:CGRectZero camera:camera];
-        self.view = mapView_; //Full screen
-        //mapView_.myLocationEnabled = YES;
+        //Full Screen
+        //mapView_ = [GMSMapView mapWithFrame:CGRectZero camera:camera];
+        //self.view = mapView_;
+        mapView_ = [GMSMapView mapWithFrame:CGRectMake(0, 0, 768, 924) camera:camera];
+        [self.view addSubview:mapView_];
+        
         mapView_.settings.compassButton = YES;
         mapView_.settings.myLocationButton = YES;
         
@@ -158,7 +176,7 @@
             //NSLog(@"MyLocationEnabled");
             mapView_.myLocationEnabled = YES;});
         
-        self.CustomButton.hidden = YES;
+        //self.CustomButton.hidden = YES;
         self.HeartRateLabel.hidden = YES;
         self.TimeLabel.hidden = YES;
         self.CaloriesLabel.hidden = YES;
@@ -167,18 +185,19 @@
     else
     {
         #ifdef iPhoneMapFullScreen
-        mapView_ = [GMSMapView mapWithFrame:CGRectZero camera:camera];
-        self.view = mapView_; //Full screen
-        [self.view addSubview:self.HeartRateLabel];
-        [self.view addSubview:self.TimeLabel];
+            mapView_ = [GMSMapView mapWithFrame:CGRectZero camera:camera];
+            self.view = mapView_; //Full screen
+            [self.view addSubview:self.HeartRateLabel];
+            [self.view addSubview:self.TimeLabel];
         #else
             mapView_ = [GMSMapView mapWithFrame:CGRectMake(0, 0, 320, 400) camera:camera];
             [self.view addSubview:mapView_];
         #endif
+        
         //mapView_.myLocationEnabled = YES;
         mapView_.settings.myLocationButton = YES;
         mapView_.settings.compassButton = YES;
-        mapView_.settings.zoomGestures = NO;
+        mapView_.settings.zoomGestures = YES;
         
         // Listen to the myLocation property of GMSMapView.
         [mapView_ addObserver:self
@@ -201,10 +220,11 @@
         
         [self.CustomButton setTitle:NSLocalizedString(@"StartButton", @"") forState:UIControlStateNormal];
     }
-    else{        
+    else
+    {
+#ifdef DebugMessagex
         if((self.APPConfig & StartActivity) == StartActivity)
         {
-            //NSLog(@"Start HRMapView Timer!");
             if(!([HRMTimer isValid]))
             {
                 //NSLog(@"Start HRMapView Timer!");
@@ -217,149 +237,150 @@
                 [self.CustomButton setTitle:NSLocalizedString(@"PauseButton", @"") forState:UIControlStateNormal];
             }
         }
+#endif
     }
     
-/*
-    // Creates a marker in the center of the map.
-    GMSMarker *marker = [[GMSMarker alloc] init];
-    marker.position = CLLocationCoordinate2DMake(-33.86, 151.20);
-    marker.title = @"Sydney";
-    marker.snippet = @"Australia";
-    marker.map = mapView_;
-*/
-    //[self MoveCameraToMyLocation];
+#ifdef SaveLocationToFile
+    TimerCounter = 0;
     
-}
-
-- (void) GetMyLocation
-{
-    //NSLog(@"Get My location!");
+    NSString *path1;
+    NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
+    path1 = [[paths objectAtIndex:0] stringByAppendingPathComponent:@"Mapdata.txt"];
+    [[NSFileManager defaultManager] changeCurrentDirectoryPath:path1];
     
-    //NSString *longitude = [NSString stringWithFormat:@"%.8f", mapView_.myLocation.coordinate.longitude];
-    //NSString *latitude = [NSString stringWithFormat:@"%.8f", mapView_.myLocation.coordinate.latitude];
-    
-    //NSLog(@"Mylocation= %@ , %@",latitude , longitude);
-}
-
-/*
-- (void) MoveCameraToMyLocation
-{
-    Current_location_latitude = mapView_.myLocation.coordinate.latitude;
-    Current_Location_longitude = mapView_.myLocation.coordinate.longitude;
-    
-    CLLocation *Location;
-    [Location initWithLatitude:Current_location_latitude longitude:Current_Location_longitude];
-    
-    
-    GMSCameraPosition *currposition = [GMSCameraPosition cameraWithLatitude:Current_location_latitude longitude:Current_Location_longitude zoom:15];
-    
-    [mapView_ setCamera:currposition];
-    
-    [mapView_ animateToBearing:0];
-    
-    //Reverse Geocoding
-    [geocoder reverseGeocodeLocation:Location completionHandler:^(NSArray *placemarks, NSError *error) {
-        //NSLog(@"Found placemarks: %@, error: %@", placemarks, error);
-        if (error == nil && [placemarks count] > 0) {
-            placemark = [placemarks lastObject];
-            
-            GMSMarker *marker = [[GMSMarker alloc] init];
-            marker.position = CLLocationCoordinate2DMake(Current_location_latitude, Current_Location_longitude);
-            
-            marker.title =  [NSString stringWithFormat:@"%@ %@\n%@ %@\n%@\n%@",placemark.subThoroughfare, placemark.thoroughfare,placemark.postalCode, placemark.locality,placemark.administrativeArea,placemark.country];
-            marker.snippet = @"台灣";
-            marker.map = mapView_;
-            
-        } else {
-            //NSLog(@"Error!");
-        }
-    }];
-    
-    //NSLog(@"Move Camera to MyLocation");
-}
-*/
-
-- (void) MoveCamera:(CLLocation *)Location
-{
-    //NSString *str;
-
-    GMSCameraPosition *currposition = [GMSCameraPosition cameraWithLatitude:Current_location_latitude longitude:Current_Location_longitude zoom:15];
-    
-    [mapView_ setCamera:currposition];
-    
-    [mapView_ animateToBearing:0];
-    
-    //Reverse Geocoding
-    [geocoder reverseGeocodeLocation:Location completionHandler:^(NSArray *placemarks, NSError *error) {
-        //NSLog(@"Found placemarks: %@, error: %@", placemarks, error);
-        if (error == nil && [placemarks count] > 0) {
-            placemark = [placemarks lastObject];
-            
-            GMSMarker *marker = [[GMSMarker alloc] init];
-            marker.position = CLLocationCoordinate2DMake(Current_location_latitude, Current_Location_longitude);
-            
-            marker.title =  [NSString stringWithFormat:@"%@ %@\n%@ %@\n%@\n%@",placemark.subThoroughfare, placemark.thoroughfare,placemark.postalCode, placemark.locality,placemark.administrativeArea,placemark.country];
-            marker.snippet = @"台灣";
-            marker.map = mapView_;
-            
-        } else {
-            //NSLog(@"Error!");
-        }
-     }];
-    
-    /*
-    if((self.APPConfig & StartActivity) == StartActivity)
+    if ([[NSFileManager defaultManager] fileExistsAtPath:path1])
     {
-        NSLog(@"Start exercise");
-        
-        if(!([self.GetMyLocationTimer isValid]))
+        NSFileHandle *fh = [NSFileHandle fileHandleForWritingAtPath:path1];
+        if(fh != nil)
         {
-            self.GetMyLocationTimer = [NSTimer scheduledTimerWithTimeInterval:5.0 target:self selector:@selector(GetMyLocation) userInfo:nil repeats:YES];
+            int fileSize = (int)[fh seekToEndOfFile];
+            [fh closeFile];
             
-            NSLog(@"Timer enabled");
+            NSError *error;
+            if(fileSize < 100)
+            {
+                BOOL success = [[NSFileManager defaultManager] removeItemAtPath:path1 error:&error];
+                if (!success)
+                {
+#ifdef DebugMessage
+                    NSLog(@"Remove file error!!");
+#endif
+                }
+                else
+                {
+#ifdef DebugMessage
+                    NSLog(@"Remove old file");
+#endif
+                }
+                
+                if(fileSize < 100)
+                {
+                    //Create new file
+                    [[NSFileManager defaultManager] changeCurrentDirectoryPath:[paths objectAtIndex:0]];
+                    
+                    if([[NSFileManager defaultManager] createFileAtPath:@"./Mapdata.txt" contents:nil attributes:nil])
+                    {
+#ifdef DebugMessage
+                        NSLog(@"Create new file");
+#endif
+                        fileExist = TRUE;
+                    }
+                    else
+                    {
+#ifdef DebugMessage
+                        NSLog(@"Create file Error!!");
+#endif
+                        fileExist = FALSE;
+                    }
+                    
+                    //Get File handle
+                    if(fileExist == TRUE)
+                    {
+                        fileHandle = nil;
+                        NSString *path2;
+                        NSArray *Dpaths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
+                        path2 = [[Dpaths objectAtIndex:0] stringByAppendingPathComponent:@"Mapdata.txt"];
+                        [[NSFileManager defaultManager] changeCurrentDirectoryPath:path2];
+                        
+                        if ([[NSFileManager defaultManager] fileExistsAtPath:path2])
+                        {
+                            //Get File Size
+                            fileHandle = [NSFileHandle fileHandleForWritingAtPath:path2];
+                            if(fileHandle != nil)
+                            {
+#ifdef DebugMessage
+                                NSLog(@"Get file handle:PASS");
+#endif
+                            }
+                            else
+                            {
+                                fileExist = FALSE;
+#ifdef DebugMessage
+                                NSLog(@"Can't get file handle!");
+#endif
+                            }
+                        }
+                    }
+                }
+                
+            }
+            else
+            {
+                //[self GradientPolyLine];
+            }
         }
     }
-    else{
-        NSLog(@"Stop exercise");
+    else
+    {
+        //Create new file
+        [[NSFileManager defaultManager] changeCurrentDirectoryPath:[paths objectAtIndex:0]];
         
-        if([self.GetMyLocationTimer isValid])
+        if([[NSFileManager defaultManager] createFileAtPath:@"./Mapdata.txt" contents:nil attributes:nil])
         {
-            [self.GetMyLocationTimer invalidate];
+#ifdef DebugMessage
+            NSLog(@"File not exist,Create file..");
+#endif
+            fileExist = TRUE;
+        }
+        else
+        {
+#ifdef DebugMessage
+            NSLog(@"Create file Error!!");
+#endif
+            fileExist = FALSE;
+        }
+        
+        //Get File handle
+        if(fileExist == TRUE)
+        {
+            fileHandle = nil;
+            NSString *path2;
+            NSArray *Dpaths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
+            path2 = [[Dpaths objectAtIndex:0] stringByAppendingPathComponent:@"Mapdata.txt"];
+            [[NSFileManager defaultManager] changeCurrentDirectoryPath:path2];
             
-            NSLog(@"Timer disable");
+            if ([[NSFileManager defaultManager] fileExistsAtPath:path2])
+            {
+                //Get File Size
+                fileHandle = [NSFileHandle fileHandleForWritingAtPath:path2];
+                if(fileHandle != nil)
+                {
+#ifdef DebugMessage
+                    NSLog(@"Get file handle:PASS");
+#endif
+                }
+                else
+                {
+                    fileExist = FALSE;
+#ifdef DebugMessage
+                    NSLog(@"Can't get file handle!");
+#endif
+                }
+            }
         }
     }
-    */
-    
-    //[[self delegate] passDistance:10.0];//Test protocol
-    
-    //GMSMarker *marker = [[GMSMarker alloc] init];
-    //marker.position = CLLocationCoordinate2DMake(Current_location_latitude, Current_Location_longitude);
-    
-    //marker.title = @"Your location";
-    //marker.snippet = @"Taiwan";
-    //marker.map = mapView_;
-    
-    //NSLog(@"MoveCamera");
+#endif
 }
-
-/*
-double getDistanceMetresBetweenLocationCoordinates(
-                                                   CLLocationCoordinate2D coord1,
-                                                   CLLocationCoordinate2D coord2)
-{
-    CLLocation* location1 =
-    [[CLLocation alloc]
-     initWithLatitude: coord1.latitude
-     longitude: coord1.longitude];
-    CLLocation* location2 =
-    [[CLLocation alloc]
-     initWithLatitude: coord2.latitude
-     longitude: coord2.longitude];
-    
-    return [location1 distanceFromLocation: location2];
-}
-*/
 
 - (void)didReceiveMemoryWarning
 {
@@ -377,7 +398,6 @@ double getDistanceMetresBetweenLocationCoordinates(
     // Pass the selected object to the new view controller.
 }
 */
-
 
 - (void)dealloc {
     [mapView_ removeObserver:self
@@ -397,13 +417,31 @@ double getDistanceMetresBetweenLocationCoordinates(
         // location.
         firstLocationUpdate_ = YES;
         CLLocation *location = [change objectForKey:NSKeyValueChangeNewKey];
-        mapView_.camera = [GMSCameraPosition cameraWithTarget:location.coordinate zoom:14];
-        //NSLog(@"FirstLocationUpdate");
-        
-    }
-    //NSLog(@"observerValueForKeyPath");
-}
+        mapView_.camera = [GMSCameraPosition cameraWithTarget:location.coordinate zoom:16];
+        //Reverse Geocoding
+        [geocoder reverseGeocodeLocation:location completionHandler:^(NSArray *placemarks, NSError *error) {
+            //NSLog(@"Found placemarks: %@, error: %@", placemarks, error);
+            if (error == nil && [placemarks count] > 0)
+            {
+                placemark = [placemarks lastObject];
+                
+                GMSMarker *marker = [[GMSMarker alloc] init];
+                //marker.position = CLLocationCoordinate2DMake(Current_location_latitude, Current_Location_longitude);
+                marker.position = location.coordinate;
+                
+                marker.title =  [NSString stringWithFormat:@"%@ %@\n%@ %@\n%@\n%@",placemark.subThoroughfare, placemark.thoroughfare,placemark.postalCode, placemark.locality,placemark.administrativeArea,placemark.country];
+                marker.snippet = @"My Location";
+                marker.map = mapView_;
+                //NSLog(@"PlaceMark");
+            }
+            else
+            {
+                //NSLog(@"Error!");
+            }
+        }];
 
+    }
+}
 
 #pragma mark - CLLocationManager delegate
 
@@ -421,23 +459,49 @@ double getDistanceMetresBetweenLocationCoordinates(
     CLLocation *currentLocation = newLocation;
     
     if (currentLocation != nil) {
-        //longitudeLabel.text = [NSString stringWithFormat:@"%.8f", currentLocation.coordinate.longitude];
-        //latitudeLabel.text = [NSString stringWithFormat:@"%.8f", currentLocation.coordinate.latitude];
-        
-        //NSString *longitude = [NSString stringWithFormat:@"%.8f", currentLocation.coordinate.longitude];
-        //NSString *latitude = [NSString stringWithFormat:@"%.8f", currentLocation.coordinate.latitude];
-        
-        Current_location_latitude = currentLocation.coordinate.latitude;
-        Current_Location_longitude = currentLocation.coordinate.longitude;
-        
-        //NSLog(@"MY HOME : %@",latitude);
-        //NSLog(@"MY HOME : %@",longitude);
-        //NSLog(@"didUpdateToLocation");
         
         // Stop Location Manager
-        [locationManager stopUpdatingLocation];
+        if(fileExist == TRUE)
+        {
+            double lat = currentLocation.coordinate.latitude;
+            double lng = currentLocation.coordinate.longitude;
+            if((lat != Current_location_latitude) && (lng != Current_Location_longitude))
+            {
+                NSMutableData *writer = [[NSMutableData alloc]init];
+                [writer appendBytes:&(lat) length:sizeof(double)];
+                [writer appendBytes:&(lng) length:sizeof(double)];
+                [fileHandle seekToEndOfFile];
+                [fileHandle writeData:writer];
+                Current_location_latitude = lat;
+                Current_Location_longitude = lng;
+#ifdef DebugMessage
+                NSLog(@"w%d,%f,%f",(int)[writer length],lat,lng);
+#endif
+                
+                /* Track user's location
+                 NSString *pointString=[NSString    stringWithFormat:@"%f,%f",newLocation.coordinate.latitude,newLocation.coordinate.longitude];
+                 [self.points addObject:pointString];
+                 GMSMutablePath *path = [GMSMutablePath path];
+                 for (int i=0; i<self.points.count; i++)
+                 {
+                 NSArray *latlongArray = [[self.points   objectAtIndex:i]componentsSeparatedByCharactersInSet:[NSCharacterSet characterSetWithCharactersInString:@","]];
+                 
+                 [path addLatitude:[[latlongArray objectAtIndex:0] doubleValue] longitude:[[latlongArray objectAtIndex:1] doubleValue]];
+                 }
+                 
+                 if (self.points.count>2)
+                 {
+                 GMSPolyline *polyline = [GMSPolyline polylineWithPath:path];
+                 polyline.strokeColor = [UIColor blueColor];
+                 polyline.strokeWidth = 5.f;
+                 polyline.map = mapView_;
+                 self.view = mapView_;
+                 }
+                */
+            }
+        }
 
-        //[self MoveCamera:currentLocation];
+        [locationManager stopUpdatingLocation];
     }
     
     // Stop Location Manager
@@ -446,20 +510,15 @@ double getDistanceMetresBetweenLocationCoordinates(
 - (IBAction)SwipeLeftAction:(id)sender {
     //NSLog(@"Swipe  recognized");
     
-    //[[self navigationController] popToRootViewControllerAnimated:YES];
-    
     [self.navigationController popViewControllerAnimated:YES];
 }
 
 -(void) UpdateHRMData
 {
     HRMDataObject* theDataObject = [self theAppDataObject];
-    //NSLog(@"t:%@,d:%@,c:%@",theDataObject.TimeStr,theDataObject.DistanceStr,theDataObject.CaloriesStr);
-    
+
     self.TimeLabel.text = theDataObject.TimeStr;
     
-    //self.CaloriesLabel.text = theDataObject.CaloriesStr;
-    //NSLog(@"ccc %@",self.CaloriesLabel.text);
     if(theDataObject.CaloriesStr != nil)
         self.CaloriesLabel.text = theDataObject.CaloriesStr;
     
@@ -473,14 +532,28 @@ double getDistanceMetresBetweenLocationCoordinates(
         self.CaloriesLabel.text = @"Calories: 00000 cal";
         self.TimeLabel.text = @"Time:00h:00m:00s";
     }
+    else{
+#ifdef SaveLocationToFile
+        if(TimerCounter == 5)
+        {
+            TimerCounter = 0;
+            [locationManager startUpdatingLocation];
+        }
+        else
+        {
+            TimerCounter++;
+        }
+#endif
+    }
+    
 }
 
 -(IBAction)PressStartButton:(id)sender {
-    //[[self delegate] passDistance:10.0];//Test protocol
-    //NSLog(@"Test protocol");
-    
     HRMDataObject* theDataObject = [self theAppDataObject];
     self.APPConfig = theDataObject.APPConfig;
+#ifdef DebugMessage
+    NSLog(@"APPConfig = %d",self.APPConfig);
+#endif
     
     if((self.APPConfig & BLE_Connected) == 0)
     {
@@ -488,32 +561,256 @@ double getDistanceMetresBetweenLocationCoordinates(
         
         [alert show];
         
-        //Debug code
-        /* MoveCamera to "田中火車站"*/
-        GMSCameraPosition *currposition = [GMSCameraPosition cameraWithLatitude:23.858337 longitude:120.591495 zoom:15];
-        [mapView_ setCamera:currposition];
-
         return;
     }
     
+#ifdef DebugMessagex
     if((self.APPConfig & StartActivity) == 0)
     {
         [[self delegate] passCommand:@"Start_HRM_Timer"];
     }
+#endif
     
     if(!([HRMTimer isValid]))
     {
+#ifdef DebugMessagex
+        self.APPConfig |= (StartActivity);
+#endif
+        
         HRMTimer = [NSTimer scheduledTimerWithTimeInterval:1.0
                                                                target:self
                                                              selector:@selector         (UpdateHRMData)
                                                              userInfo:nil
                                                               repeats:YES];
         [self.CustomButton setTitle:NSLocalizedString(@"PauseButton", @"") forState:UIControlStateNormal];
+#ifdef DebugMessage
+        NSLog(@"Pressing start button");
+#endif
     }
     else{
+        self.APPConfig &= ~(StartActivity);
+        
         [HRMTimer invalidate];
         
         [self.CustomButton setTitle:NSLocalizedString(@"StartButton", @"") forState:UIControlStateNormal];
+
+#ifdef SaveLocationToFile
+        TimerCounter = 0;
+        [locationManager stopUpdatingLocation];
+        #ifdef DebugMessage
+        int fileSize = (int)[fileHandle seekToEndOfFile];
+        #endif
+        [fileHandle closeFile];
+        #ifdef DebugMessage
+        NSLog(@"Press buuton,file_total w = %d",fileSize);
+        #endif
+#endif
+//#ifdef GradientPolyline
+//        polyline_ = [GMSPolyline polylineWithPath:path];
+//        polyline_.strokeWidth = 6;
+//        polyline_.map = mapView_;
+//        NSLog(@"GradientPolyline Demo : %d",(int)[trackData_ count]);
+//#endif
     }
+}
+
+/*
+// Google Map SDK Demo example code
+- (NSArray *)gradientSpans {
+ NSLog(@"gradientSpans");
+ NSMutableArray *colorSpans = [NSMutableArray array];
+ NSUInteger count = [trackData_ count];
+ UIColor *prevColor;
+ for (NSUInteger i = 0; i < count; i++) {
+ double elevation = [[[trackData_ objectAtIndex:i] objectForKey:@"elevation"] doubleValue];
+ 
+ UIColor *toColor = [UIColor colorWithHue:(float)elevation/700
+ saturation:1.f
+ brightness:.9f
+ alpha:1.f];
+ 
+ if (prevColor == nil) {
+ prevColor = toColor;
+ }
+ 
+ GMSStrokeStyle *style = [GMSStrokeStyle gradientFromColor:prevColor toColor:toColor];
+ [colorSpans addObject:[GMSStyleSpan spanWithStyle:style]];
+ 
+ prevColor = toColor;
+ }
+ return colorSpans;
+}
+ 
+- (void)parseTrackFile {
+    NSLog(@"parseTrackFile");
+    NSString *filePath = [[NSBundle mainBundle] pathForResource:@"track" ofType:@"json"];
+    NSData *data = [NSData dataWithContentsOfFile:filePath];
+    NSArray *json = [NSJSONSerialization JSONObjectWithData:data options:kNilOptions error:nil];
+    trackData_ = [[NSMutableArray alloc] init];
+    GMSMutablePath *path = [GMSMutablePath path];
+    
+    for (NSUInteger i = 0; i < [json count]; i++) {
+        NSDictionary *info = [json objectAtIndex:i];
+        NSNumber *elevation = [info objectForKey:@"elevation"];
+        CLLocationDegrees lat = [[info objectForKey:@"lat"] doubleValue];
+        CLLocationDegrees lng = [[info objectForKey:@"lng"] doubleValue];
+        CLLocation *loc = [[CLLocation alloc] initWithLatitude:lat longitude:lng];
+        [trackData_ addObject:@{@"loc": loc, @"elevation": elevation}];
+        [path addLatitude:lat longitude:lng];
+        //if(i == 0)
+        //  NSLog(@"SW evalution data = %d",[json count]);
+    }
+    
+    polyline_ = [GMSPolyline polylineWithPath:path];
+    polyline_.strokeWidth = 6;
+    polyline_.map = mapView_;
+}
+*/
+- (IBAction)DeleteTrackFile:(id)sender {
+    NSString *path1;
+    NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
+    path1 = [[paths objectAtIndex:0] stringByAppendingPathComponent:@"Mapdata.txt"];
+    [[NSFileManager defaultManager] changeCurrentDirectoryPath:path1];
+    
+    if ([[NSFileManager defaultManager] fileExistsAtPath:path1])
+    {
+        NSError *error;
+ 
+        BOOL success = [[NSFileManager defaultManager] removeItemAtPath:path1 error:&error];
+        
+        if (!success)
+        {
+#ifdef DebugMessage
+            NSLog(@"Remove file error!!");
+#endif
+        }
+        else
+        {
+#ifdef DebugMessage
+            NSLog(@"Remove exist file (Mapdata.txt)");
+#endif
+            UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"TrackPath" message:@"Remove Mapdata.txt!" delegate:self cancelButtonTitle:@"OK" otherButtonTitles:nil, nil];
+            
+            [alert show];
+        }
+    }
+    else
+    {
+        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"TrackPath" message:@"Mapdata.txt not exist!" delegate:self cancelButtonTitle:@"OK" otherButtonTitles:nil, nil];
+        
+        [alert show];
+    }
+}
+
+- (IBAction)DebugFunction:(id)sender {
+#ifdef DebugMessage
+    NSLog(@"Debug function.");
+#endif
+    [mapView_ removeFromSuperview];
+    [self GradientPolyLine];
+    [self.view addSubview:mapView_];
+/*
+    GMSVisibleRegion visibleRegion = mapView_.projection.visibleRegion;
+    GMSCoordinateBounds *bounds = [[GMSCoordinateBounds alloc] initWithRegion:visibleRegion];
+    CLLocationCoordinate2D northEast = bounds.northEast;
+    GMSMarker *marker1 = [[GMSMarker alloc] init];
+    marker1.position = northEast;
+    marker1.title = @"L1";
+    marker1.map = mapView_;
+    //NSLog(@"bound: %f,%f",northEast.latitude,northEast.longitude);
+    CLLocationCoordinate2D northWest = CLLocationCoordinate2DMake(bounds.northEast.latitude, bounds.southWest.longitude);
+    GMSMarker *marker2 = [[GMSMarker alloc] init];
+    marker2.position = northWest;
+    marker2.title = @"L2";
+    marker2.map = mapView_;
+    CLLocationCoordinate2D southEast = CLLocationCoordinate2DMake(bounds.southWest.latitude, bounds.northEast.longitude);
+    GMSMarker *marker3 = [[GMSMarker alloc] init];
+    marker3.position = southEast;
+    marker3.title = @"L3";
+    marker3.map = mapView_;
+    CLLocationCoordinate2D southWest = bounds.southWest;
+    GMSMarker *marker4 = [[GMSMarker alloc] init];
+    marker4.position = southWest;
+    marker4.title = @"L4";
+    marker4.map = mapView_;
+
+    //NSLog(@"bound: %f,%f",southWest.latitude,southWest.longitude);
+    
+    CLLocationCoordinate2D testLocation = CLLocationCoordinate2DMake(Current_location_latitude, Current_Location_longitude);
+    if(!([bounds containsCoordinate:testLocation]))
+    {
+        NSLog(@"Not visible");
+    }
+    else
+    {
+        NSLog(@"Visible");
+    }
+*/
+}
+
+- (void)GradientPolyLine
+{
+#ifdef GradientPolyline
+    //Real TrackPath data
+    //Read file
+    NSString *path3;
+    NSArray *Ppaths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
+    path3 = [[Ppaths objectAtIndex:0] stringByAppendingPathComponent:@"Mapdata.txt"];
+    [[NSFileManager defaultManager] changeCurrentDirectoryPath:path3];
+    
+    NSFileHandle *fHandle = [NSFileHandle fileHandleForReadingAtPath:path3];
+    if(fHandle != nil)
+    {
+        int fileSize = (int)[fHandle seekToEndOfFile];
+        int LoopCount;
+        NSData *databuffer = nil;
+#ifdef DebugMessage
+        NSLog(@"Mapdata.txt ,fsize = %i",fileSize);
+#endif
+        if(fileSize != 0)
+        {
+            LoopCount = fileSize/16;
+            GMSMutablePath *TrackPath = [GMSMutablePath path];
+            
+            for(int loop = 0; loop < LoopCount; loop++)
+            {
+                [fHandle seekToFileOffset:(loop * 16)];
+                databuffer = [fHandle readDataOfLength:16];
+                
+                if(databuffer == nil)
+                {
+                    break;
+                }
+                else
+                {
+                    if(databuffer.length == 0)
+                    {
+                        //NSLog(@"Databuffer length = 0");
+                        break;
+                    }
+                    NSRange Range1 = NSMakeRange(0, 8);
+                    NSData *SubData1 = [databuffer subdataWithRange:Range1];
+                    double lat;
+                    [SubData1 getBytes:&(lat) length:sizeof(double)];
+                    NSRange Range2 = NSMakeRange(8, 8);
+                    NSData *SubData2 = [databuffer subdataWithRange:Range2];
+                    double lng;
+                    [SubData2 getBytes:&(lng) length:sizeof(double)];
+                    //NSLog(@"r%d : %f,%f",loop,lat,lng);
+                    
+                    [TrackPath addLatitude:lat longitude:lng];
+                }
+            }
+            
+            polyline_ = [GMSPolyline polylineWithPath:TrackPath];
+            polyline_.strokeWidth = 6;
+            polyline_.map = mapView_;
+#ifdef DebugMessage
+            NSLog(@"GradientPolyline demo,%d",LoopCount);
+#endif
+        }
+        [fHandle closeFile];
+    }
+#endif
 }
 @end
