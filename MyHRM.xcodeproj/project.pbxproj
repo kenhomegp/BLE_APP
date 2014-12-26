@@ -7,6 +7,9 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		123D4C131A4AB22A0087C30F /* rsz_running.png in Resources */ = {isa = PBXBuildFile; fileRef = 123D4C121A4AB22A0087C30F /* rsz_running.png */; };
+		1243E9381A4BA87400344A03 /* GoogleMaps.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1243E9371A4BA87400344A03 /* GoogleMaps.framework */; };
+		1243E93A1A4BA8A400344A03 /* GoogleMaps.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 1243E9391A4BA8A400344A03 /* GoogleMaps.bundle */; };
 		C105A4B419E51C40007E34D1 /* SoftMusic.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = C105A4B319E51C40007E34D1 /* SoftMusic.mp3 */; };
 		C108E4ED19D10CC20097B920 /* MessageUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C108E4EC19D10CC20097B920 /* MessageUI.framework */; };
 		C10B01F019B7133F00325785 /* AVFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C10B01EF19B7133F00325785 /* AVFoundation.framework */; };
@@ -46,8 +49,6 @@
 		C12D6A9519ED011D00DBD768 /* GPS_Off.png in Resources */ = {isa = PBXBuildFile; fileRef = C12D6A9419ED011D00DBD768 /* GPS_Off.png */; };
 		C12D6A9719ED148700DBD768 /* Setting.png in Resources */ = {isa = PBXBuildFile; fileRef = C12D6A9619ED148700DBD768 /* Setting.png */; };
 		C130E60119F0E22B00550957 /* Jogging1.png in Resources */ = {isa = PBXBuildFile; fileRef = C130E60019F0E22B00550957 /* Jogging1.png */; };
-		C130E60319F0F74D00550957 /* GoogleMaps.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C130E60219F0F74D00550957 /* GoogleMaps.framework */; };
-		C130E60519F0F78700550957 /* GoogleMaps.bundle in Resources */ = {isa = PBXBuildFile; fileRef = C130E60419F0F78700550957 /* GoogleMaps.bundle */; };
 		C130E60719F0F80900550957 /* CoreData.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C130E60619F0F80900550957 /* CoreData.framework */; };
 		C130E60919F0F81A00550957 /* CoreText.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C130E60819F0F81A00550957 /* CoreText.framework */; };
 		C130E60B19F0F83000550957 /* GLKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C130E60A19F0F83000550957 /* GLKit.framework */; };
@@ -124,6 +125,9 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		123D4C121A4AB22A0087C30F /* rsz_running.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = rsz_running.png; sourceTree = "<group>"; };
+		1243E9371A4BA87400344A03 /* GoogleMaps.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = GoogleMaps.framework; sourceTree = "<group>"; };
+		1243E9391A4BA8A400344A03 /* GoogleMaps.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; name = GoogleMaps.bundle; path = GoogleMaps.framework/Versions/A/Resources/GoogleMaps.bundle; sourceTree = "<group>"; };
 		C105A4B319E51C40007E34D1 /* SoftMusic.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = SoftMusic.mp3; sourceTree = "<group>"; };
 		C108E4EC19D10CC20097B920 /* MessageUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MessageUI.framework; path = System/Library/Frameworks/MessageUI.framework; sourceTree = SDKROOT; };
 		C10B01EF19B7133F00325785 /* AVFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AVFoundation.framework; path = System/Library/Frameworks/AVFoundation.framework; sourceTree = SDKROOT; };
@@ -170,8 +174,6 @@
 		C12D6A9419ED011D00DBD768 /* GPS_Off.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = GPS_Off.png; sourceTree = "<group>"; };
 		C12D6A9619ED148700DBD768 /* Setting.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Setting.png; sourceTree = "<group>"; };
 		C130E60019F0E22B00550957 /* Jogging1.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Jogging1.png; sourceTree = "<group>"; };
-		C130E60219F0F74D00550957 /* GoogleMaps.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = GoogleMaps.framework; sourceTree = "<group>"; };
-		C130E60419F0F78700550957 /* GoogleMaps.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; name = GoogleMaps.bundle; path = GoogleMaps.framework/Versions/A/Resources/GoogleMaps.bundle; sourceTree = "<group>"; };
 		C130E60619F0F80900550957 /* CoreData.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreData.framework; path = System/Library/Frameworks/CoreData.framework; sourceTree = SDKROOT; };
 		C130E60819F0F81A00550957 /* CoreText.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreText.framework; path = System/Library/Frameworks/CoreText.framework; sourceTree = SDKROOT; };
 		C130E60A19F0F83000550957 /* GLKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = GLKit.framework; path = System/Library/Frameworks/GLKit.framework; sourceTree = SDKROOT; };
@@ -274,6 +276,7 @@
 				C130E61119F0F88600550957 /* libicucore.dylib in Frameworks */,
 				C130E60F19F0F85B00550957 /* libc++.dylib in Frameworks */,
 				C130E60D19F0F84500550957 /* ImageIO.framework in Frameworks */,
+				1243E9381A4BA87400344A03 /* GoogleMaps.framework in Frameworks */,
 				C130E60B19F0F83000550957 /* GLKit.framework in Frameworks */,
 				C130E60919F0F81A00550957 /* CoreText.framework in Frameworks */,
 				C130E60719F0F80900550957 /* CoreData.framework in Frameworks */,
@@ -283,7 +286,6 @@
 				C11742C219AAE06A00721449 /* QuartzCore.framework in Frameworks */,
 				C1FCFC5B1862CC6900DEA5AC /* CoreBluetooth.framework in Frameworks */,
 				C1DF28AA186147DA00000695 /* UIKit.framework in Frameworks */,
-				C130E60319F0F74D00550957 /* GoogleMaps.framework in Frameworks */,
 				C1DF28AC186147DA00000695 /* Foundation.framework in Frameworks */,
 				C1DF28AE186147DA00000695 /* CoreGraphics.framework in Frameworks */,
 			);
@@ -324,6 +326,8 @@
 		C1DF28A8186147DA00000695 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				1243E9391A4BA8A400344A03 /* GoogleMaps.bundle */,
+				1243E9371A4BA87400344A03 /* GoogleMaps.framework */,
 				C130E61619F0F8DE00550957 /* SystemConfiguration.framework */,
 				C130E61419F0F8B000550957 /* OpenGLES.framework */,
 				C130E61219F0F89B00550957 /* libz.dylib */,
@@ -333,8 +337,6 @@
 				C130E60A19F0F83000550957 /* GLKit.framework */,
 				C130E60819F0F81A00550957 /* CoreText.framework */,
 				C130E60619F0F80900550957 /* CoreData.framework */,
-				C130E60419F0F78700550957 /* GoogleMaps.bundle */,
-				C130E60219F0F74D00550957 /* GoogleMaps.framework */,
 				C11F3A9A19EFC9C6008FBA7F /* CoreLocation.framework */,
 				C108E4EC19D10CC20097B920 /* MessageUI.framework */,
 				C10B01EF19B7133F00325785 /* AVFoundation.framework */,
@@ -387,6 +389,7 @@
 		C1DF28B0186147DA00000695 /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
+				123D4C121A4AB22A0087C30F /* rsz_running.png */,
 				C143D9F01A414BDE00BF6AE4 /* history2.png */,
 				C1EDD4C81A3AC4FB008E4E75 /* rsz_speed.png */,
 				C1EDD4C61A3AC4F0008E4E75 /* rsz_time.png */,
@@ -577,8 +580,8 @@
 				C12D6A8F19ECFD3D00DBD768 /* GPS_On.png in Resources */,
 				C15420F91A0CB2170096E954 /* 640_960.png in Resources */,
 				C1F60B8C198B37610032A497 /* Icon.png in Resources */,
-				C130E60519F0F78700550957 /* GoogleMaps.bundle in Resources */,
 				C12529D719EE7576004AFA0F /* Time.png in Resources */,
+				1243E93A1A4BA8A400344A03 /* GoogleMaps.bundle in Resources */,
 				C1DF28BE186147DB00000695 /* Default@2x.png in Resources */,
 				C12D6A8D19ECFD2800DBD768 /* DeviceConnected.png in Resources */,
 				C1216F2F19DA58A100C78FEA /* buttonHighlighted.png in Resources */,
@@ -594,6 +597,7 @@
 				C1F60B7E198B37610032A497 /* apple-touch-icon-114x114-precomposed.png in Resources */,
 				C12D6A9319ED00E500DBD768 /* Disconnected.png in Resources */,
 				C1F60B82198B37610032A497 /* Icon-72.png in Resources */,
+				123D4C131A4AB22A0087C30F /* rsz_running.png in Resources */,
 				C12D6A9719ED148700DBD768 /* Setting.png in Resources */,
 				C1F624B919C92E6A00565830 /* factory.png in Resources */,
 				C1EDD4C71A3AC4F0008E4E75 /* rsz_time.png in Resources */,

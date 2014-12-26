@@ -32,6 +32,7 @@
 
 @implementation HRStartViewController
 
+#pragma mark - UIAlertView delegate
 - (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex
 {
     if(buttonIndex == 0)//Button : No
@@ -832,6 +833,9 @@
     {
         if(UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPhone)
         {
+#ifdef DebugWithoutTrackPath
+            [self performSegueWithIdentifier:@"HRHistory" sender:[tableView cellForRowAtIndexPath:indexPath]];
+#else
             NSString *path;
             NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
             //path = [[paths objectAtIndex:0] stringByAppendingPathComponent:@"./HRMdata.txt"];
@@ -862,6 +866,7 @@
                 [alert6 show];
             
             }
+#endif
         }
      }
     else if(indexPath.row == 4)//BLE State (Scan , Connect , Disconnect)

@@ -19,7 +19,7 @@
 -(void) passCommand : (NSString *)string;
 @end
 
-@interface HRMapView : UIViewController <CLLocationManagerDelegate>
+@interface HRMapView : UIViewController <CLLocationManagerDelegate , UIAlertViewDelegate>
 @property (nonatomic, assign) id<passMapPositionDelegate> delegate;
 @property (nonatomic) NSInteger APPConfig;
 @property (retain, nonatomic) IBOutlet UIButton *CustomButton;
@@ -30,6 +30,10 @@
 @property (weak, nonatomic) IBOutlet UILabel *TimeLabel;
 @property (weak, nonatomic) IBOutlet UILabel *CaloriesLabel;
 @property (weak, nonatomic) IBOutlet UILabel *BatteryLabel;
+@property (weak, nonatomic) IBOutlet UIImageView *HRImage;
+@property (weak, nonatomic) IBOutlet UIImageView *TimeImage;
+@property (weak, nonatomic) IBOutlet UIImageView *BattImage;
+@property (weak, nonatomic) IBOutlet UIImageView *CaloriesImage;
 - (IBAction)DeleteTrackFile:(id)sender;
 - (IBAction)DebugFunction:(id)sender;
 @end

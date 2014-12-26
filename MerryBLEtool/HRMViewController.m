@@ -498,8 +498,9 @@ static double TotalCalories = 0;
     }
     
     //Change the back button to cancel and add an event handler
-    //UIBarButtonItem *backButton = [[UIBarButtonItem alloc] initWithTitle:@"Back" style:UIBarButtonItemStyleBordered target:self action:@selector(handleBack:)];
-    UIBarButtonItem *backButton = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"rsz_arrow.png"] style:UIBarButtonItemStyleBordered target:self action:@selector(handleBack:)];
+
+    //UIBarButtonItem *backButton = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"rsz_arrow.png"] style:UIBarButtonItemStyleBordered target:self action:@selector(handleBack:)];
+    UIBarButtonItem *backButton = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"rsz_arrow.png"] style:UIBarButtonItemStylePlain target:self action:@selector(handleBack:)];
     
     self.navigationItem.leftBarButtonItem = backButton;
     
@@ -1228,6 +1229,10 @@ static double TotalCalories = 0;
         }
         else
         {
+            if(UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad)
+            {
+                self.heartImage.hidden = YES;
+            }
             self.HR_bpm.hidden = YES;
             self.HRGif.hidden = YES;
             self.BackgroundImage.hidden = NO;

@@ -208,21 +208,6 @@
         cell = [[UITableViewCell alloc]initWithStyle:UITableViewCellStyleValue1 reuseIdentifier:cellID];
     }
     
-    if ([indexPath section] == 0)
-    {
-        //devices = [[LeDiscovery sharedInstance] connectedServices];
-        //peripheral = [(LeTemperatureAlarmService*)[devices objectAtIndex:row] peripheral];
-        //peripheral = self.polarH7HRMPeripheral;
-        
-        //BLE_connected = [NSString stringWithFormat:@"Connected: %@", peripheral != nil ? @"YES" : @"NO"];
-        //NSLog(BLE_connected);
-    }
-    else
-    {
-        //devices = [[LeDiscovery sharedInstance] foundPeripherals];
-        //peripheral = (CBPeripheral*)[devices objectAtIndex:row];
-    }
-    
         if([indexPath section] == 0)
         {
             //[[cell textLabel] setTextColor:[UIColor redColor]];
@@ -233,39 +218,38 @@
             if([indexPath row] == 0)//Heart Rate measurement data
             {
                 cell.textLabel.font = myFont;
-                //[[cell textLabel] setText:@"test 1"];
-                //[[cell textLabel] setText:self.HRMeasurement];
-                NSString *str = NSLocalizedString(@"HistoryTableViewCell1", @"cell1");
-                [[cell textLabel] setText:[str stringByAppendingString:self.HRMeasurement]];
                 
-                //[[cell imageView] setImage:[UIImage imageNamed:@"rsz_heartrate.png"]];
+                [[cell textLabel] setText:@"跑步歷史紀錄"];
+                
+                [[cell imageView] setImage:[UIImage imageNamed:@"rsz_running.png"]];
             }
             else if([indexPath row] == 1)
             {
                 cell.textLabel.font = myFont;
-                //[[cell textLabel] setText:@"test 2"];
-                //[[cell textLabel] setText:self.HRTime];
-                NSString *str = NSLocalizedString(@"HistoryTableViewCell2", @"cell2");
-                [[cell textLabel] setText:[str stringByAppendingString:self.HRTime]];
                 
-                //[[cell imageView] setImage:[UIImage imageNamed:@"rsz_time.png"]];
+                NSString *str = NSLocalizedString(@"HistoryTableViewCell1", @"cell1");
+                [[cell textLabel] setText:[str stringByAppendingString:self.HRMeasurement]];
+                
+                [[cell imageView] setImage:[UIImage imageNamed:@"rsz_heartrate.png"]];
             }
             else if([indexPath row] == 2)
             {
                 cell.textLabel.font = myFont;
-                //[[cell textLabel] setText:@"test 3"];
-                //[[cell textLabel] setText:self.HRCalories];
-                NSString *str = NSLocalizedString(@"HistoryTableViewCell3", @"cell3");
-                [[cell textLabel] setText:[str stringByAppendingString:self.HRCalories]];
                 
-                //cell.imageView.image = [UIImage imageNamed:@"rsz_speed.png"];
+                NSString *str = NSLocalizedString(@"HistoryTableViewCell2", @"cell2");
+                [[cell textLabel] setText:[str stringByAppendingString:self.HRTime]];
+                
+                [[cell imageView] setImage:[UIImage imageNamed:@"rsz_time.png"]];
             }
             else if([indexPath row] == 3)
             {
                 cell.textLabel.font = myFont;
-                [[cell textLabel] setText:@"Reserve"];
                 
-                //cell.imageView.image = [UIImage imageNamed:@"Energy.png"];
+                NSString *str = NSLocalizedString(@"HistoryTableViewCell3", @"cell3");
+                [[cell textLabel] setText:[str stringByAppendingString:self.HRCalories]];
+                
+                [[cell imageView] setImage:[UIImage imageNamed:@"rsz_speed.png"]];
+
             }
             
         }

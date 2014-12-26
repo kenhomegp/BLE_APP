@@ -12,7 +12,12 @@
 #import "AppDelegateProtocol.h"
 #import "HRMDataObject.h"
 
+#define HRbpmTag        110
+#define HRdurationTag   HRbpmTag+1
+
 #define DebugMessagex
+#define DrawRoute
+#define GoogleMapFullScreen
 
 @interface HRMapView ()
 @end
@@ -30,6 +35,7 @@
     CLLocationDegrees Current_Location_longitude;
     
     NSTimer *HRMTimer;
+    
 #ifdef SaveLocationToFile
     BOOL fileExist;
     NSFileHandle *fileHandle;
@@ -38,7 +44,19 @@
 #ifdef GradientPolyline
     GMSPolyline *polyline_;
     GMSMutablePath *path;
-    NSMutableArray *trackData_;
+    //NSMutableArray *trackData_;
+#endif
+#ifdef DrawRoute
+    NSMutableArray *points;
+#endif
+    
+    UIBarButtonItem *StartButton;
+
+#ifdef GoogleMapFullScreen
+    UIView *holder;
+    UISwitch *TrackRouteSwitch;
+    UILabel *HRbpm;
+    UILabel *HRduration;
 #endif
 }
 
@@ -105,11 +123,20 @@
     NSString *ver = [[UIDevice currentDevice] systemVersion];
     int ver_int = [ver intValue];
     float ver_float = [ver floatValue];
-    */
-    //NSLog(@"System version = %d,%f",ver_int , ver_float);
     
-    //Check SDK version
+    NSLog(@"System version = %d,%f",ver_int , ver_float);
+    */
+    
+    //Check SDK version(Google Maps SDK for iOS)
     //NSLog(@"%@",[@"Google MapSDK Ver:" stringByAppendingString:[NSString stringWithFormat:@"%@",[GMSServices SDKVersion]]]);
+    
+#ifdef DrawRoute
+    points = [[NSMutableArray alloc] init];
+#endif
+    
+    StartButton = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"rsz_running"] style:UIBarButtonItemStylePlain target:self action:@selector(handleStartButton:)];
+    
+    self.navigationItem.rightBarButtonItem = StartButton;
     
     //Disable Idle Timer
     //[[UIApplication sharedApplication] setIdleTimerDisabled:YES];
@@ -157,11 +184,65 @@
     
     if(UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad)
     {
-        //Full Screen
-        //mapView_ = [GMSMapView mapWithFrame:CGRectZero camera:camera];
-        //self.view = mapView_;
-        mapView_ = [GMSMapView mapWithFrame:CGRectMake(0, 0, 768, 924) camera:camera];
-        [self.view addSubview:mapView_];
+        #ifdef GoogleMapFullScreen
+            mapView_ = [GMSMapView mapWithFrame:CGRectZero camera:camera];
+            mapView_.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
+            self.view = [[UIView alloc] initWithFrame:CGRectZero];
+            [self.view addSubview:mapView_];
+        
+            holder = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 0, 180)];
+            holder.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleBottomMargin;
+            holder.backgroundColor = [UIColor colorWithRed:1.0 green:1.0 blue:1.0 alpha:0.5];
+            [self.view addSubview:holder];
+            [self.view bringSubviewToFront:holder];
+        
+            // Track Route label.
+            UILabel *label = [[UILabel alloc] initWithFrame:CGRectMake(600, 100, 90, 25)];
+            label.text = @"Track Route?";
+            label.font = [UIFont boldSystemFontOfSize:12.0f];
+            label.textAlignment = NSTextAlignmentLeft;
+            label.backgroundColor = [UIColor clearColor];
+            label.layer.shadowColor = [[UIColor whiteColor] CGColor];
+            label.layer.shadowOffset = CGSizeMake(0.0f, 1.0f);
+            label.layer.shadowOpacity = 1.0f;
+            label.layer.shadowRadius = 0.0f;
+            [holder addSubview:label];
+        
+            HRbpm = [[UILabel alloc] initWithFrame:CGRectMake(20, 70, 180, 35)];
+            HRbpm.text = @" HR : 100 bpm";
+            HRbpm.font = [UIFont boldSystemFontOfSize:16.0f];
+            HRbpm.textAlignment = NSTextAlignmentLeft;
+            HRbpm.backgroundColor = [UIColor clearColor];
+            HRbpm.layer.shadowColor = [[UIColor whiteColor] CGColor];
+            HRbpm.layer.shadowOffset = CGSizeMake(0.0f, 1.0f);
+            HRbpm.layer.shadowOpacity = 1.0f;
+            HRbpm.layer.shadowRadius = 0.0f;
+            HRbpm.tag = HRbpmTag;
+            [holder addSubview:HRbpm];
+        
+            HRduration = [[UILabel alloc] initWithFrame:CGRectMake(250, 70, 180, 35)];
+            HRduration.text = @"00:00:00";
+            HRduration.font = [UIFont boldSystemFontOfSize:16.0f];
+            HRduration.textAlignment = NSTextAlignmentLeft;
+            HRduration.backgroundColor = [UIColor clearColor];
+            HRduration.layer.shadowColor = [[UIColor whiteColor] CGColor];
+            HRduration.layer.shadowOffset = CGSizeMake(0.0f, 1.0f);
+            HRduration.layer.shadowOpacity = 1.0f;
+            HRduration.layer.shadowRadius = 0.0f;
+            HRduration.tag = HRdurationTag;
+            [holder addSubview:HRduration];
+        
+            TrackRouteSwitch = [[UISwitch alloc] initWithFrame:CGRectMake(-90, 100, 0, 0)];
+            TrackRouteSwitch.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin;
+            [TrackRouteSwitch addTarget:self action:@selector(didChangeRouteSwitch) forControlEvents:UIControlEventValueChanged];
+            TrackRouteSwitch.on = YES;
+            [holder addSubview:TrackRouteSwitch];
+
+            self.CustomButton.hidden = YES;
+        #else
+            mapView_ = [GMSMapView mapWithFrame:CGRectMake(0, 0, 768, 924) camera:camera];
+            [self.view addSubview:mapView_];
+        #endif
         
         mapView_.settings.compassButton = YES;
         mapView_.settings.myLocationButton = YES;
@@ -181,14 +262,74 @@
         self.TimeLabel.hidden = YES;
         self.CaloriesLabel.hidden = YES;
         self.BatteryLabel.hidden = YES;
+
     }
-    else
+    else    //iPhone
     {
-        #ifdef iPhoneMapFullScreen
+        #ifdef GoogleMapFullScreen
             mapView_ = [GMSMapView mapWithFrame:CGRectZero camera:camera];
-            self.view = mapView_; //Full screen
-            [self.view addSubview:self.HeartRateLabel];
-            [self.view addSubview:self.TimeLabel];
+            mapView_.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
+            self.view = [[UIView alloc] initWithFrame:CGRectZero];
+            [self.view addSubview:mapView_];
+            self.HRImage.hidden = YES;
+            self.TimeImage.hidden = YES;
+            self.BattImage.hidden = YES;
+            self.CaloriesImage.hidden = YES;
+            self.HeartRateLabel.hidden = YES;
+            self.TimeLabel.hidden = YES;
+            self.CaloriesLabel.hidden = YES;
+            self.BatteryLabel.hidden = YES;
+        
+            //UIView *holder = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 0, 120)];
+            holder = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 0, 120)];
+            holder.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleBottomMargin;
+            //holder.backgroundColor = [UIColor colorWithRed:1.0 green:1.0 blue:1.0 alpha:0.8f];
+            holder.backgroundColor = [UIColor colorWithRed:1.0 green:1.0 blue:1.0 alpha:0.5];
+            [self.view addSubview:holder];
+            [self.view bringSubviewToFront:holder];
+        
+            // Track Route label.
+            UILabel *label = [[UILabel alloc] initWithFrame:CGRectMake(225, 55, 90, 25)];
+            label.text = @"Track Route?";
+            label.font = [UIFont boldSystemFontOfSize:12.0f];
+            label.textAlignment = NSTextAlignmentLeft;
+            label.backgroundColor = [UIColor clearColor];
+            label.layer.shadowColor = [[UIColor whiteColor] CGColor];
+            label.layer.shadowOffset = CGSizeMake(0.0f, 1.0f);
+            label.layer.shadowOpacity = 1.0f;
+            label.layer.shadowRadius = 0.0f;
+            [holder addSubview:label];
+        
+            HRbpm = [[UILabel alloc] initWithFrame:CGRectMake(10, 70, 97, 35)];
+            HRbpm.text = @"100 bpm";
+            HRbpm.font = [UIFont boldSystemFontOfSize:16.0f];
+            HRbpm.textAlignment = NSTextAlignmentLeft;
+            HRbpm.backgroundColor = [UIColor clearColor];
+            HRbpm.layer.shadowColor = [[UIColor whiteColor] CGColor];
+            HRbpm.layer.shadowOffset = CGSizeMake(0.0f, 1.0f);
+            HRbpm.layer.shadowOpacity = 1.0f;
+            HRbpm.layer.shadowRadius = 0.0f;
+            HRbpm.tag = HRbpmTag;
+            [holder addSubview:HRbpm];
+        
+            HRduration = [[UILabel alloc] initWithFrame:CGRectMake(115, 70, 110, 35)];
+            HRduration.text = @"00:00:00";
+            HRduration.font = [UIFont boldSystemFontOfSize:16.0f];
+            HRduration.textAlignment = NSTextAlignmentLeft;
+            HRduration.backgroundColor = [UIColor clearColor];
+            HRduration.layer.shadowColor = [[UIColor whiteColor] CGColor];
+            HRduration.layer.shadowOffset = CGSizeMake(0.0f, 1.0f);
+            HRduration.layer.shadowOpacity = 1.0f;
+            HRduration.layer.shadowRadius = 0.0f;
+            HRduration.tag = HRdurationTag;
+            [holder addSubview:HRduration];
+        
+            TrackRouteSwitch = [[UISwitch alloc] initWithFrame:CGRectMake(-80, 80, 0, 0)];
+            TrackRouteSwitch.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin;
+            [TrackRouteSwitch addTarget:self action:@selector(didChangeRouteSwitch)
+              forControlEvents:UIControlEventValueChanged];
+            TrackRouteSwitch.on = YES;
+            [holder addSubview:TrackRouteSwitch];
         #else
             mapView_ = [GMSMapView mapWithFrame:CGRectMake(0, 0, 320, 400) camera:camera];
             [self.view addSubview:mapView_];
@@ -388,6 +529,26 @@
     // Dispose of any resources that can be recreated.
 }
 
+- (void)handleStartButton:(id)sender
+{
+    /*
+    if(TrackRouteSwitch.on)
+    {
+        NSLog(@"Switch on");
+    }
+    else
+    {
+        NSLog(@"Switch off");
+    }*/
+    
+    [self.CustomButton sendActionsForControlEvents:UIControlEventTouchUpInside];
+}
+
+- (void)didChangeRouteSwitch
+{
+    
+}
+
 /*
 #pragma mark - Navigation
 
@@ -477,28 +638,71 @@
 #ifdef DebugMessage
                 NSLog(@"w%d,%f,%f",(int)[writer length],lat,lng);
 #endif
-                
-                /* Track user's location
-                 NSString *pointString=[NSString    stringWithFormat:@"%f,%f",newLocation.coordinate.latitude,newLocation.coordinate.longitude];
-                 [self.points addObject:pointString];
-                 GMSMutablePath *path = [GMSMutablePath path];
-                 for (int i=0; i<self.points.count; i++)
+
+#ifdef DrawRoute
+                if(TrackRouteSwitch.on)
+                {
+                 //Track user's location
+                 NSString *pointString=[NSString stringWithFormat:@"%f,%f",newLocation.coordinate.latitude,newLocation.coordinate.longitude];
+                 [points addObject:pointString];
+                 GMSMutablePath *Mypath = [GMSMutablePath path];
+                 for (int i=0; i<points.count; i++)
                  {
-                 NSArray *latlongArray = [[self.points   objectAtIndex:i]componentsSeparatedByCharactersInSet:[NSCharacterSet characterSetWithCharactersInString:@","]];
+                     NSArray *latlongArray = [[points   objectAtIndex:i]componentsSeparatedByCharactersInSet:[NSCharacterSet characterSetWithCharactersInString:@","]];
                  
-                 [path addLatitude:[[latlongArray objectAtIndex:0] doubleValue] longitude:[[latlongArray objectAtIndex:1] doubleValue]];
+                     [Mypath addLatitude:[[latlongArray objectAtIndex:0] doubleValue] longitude:[[latlongArray objectAtIndex:1] doubleValue]];
                  }
                  
-                 if (self.points.count>2)
+                 if (points.count>2)
                  {
-                 GMSPolyline *polyline = [GMSPolyline polylineWithPath:path];
-                 polyline.strokeColor = [UIColor blueColor];
-                 polyline.strokeWidth = 5.f;
-                 polyline.map = mapView_;
-                 self.view = mapView_;
+                     [mapView_ removeFromSuperview];
+                     polyline_ = [GMSPolyline polylineWithPath:Mypath];
+                     polyline_.strokeWidth = 6;
+                     polyline_.map = mapView_;
+                     [self.view addSubview:mapView_];
                  }
-                */
+                }
+#endif
             }
+        }
+        else
+        {
+            double lat = currentLocation.coordinate.latitude;
+            double lng = currentLocation.coordinate.longitude;
+            if((lat != Current_location_latitude) && (lng != Current_Location_longitude))
+            {
+                Current_location_latitude = lat;
+                Current_Location_longitude = lng;
+#ifdef DrawRoute
+                #ifdef GoogleMapFullScreen
+                if(TrackRouteSwitch.on)
+                {
+                    //Track user's location
+                    NSString *pointString=[NSString stringWithFormat:@"%f,%f",newLocation.coordinate.latitude,newLocation.coordinate.longitude];
+                    [points addObject:pointString];
+                    GMSMutablePath *Mypath = [GMSMutablePath path];
+                    for (int i=0; i<points.count; i++)
+                    {
+                        NSArray *latlongArray = [[points   objectAtIndex:i]componentsSeparatedByCharactersInSet:[NSCharacterSet characterSetWithCharactersInString:@","]];
+                        
+                        [Mypath addLatitude:[[latlongArray objectAtIndex:0] doubleValue] longitude:[[latlongArray objectAtIndex:1] doubleValue]];
+                    }
+                    
+                    if (points.count>2)
+                    {
+                        [mapView_ removeFromSuperview];
+                        polyline_ = [GMSPolyline polylineWithPath:Mypath];
+                        polyline_.strokeWidth = 6;
+                        polyline_.map = mapView_;
+                        [self.view addSubview:mapView_];
+                        [self.view addSubview:holder];
+                    }
+                }
+                #endif
+#endif
+
+            }
+            //NSLog(@"error!!");
         }
 
         [locationManager stopUpdatingLocation];
@@ -507,6 +711,16 @@
     // Stop Location Manager
     //[locationManager stopUpdatingLocation];
 }
+
+#pragma mark - UIAlertView delegate
+- (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex
+{
+    if(buttonIndex == 0)//Button : No
+    {
+        [self DeleteTrackingData];
+    }
+}
+
 - (IBAction)SwipeLeftAction:(id)sender {
     //NSLog(@"Swipe  recognized");
     
@@ -522,7 +736,7 @@
     if(theDataObject.CaloriesStr != nil)
         self.CaloriesLabel.text = theDataObject.CaloriesStr;
     
-    self.HeartRateLabel.text = [@"HR: " stringByAppendingString:[NSString stringWithFormat:@"%ld bpm",theDataObject.HRM]];
+    self.HeartRateLabel.text = [@"HR: " stringByAppendingString:[NSString stringWithFormat:@"%ld bpm",(long)theDataObject.HRM]];
     
     if((theDataObject.APPConfig & BLE_Connected) == 0)
     {
@@ -546,6 +760,33 @@
 #endif
     }
     
+#ifdef GoogleMapFullScreen
+    for(UILabel *label in [holder subviews])
+    {
+        if(label.tag == HRbpmTag)
+        {
+            if(UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad)
+            {
+                label.text = [@"HeartRate: " stringByAppendingString:[NSString stringWithFormat:@"%ld bpm",(long)theDataObject.HRM]];
+            }
+            else
+            {
+                label.text = [@"HR:" stringByAppendingString:[NSString stringWithFormat:@"%ld bpm",(long)theDataObject.HRM]];
+            }
+        }
+        else if(label.tag == HRdurationTag)
+        {
+            if(UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad)
+            {
+                label.text  = [@"Duration : " stringByAppendingString:[theDataObject.TimeStr substringFromIndex:6]];
+            }
+            else
+            {
+                label.text = theDataObject.TimeStr;
+            }
+        }
+    }
+#endif
 }
 
 -(IBAction)PressStartButton:(id)sender {
@@ -587,7 +828,8 @@
         NSLog(@"Pressing start button");
 #endif
     }
-    else{
+    else
+    {
         self.APPConfig &= ~(StartActivity);
         
         [HRMTimer invalidate];
@@ -605,12 +847,10 @@
         NSLog(@"Press buuton,file_total w = %d",fileSize);
         #endif
 #endif
-//#ifdef GradientPolyline
-//        polyline_ = [GMSPolyline polylineWithPath:path];
-//        polyline_.strokeWidth = 6;
-//        polyline_.map = mapView_;
-//        NSLog(@"GradientPolyline Demo : %d",(int)[trackData_ count]);
-//#endif
+        
+        UIAlertView *myAlert = [[UIAlertView alloc] initWithTitle:@"Coordinate data" message:@"Save tracking data?" delegate:self cancelButtonTitle:@"No" otherButtonTitles:@"Yes", nil];
+        
+        [myAlert show];
     }
 }
 
@@ -666,7 +906,37 @@
     polyline_.map = mapView_;
 }
 */
+- (void)DeleteTrackingData
+{
+    NSString *path1;
+    NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
+    path1 = [[paths objectAtIndex:0] stringByAppendingPathComponent:@"Mapdata.txt"];
+    [[NSFileManager defaultManager] changeCurrentDirectoryPath:path1];
+    
+    if ([[NSFileManager defaultManager] fileExistsAtPath:path1])
+    {
+        NSError *error;
+        
+        BOOL success = [[NSFileManager defaultManager] removeItemAtPath:path1 error:&error];
+        
+        if (!success)
+        {
+#ifdef DebugMessage
+            NSLog(@"Remove file error!!");
+#endif
+        }
+        else
+        {
+#ifdef DebugMessage
+            NSLog(@"Remove exist file (Mapdata.txt)");
+#endif
+        }
+    }
+}
+
 - (IBAction)DeleteTrackFile:(id)sender {
+    [self DeleteTrackingData];
+    /*
     NSString *path1;
     NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
     path1 = [[paths objectAtIndex:0] stringByAppendingPathComponent:@"Mapdata.txt"];
@@ -699,7 +969,7 @@
         UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"TrackPath" message:@"Mapdata.txt not exist!" delegate:self cancelButtonTitle:@"OK" otherButtonTitles:nil, nil];
         
         [alert show];
-    }
+    }*/
 }
 
 - (IBAction)DebugFunction:(id)sender {

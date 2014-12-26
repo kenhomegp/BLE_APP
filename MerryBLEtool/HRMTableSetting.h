@@ -25,6 +25,7 @@
 #define NSFileHandleReadWrite
 #define GradientPolyline
 #define DebugWithoutBLEConnection
+#define DebugWithoutTrackPath
 
 @protocol passUserSetting1 <NSObject>
 -(void)setName : (NSString *)User_Name;
