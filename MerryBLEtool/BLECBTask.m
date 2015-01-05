@@ -18,6 +18,15 @@
 #define BLE_Characteristic_DEBUG(x)
 #endif
 
+//Test mode
+#define TestLEDOn           30
+#define TestLEDOff          31
+#define SoundBuzzerTwice    32
+#define SoundBuzzerLong     33
+#define EnableHeartRate     34
+#define DisableHeartRate    35
+#define TestComplete        36
+
 @implementation BLECBTask
 
 @synthesize delegate;
@@ -166,12 +175,21 @@
  *  @discussion Disables notifications on the TX Power level service
  *
  */
+
 -(void) disableTXPower:(CBPeripheral *)p {
     [self notification:TI_KEYFOB_PROXIMITY_TX_PWR_SERVICE_UUID characteristicUUID:TI_KEYFOB_PROXIMITY_TX_PWR_NOTIFICATION_UUID p:p on:NO];
 }
 
+/* Enable HeartRate Service     */
 
+-(void) EnableHRM:(CBPeripheral *)p {
+    [self notification:0x180d characteristicUUID:0x2a37 p:p on:YES];
+}
 
+/* Disable HeartRate Service    */
+- (void) DisableHRM:(CBPeripheral *)p {
+    [self notification:0x180d characteristicUUID:0x2a37 p:p on:NO];
+}
 
 /*!
  *  @method writeValue:
@@ -331,16 +349,21 @@
     
     if (self->CM.state  != CBCentralManagerStatePoweredOn) {
         Core_Bluetooth_DEBUG(("CoreBluetooth not correctly initialized !\r\n"));
-        Core_Bluetooth_DEBUG(("State = %d (%s)\r\n",self->CM.state,[self centralManagerStateToString:self.CM.state]));
+        Core_Bluetooth_DEBUG(("State = %d (%s)\r\n",(int)self->CM.state,[self centralManagerStateToString:self.CM.state]));
         [[self delegate] logBLEMessage:@"CoreBluetooth not correctly initialized !"];
         return -1;
     }
     
     [NSTimer scheduledTimerWithTimeInterval:(float)timeout target:self selector:@selector(scanTimer:) userInfo:nil repeats:NO];
     
-    [self.CM scanForPeripheralsWithServices:nil options:0]; // Start scanning
-    [TIBLEConnectBtn setTitle:@"Scanning.." forState:UIControlStateNormal];
-    [[self delegate] logBLEMessage:@"Scanning.."];
+    NSArray *services = @[[CBUUID UUIDWithString:@"180D"], [CBUUID UUIDWithString:@"1802"], [CBUUID UUIDWithString:@"180A"]];
+    
+    //[self.CM scanForPeripheralsWithServices:nil options:0]; // Start scanning
+    [self.CM scanForPeripheralsWithServices:services options:0]; // Start scanning
+    
+    //[TIBLEConnectBtn setTitle:@"Scanning.." forState:UIControlStateNormal];
+    //[[self delegate] logBLEMessage:@"Scanning.."];
+    [[self delegate] logBLEMessage:@"Scanning..BLE(HeartRate) device"];
     return 0; // Started scanning OK !
 }
 
@@ -355,6 +378,7 @@
  */
 - (void) connectPeripheral:(CBPeripheral *)peripheral {
     Core_Bluetooth_DEBUG(("Connecting to peripheral with UUID : %s\r\n",[self UUIDToString:peripheral.UUID]));
+    [[self delegate] logBLEMessage:[NSString stringWithFormat:@"Connecting to peripheral with UUID : %s",[self UUIDToString:peripheral.UUID]]];
     activePeripheral = peripheral;
     activePeripheral.delegate = self;
     [CM connectPeripheral:activePeripheral options:nil];
@@ -400,23 +424,23 @@
  */
 - (void) scanTimer:(NSTimer *)timer {
     if(self.activePeripheral){
-        [TIBLEConnectBtn setTitle:@"Disconnect" forState:UIControlStateNormal];
+        //[TIBLEConnectBtn setTitle:@"Disconnect" forState:UIControlStateNormal];
         return;
     }
     else
     {
         [self.CM stopScan];
-        [TIBLEConnectBtn setTitle:@"Scan and Connect" forState:UIControlStateNormal];
-        self.KeyfobFound = NO;
-        self.Service1 = 0;
-        self.Service2 = 0;
-        [[self delegate] keyfobReady: self.KeyfobFound GATT_Service_1:self.Service1 GATT_Service_2:self.Service2];
+        //[TIBLEConnectBtn setTitle:@"Scan and Connect" forState:UIControlStateNormal];
+        //self.KeyfobFound = NO;
+        //self.Service1 = 0;
+        //self.Service2 = 0;
+        //[[self delegate] keyfobReady: self.KeyfobFound GATT_Service_1:self.Service1 GATT_Service_2:self.Service2];
         Core_Bluetooth_DEBUG(("Stopped Scanning\r\n"));
-        Core_Bluetooth_DEBUG(("Known peripherals : %d\r\n",[self->peripherals count]));
-        if(self.peripherals.count != 0)
-        {
-            [self printKnownPeripherals];
-        }
+        //Core_Bluetooth_DEBUG(("Known peripherals : %d\r\n",[self->peripherals count]));
+        //if(self.peripherals.count != 0)
+        //{
+        //    [self printKnownPeripherals];
+        //}
     }
 }
 
@@ -741,7 +765,25 @@
 
 
 - (void)centralManagerDidUpdateState:(CBCentralManager *)central {
-    Core_Bluetooth_DEBUG(("Status of CoreBluetooth central manager changed %d (%s)\r\n",central.state,[self centralManagerStateToString:central.state]));
+    //Core_Bluetooth_DEBUG(("Status of CoreBluetooth central manager changed %d (%s)\r\n",central.state,[self centralManagerStateToString:central.state]));
+    
+     if ([central state] == CBCentralManagerStatePoweredOff) {
+         Core_Bluetooth_DEBUG(("CoreBluetooth BLE hardware is powered off\r\n"));
+     }
+     else if ([central state] == CBCentralManagerStatePoweredOn) {
+         Core_Bluetooth_DEBUG(("CoreBluetooth BLE hardware is powered on and ready\r\n"));
+         [self findBLEPeripherals:10];
+     }
+     else if ([central state] == CBCentralManagerStateUnauthorized) {
+         Core_Bluetooth_DEBUG(("CoreBluetooth BLE state is unauthorized\r\n"));
+     }
+     else if ([central state] == CBCentralManagerStateUnknown) {
+         Core_Bluetooth_DEBUG(("CoreBluetooth BLE state is unknown\r\n"));
+     }
+     else if ([central state] == CBCentralManagerStateUnsupported) {
+         Core_Bluetooth_DEBUG(("CoreBluetooth BLE hardware is unsupported on this platform\r\n"));
+     }
+    
 }
 
 - (void)centralManager:(CBCentralManager *)central didDiscoverPeripheral:(CBPeripheral *)peripheral advertisementData:(NSDictionary *)advertisementData RSSI:(NSNumber *)RSSI {
@@ -777,10 +819,11 @@
         self.KeyfobFound = Unknown_Device;
         [self connectPeripheral:peripheral];
         self.m_Device.text = peripheral.name;
-        Core_Bluetooth_DEBUG(("Found a device??, connecting..\n"));
+        NSString *localName = [advertisementData objectForKey:CBAdvertisementDataLocalNameKey];
+        Core_Bluetooth_DEBUG(("Found a device, connecting..\n"));
+        //[[self delegate] logBLEMessage:@"Found a device, connecting"];
+        [[self delegate] logBLEMessage:[NSString stringWithFormat:@"Found a device: %@ , connecting..",localName]];
     }
-    
-    //printf("didDiscoverPeripheral\r\n");
 }
 
 - (void)centralManager:(CBCentralManager *)central didConnectPeripheral:(CBPeripheral *)peripheral {
@@ -818,6 +861,7 @@
  */
 
 - (void)peripheral:(CBPeripheral *)peripheral didDiscoverCharacteristicsForService:(CBService *)service error:(NSError *)error {
+    char CharacteristicType = 0;
     if (!error) {
         Core_Bluetooth_DEBUG(("Characteristics of service with UUID : %s found,NumOfCharacterisitc : %d\r\n",[self CBUUIDToString:service.UUID],service.characteristics.count));
         
@@ -830,8 +874,8 @@
             BLE_Characteristic_DEBUG(("Found characteristic %s, ",[ self CBUUIDToString:c.UUID]));
             NSString *ss3 = [@"Found characteristic : " stringByAppendingString:[NSString stringWithCString:[self CBUUIDToString:c.UUID] encoding:NSUTF8StringEncoding]];
             [[self delegate] logBLEMessage:ss3];
-            [[self delegate] UpdateCharacteristic:[NSString stringWithCString:[self CBUUIDToString:c.UUID] encoding:NSUTF8StringEncoding]];
-#if 1       
+            //[[self delegate] UpdateCharacteristic:[NSString stringWithCString:[self CBUUIDToString:c.UUID] encoding:NSUTF8StringEncoding]];
+
             //Get the properties of the characteristic
             CBCharacteristicProperties k = c.properties;
             for(int j = 0 ; j < 10; j++)
@@ -842,31 +886,61 @@
                     {
                         BLE_Characteristic_DEBUG(("Read "));//Read
                         [[self delegate] logBLEMessage:@"Read"];
+                        CharacteristicType = 0;
                     }
                     if(j == 2)
                     {
                         BLE_Characteristic_DEBUG(("WriteWithoutResponse "));//WriteWithoutResponse
                         [[self delegate] logBLEMessage:@"WriteWithoutResponse"];
+                        CharacteristicType = 1;
                     }
                     if(j == 3)
                     {
                         BLE_Characteristic_DEBUG(("Write "));//Write
                         [[self delegate] logBLEMessage:@"Write"];
+                        CharacteristicType = 2;
                     }
                     if(j == 4)
                     {
                         BLE_Characteristic_DEBUG(("Notify "));//Notify
                         [[self delegate] logBLEMessage:@"Notify"];
+                        CharacteristicType = 3;
                     }
                 }
             }
             BLE_Characteristic_DEBUG(("\r\n"));
-#endif
+            
+            if([service.UUID isEqual:[CBUUID UUIDWithString:@"1802"]])
+            {
+                if(service.characteristics.count == 1)
+                {
+                    CBCharacteristic *ImmAlertChar = [service.characteristics objectAtIndex:0];
+                    if([ImmAlertChar.UUID isEqual:[CBUUID UUIDWithString:@"2A06"]])
+                    {
+                        if(CharacteristicType == 2)
+                        {
+                            BLE_Characteristic_DEBUG(("Immediate Alert Service/Characteristic found!\r\n"));
+                            [[self delegate] logBLEMessage:@"Immediate Alert Service/Characteristic found!"];
+                            /*
+                            char data = 0x10;
+                            NSData *d = [[NSData alloc] initWithBytes:&data length:1];
+                            [self.activePeripheral writeValue:d forCharacteristic:ImmAlertChar type:CBCharacteristicWriteWithResponse];
+                            //[self.activePeripheral writeValue:d forCharacteristic:ImmAlertChar type:CBCharacteristicWriteWithoutResponse];
+                            */
+                            
+                            self.TestStep = TestLEDOn;
+                            [self performSelector:@selector(BLETestScript) withObject:nil afterDelay:3.0];
+                        }
+                    }
+                }
+            }
+            
+            //if ([service.UUID isEqual:[CBUUID UUIDWithString:HRM_HEART_RATE_SERVICE_UUID]])
             
             CBService *s = [peripheral.services objectAtIndex:(peripheral.services.count - 1)];
             if([self compareCBUUID:service.UUID UUID2:s.UUID]) {
                 BLE_Characteristic_DEBUG(("Finished discovering characteristics\r\n"));
-                [[self delegate] keyfobReady: self.KeyfobFound GATT_Service_1:self.Service1 GATT_Service_2:self.Service2];
+                //[[self delegate] keyfobReady: self.KeyfobFound GATT_Service_1:self.Service1 GATT_Service_2:self.Service2];
             }
         }
     }
@@ -993,7 +1067,7 @@
                 else self.key1 = NO;
                 if (keys & 0x02) self.key2 = YES;
                 else self.key2 = NO;
-                [[self delegate] keyValuesUpdated: keys];
+                //[[self delegate] keyValuesUpdated: keys];
                 break;
             }
             case TI_KEYFOB_ACCEL_X_UUID:
@@ -1001,7 +1075,7 @@
                 char xval;
                 [characteristic.value getBytes:&xval length:TI_KEYFOB_ACCEL_READ_LEN];
                 self.x = xval;
-                [[self delegate] accelerometerValuesUpdated:self.x y:self.y z:self.z];
+                //[[self delegate] accelerometerValuesUpdated:self.x y:self.y z:self.z];
                 break;
             }
             case TI_KEYFOB_ACCEL_Y_UUID:
@@ -1009,7 +1083,7 @@
                 char yval;
                 [characteristic.value getBytes:&yval length:TI_KEYFOB_ACCEL_READ_LEN];
                 self.y = yval;
-                [[self delegate] accelerometerValuesUpdated:self.x y:self.y z:self.z];
+                //[[self delegate] accelerometerValuesUpdated:self.x y:self.y z:self.z];
                 break;
             }
             case TI_KEYFOB_ACCEL_Z_UUID:
@@ -1017,7 +1091,7 @@
                 char zval;
                 [characteristic.value getBytes:&zval length:TI_KEYFOB_ACCEL_READ_LEN];
                 self.z = zval;
-                [[self delegate] accelerometerValuesUpdated:self.x y:self.y z:self.z];
+                //[[self delegate] accelerometerValuesUpdated:self.x y:self.y z:self.z];
                 break;
             }
             case TI_KEYFOB_PROXIMITY_TX_PWR_NOTIFICATION_UUID:
@@ -1025,7 +1099,7 @@
                 char TXLevel;
                 [characteristic.value getBytes:&TXLevel length:TI_KEYFOB_PROXIMITY_TX_PWR_NOTIFICATION_READ_LEN];
                 self.TXPwrLevel = TXLevel;
-                [[self delegate] TXPwrLevelUpdated:TXLevel];
+                //[[self delegate] TXPwrLevelUpdated:TXLevel];
                 break;
             }
             /*Heart Rate profile*/
@@ -1033,13 +1107,16 @@
             {
                 //CSR1010 EVB HeartRate Monitor
                 //Data format : https://developer.bluetooth.org/gatt/characteristics/Pages/CharacteristicViewer.aspx?u=org.bluetooth.characteristic.heart_rate_measurement.xml
-                char HRMeasure[4];
                 
-                [characteristic.value getBytes:HRMeasure length:4];
+                [self getHeartBPMData:characteristic error:error];
+                
+                //char HRMeasure[4];
+                
+                //[characteristic.value getBytes:HRMeasure length:4];
                 //BLE_Characteristic_DEBUG(("HR data:%x,%x,%x,%x\n",HRMeasure[0],HRMeasure[1],HRMeasure[2],HRMeasure[3]));
-                BLE_Characteristic_DEBUG(("HR data:%d\n",HRMeasure[1]));
-                self.x = HRMeasure[1];
-                [[self delegate] accelerometerValuesUpdated:self.x y:self.y z:self.z];
+                //BLE_Characteristic_DEBUG(("HR data:%d\n",HRMeasure[1]));
+                //self.x = HRMeasure[1];
+                //[[self delegate] accelerometerValuesUpdated:self.x y:self.y z:self.z];
                 break;
             }
             case 0x2A38://Body Sensor Location
@@ -1089,5 +1166,94 @@
     }
 }
 
+- (void) getHeartBPMData:(CBCharacteristic *)characteristic error:(NSError *)error
+{
+    // Get the Heart Rate Monitor BPM
+    NSData *data = [characteristic value];
+    const uint8_t *reportData = [data bytes];
+    uint16_t bpm = 0;
+    
+    if ((reportData[0] & 0x01) == 0) {
+        // Retrieve the BPM value for the Heart Rate Monitor
+        bpm = reportData[1];
+        BLE_Characteristic_DEBUG(("HR data:%d\n",bpm));
+    }
+    else {
+        bpm = CFSwapInt16LittleToHost(*(uint16_t *)(&reportData[1]));
+    }
+}
+
+
+- (void)BLETestScript
+{
+    char data;
+    
+    CBUUID *cu = [CBUUID UUIDWithString:@"2A06"];   //Characteristic UUID
+    CBUUID *su = [CBUUID UUIDWithString:@"1802"];   //Service UUID
+    
+    CBService *service = [self findServiceFromUUID:su p:self.activePeripheral];
+     
+    if(!service)
+    {
+        return;
+    }
+     
+    CBCharacteristic *characteristic = [self findCharacteristicFromUUID:cu service:service];
+     
+    if(!characteristic)
+    {
+        return;
+    }
+    
+    switch(self.TestStep)
+    {
+        case TestLEDOn:
+            data = 0x10;
+            self.TestStep = TestLEDOff;
+            NSLog(@"LED ON");
+            break;
+        case TestLEDOff:
+            data = 0x11;
+            self.TestStep = SoundBuzzerTwice;
+            NSLog(@"LED OFF");
+            break;
+        case SoundBuzzerTwice:
+            data = 0x12;
+            self.TestStep= SoundBuzzerLong;
+            NSLog(@"SoundBuzzer twice");
+            break;
+        case SoundBuzzerLong:
+            data = 0x13;
+            self.TestStep = EnableHeartRate;
+            NSLog(@"SoundBuzzer long");
+            break;
+        case EnableHeartRate:
+            [self EnableHRM:self.activePeripheral];
+            self.TestStep = DisableHeartRate;
+            NSLog(@"Enable HRM");
+            break;
+        case DisableHeartRate:
+            [self DisableHRM:self.activePeripheral];
+            self.TestStep = TestComplete;
+            NSLog(@"Disable HRM");
+            break;
+        case TestComplete:
+            [self EnableHRM:self.activePeripheral];
+            NSLog(@"End.. Enable HRM");
+            self.TestStep = 0;
+            break;
+    }
+    
+    if(self.TestStep != 0)
+    {
+        if(self.TestStep < EnableHeartRate)
+        {
+            NSData *d = [[NSData alloc] initWithBytes:&data length:1];
+            [self.activePeripheral writeValue:d forCharacteristic:characteristic type:CBCharacteristicWriteWithResponse];
+        }
+        
+        [self performSelector:@selector(BLETestScript) withObject:nil afterDelay:5.0];
+    }
+}
 
 @end

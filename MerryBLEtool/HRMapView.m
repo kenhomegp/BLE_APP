@@ -17,6 +17,7 @@
 
 #define DebugMessagex
 #define DrawRoute
+#define ChkLocation
 #define GoogleMapFullScreen
 
 @interface HRMapView ()
@@ -35,11 +36,12 @@
     CLLocationDegrees Current_Location_longitude;
     
     NSTimer *HRMTimer;
+    NSInteger TimerCounter;
     
 #ifdef SaveLocationToFile
     BOOL fileExist;
     NSFileHandle *fileHandle;
-    NSInteger TimerCounter;
+    //NSInteger TimerCounter;
 #endif
 #ifdef GradientPolyline
     GMSPolyline *polyline_;
@@ -129,6 +131,8 @@
     
     //Check SDK version(Google Maps SDK for iOS)
     //NSLog(@"%@",[@"Google MapSDK Ver:" stringByAppendingString:[NSString stringWithFormat:@"%@",[GMSServices SDKVersion]]]);
+    
+    TimerCounter = 0;
     
 #ifdef DrawRoute
     points = [[NSMutableArray alloc] init];
@@ -382,7 +386,7 @@
     }
     
 #ifdef SaveLocationToFile
-    TimerCounter = 0;
+    //TimerCounter = 0;
     
     NSString *path1;
     NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
@@ -403,15 +407,15 @@
                 BOOL success = [[NSFileManager defaultManager] removeItemAtPath:path1 error:&error];
                 if (!success)
                 {
-#ifdef DebugMessage
+                    #ifdef DebugMessage
                     NSLog(@"Remove file error!!");
-#endif
+                    #endif
                 }
                 else
                 {
-#ifdef DebugMessage
+                    #ifdef DebugMessage
                     NSLog(@"Remove old file");
-#endif
+                    #endif
                 }
                 
                 if(fileSize < 100)
@@ -421,16 +425,16 @@
                     
                     if([[NSFileManager defaultManager] createFileAtPath:@"./Mapdata.txt" contents:nil attributes:nil])
                     {
-#ifdef DebugMessage
+                        #ifdef DebugMessage
                         NSLog(@"Create new file");
-#endif
+                        #endif
                         fileExist = TRUE;
                     }
                     else
                     {
-#ifdef DebugMessage
+                        #ifdef DebugMessage
                         NSLog(@"Create file Error!!");
-#endif
+                        #endif
                         fileExist = FALSE;
                     }
                     
@@ -449,16 +453,16 @@
                             fileHandle = [NSFileHandle fileHandleForWritingAtPath:path2];
                             if(fileHandle != nil)
                             {
-#ifdef DebugMessage
+                                #ifdef DebugMessage
                                 NSLog(@"Get file handle:PASS");
-#endif
+                                #endif
                             }
                             else
                             {
                                 fileExist = FALSE;
-#ifdef DebugMessage
+                                #ifdef DebugMessage
                                 NSLog(@"Can't get file handle!");
-#endif
+                                #endif
                             }
                         }
                     }
@@ -478,16 +482,16 @@
         
         if([[NSFileManager defaultManager] createFileAtPath:@"./Mapdata.txt" contents:nil attributes:nil])
         {
-#ifdef DebugMessage
+            #ifdef DebugMessage
             NSLog(@"File not exist,Create file..");
-#endif
+            #endif
             fileExist = TRUE;
         }
         else
         {
-#ifdef DebugMessage
+            #ifdef DebugMessage
             NSLog(@"Create file Error!!");
-#endif
+            #endif
             fileExist = FALSE;
         }
         
@@ -506,16 +510,16 @@
                 fileHandle = [NSFileHandle fileHandleForWritingAtPath:path2];
                 if(fileHandle != nil)
                 {
-#ifdef DebugMessage
+                    #ifdef DebugMessage
                     NSLog(@"Get file handle:PASS");
-#endif
+                    #endif
                 }
                 else
                 {
                     fileExist = FALSE;
-#ifdef DebugMessage
+                    #ifdef DebugMessage
                     NSLog(@"Can't get file handle!");
-#endif
+                    #endif
                 }
             }
         }
@@ -531,17 +535,36 @@
 
 - (void)handleStartButton:(id)sender
 {
-    /*
-    if(TrackRouteSwitch.on)
-    {
-        NSLog(@"Switch on");
-    }
-    else
-    {
-        NSLog(@"Switch off");
-    }*/
+    //[self DeleteTrackingData];
     
     [self.CustomButton sendActionsForControlEvents:UIControlEventTouchUpInside];
+    
+/*
+    //Debug
+    GMSVisibleRegion visibleRegion = mapView_.projection.visibleRegion;
+    GMSCoordinateBounds *bounds = [[GMSCoordinateBounds alloc] initWithRegion:visibleRegion];
+    CLLocationCoordinate2D northEast = bounds.northEast;
+    GMSMarker *marker1 = [[GMSMarker alloc] init];
+    marker1.position = northEast;
+    marker1.title = @"L1";
+    marker1.map = mapView_;
+    //NSLog(@"bound: %f,%f",northEast.latitude,northEast.longitude);
+    CLLocationCoordinate2D northWest = CLLocationCoordinate2DMake(bounds.northEast.latitude, bounds.southWest.longitude);
+    GMSMarker *marker2 = [[GMSMarker alloc] init];
+    marker2.position = northWest;
+    marker2.title = @"L2";
+    marker2.map = mapView_;
+    CLLocationCoordinate2D southEast = CLLocationCoordinate2DMake(bounds.southWest.latitude, bounds.northEast.longitude);
+    GMSMarker *marker3 = [[GMSMarker alloc] init];
+    marker3.position = southEast;
+    marker3.title = @"L3";
+    marker3.map = mapView_;
+    CLLocationCoordinate2D southWest = bounds.southWest;
+    GMSMarker *marker4 = [[GMSMarker alloc] init];
+    marker4.position = southWest;
+    marker4.title = @"L4";
+    marker4.map = mapView_;
+*/
 }
 
 - (void)didChangeRouteSwitch
@@ -619,9 +642,28 @@
     //NSLog(@"didUpdateToLocation: %@", newLocation);
     CLLocation *currentLocation = newLocation;
     
-    if (currentLocation != nil) {
-        
-        // Stop Location Manager
+#ifdef ChkLocation
+    GMSVisibleRegion visibleRegion = mapView_.projection.visibleRegion;
+    GMSCoordinateBounds *bounds = [[GMSCoordinateBounds alloc] initWithRegion:visibleRegion];
+    
+    if([bounds containsCoordinate:currentLocation.coordinate])
+    {
+        #ifdef DebugMessage
+            NSLog(@"Coordinate is contained within the bounds");
+        #endif
+    }
+    else
+    {
+        //Move camera
+        //NSLog(@"Chang camera");
+        GMSCameraPosition *CurrLocation = [GMSCameraPosition cameraWithLatitude:currentLocation.coordinate.latitude longitude:Current_Location_longitude zoom:16];
+        [mapView_ setCamera:CurrLocation];
+    }
+#endif
+
+    if (currentLocation != nil)
+    {
+        #ifdef SaveLocationToFile
         if(fileExist == TRUE)
         {
             double lat = currentLocation.coordinate.latitude;
@@ -635,11 +677,11 @@
                 [fileHandle writeData:writer];
                 Current_location_latitude = lat;
                 Current_Location_longitude = lng;
-#ifdef DebugMessage
+                #ifdef DebugMessage
                 NSLog(@"w%d,%f,%f",(int)[writer length],lat,lng);
-#endif
+                #endif
 
-#ifdef DrawRoute
+                #ifdef DrawRoute
                 if(TrackRouteSwitch.on)
                 {
                  //Track user's location
@@ -662,13 +704,15 @@
                      [self.view addSubview:mapView_];
                  }
                 }
-#endif
+                #endif
             }
         }
         else
+        #endif
         {
             double lat = currentLocation.coordinate.latitude;
             double lng = currentLocation.coordinate.longitude;
+            
             if((lat != Current_location_latitude) && (lng != Current_Location_longitude))
             {
                 Current_location_latitude = lat;
@@ -700,9 +744,7 @@
                 }
                 #endif
 #endif
-
             }
-            //NSLog(@"error!!");
         }
 
         [locationManager stopUpdatingLocation];
@@ -717,7 +759,9 @@
 {
     if(buttonIndex == 0)//Button : No
     {
+        #ifdef SaveLocationToFile
         [self DeleteTrackingData];
+        #endif
     }
 }
 
@@ -746,8 +790,8 @@
         self.CaloriesLabel.text = @"Calories: 00000 cal";
         self.TimeLabel.text = @"Time:00h:00m:00s";
     }
-    else{
-#ifdef SaveLocationToFile
+    else
+    {
         if(TimerCounter == 5)
         {
             TimerCounter = 0;
@@ -757,7 +801,6 @@
         {
             TimerCounter++;
         }
-#endif
     }
     
 #ifdef GoogleMapFullScreen
@@ -835,10 +878,11 @@
         [HRMTimer invalidate];
         
         [self.CustomButton setTitle:NSLocalizedString(@"StartButton", @"") forState:UIControlStateNormal];
-
-#ifdef SaveLocationToFile
+        
         TimerCounter = 0;
         [locationManager stopUpdatingLocation];
+
+#ifdef SaveLocationToFile
         #ifdef DebugMessage
         int fileSize = (int)[fileHandle seekToEndOfFile];
         #endif
@@ -846,11 +890,11 @@
         #ifdef DebugMessage
         NSLog(@"Press buuton,file_total w = %d",fileSize);
         #endif
-#endif
         
         UIAlertView *myAlert = [[UIAlertView alloc] initWithTitle:@"Coordinate data" message:@"Save tracking data?" delegate:self cancelButtonTitle:@"No" otherButtonTitles:@"Yes", nil];
         
         [myAlert show];
+#endif
     }
 }
 
@@ -976,9 +1020,10 @@
 #ifdef DebugMessage
     NSLog(@"Debug function.");
 #endif
-    [mapView_ removeFromSuperview];
-    [self GradientPolyLine];
-    [self.view addSubview:mapView_];
+    
+    //[mapView_ removeFromSuperview];
+    //[self GradientPolyLine];
+    //[self.view addSubview:mapView_];
 /*
     GMSVisibleRegion visibleRegion = mapView_.projection.visibleRegion;
     GMSCoordinateBounds *bounds = [[GMSCoordinateBounds alloc] initWithRegion:visibleRegion];

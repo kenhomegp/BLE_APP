@@ -27,10 +27,19 @@
     NSInteger Count10sec;
     NSInteger IndexSetAccessoryCheckmark;
     UIAlertView *myAlert;
+    UIActivityIndicatorView *spinner;
 }
 @end
 
 @implementation HRStartViewController
+
+#ifdef BLE_Debug
+#pragma mark - CoreBTDelegate
+-(void) logBLEMessage:(NSString *)message
+{
+    self.Log = [self.Log stringByAppendingFormat:@"%@\n",message];
+}
+#endif
 
 #pragma mark - UIAlertView delegate
 - (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex
@@ -48,9 +57,13 @@
         {
             if(IndexSetAccessoryCheckmark != 0)
             {
-                //[CoreBTObj StopScanPeripheral];
-                [CoreBTObj ConnectHRMDevice:self.LastConnectDevice];
+                #ifdef BLE_Debug
+                
+                #else
+                    [CoreBTObj ConnectHRMDevice:self.LastConnectDevice];
+                #endif
             }
+            
         }
         else if([self.CBStatus isEqualToString:@"Disconnected"])
         {
@@ -60,15 +73,26 @@
             self.BLE_device3 = nil;
             IndexSetAccessoryCheckmark = 0;
             [self.tableView reloadData];
-            [CoreBTObj ScanHRMDevice];
+            
+            #ifdef BLE_Debug
+            
+            #else
+                [CoreBTObj ScanHRMDevice];
+            #endif
+            
             ScanTimer = [NSTimer scheduledTimerWithTimeInterval:1.0
                                                      target:self selector:@selector(ScanBLEPeripheral)
                                                    userInfo:nil repeats:YES];
+            [spinner startAnimating];
             Count10sec = BLEScanTime;
         }
         else if([self.CBStatus rangeOfString:@"Connected"].location != NSNotFound)
         {
+            #ifdef BLE_Debug
+            
+            #else
             [CoreBTObj DisconnectHRM];
+            #endif
         }
     }
 }
@@ -113,6 +137,7 @@
             {
                 [ScanTimer invalidate];
                 Count10sec = BLEScanTime;
+                [spinner stopAnimating];
             }
         }
         else if([payload isEqualToString:@"NO"])
@@ -143,8 +168,11 @@
 
 - (void)viewWillAppear:(BOOL)animated
 {
-    //NSLog(@"viewWillAppear");
+#ifdef BLE_Debug
+    
+#else
     [CoreBTObj setViewController:0];
+#endif
 }
 
 - (void)viewWillDisappear:(BOOL)animated
@@ -181,10 +209,18 @@
     self.CBStatus = @"Scan...";
     self.LastConnectDevice = nil;
     
+#ifdef BLE_Debug
+    CoreBTObj = [[BLECBTask alloc] init];
+    [CoreBTObj controlSetup:1];
+    CoreBTObj.delegate = self;
+    CoreBTObj.activePeripheral = nil;
+    self.Log = @"";
+#else
     CoreBTObj = [[HRMCBTask alloc] init];
     [CoreBTObj controlSetup];
     [CoreBTObj SetVC:0];
     CoreBTObj.delegate1 = self;
+#endif
     
     ScanTimer = [NSTimer scheduledTimerWithTimeInterval:1.0
                 target:self selector:@selector(ScanBLEPeripheral)
@@ -194,7 +230,17 @@
     NSUserDefaults *userDefaults = [NSUserDefaults standardUserDefaults];
     self.LastConnectDevice = [userDefaults objectForKey:@"myHRMApp_Device"];
     
-    //NSLog(@"Last connected : %@",self.LastConnectDevice);
+    spinner = [[UIActivityIndicatorView alloc]
+                                        initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray];
+    
+    if(UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad)
+        spinner.center = CGPointMake(390, 500);
+    else
+        spinner.center = CGPointMake(160, 240);
+    
+    spinner.hidesWhenStopped = YES;
+    [self.view addSubview:spinner];
+    [spinner startAnimating];
 }
 
 - (void)DismissAlertView
@@ -264,7 +310,14 @@
     else{
         [ScanTimer invalidate];
         Count10sec = BLEScanTime;
-        [CoreBTObj StopScanPeripheral];
+        
+        #ifdef BLE_Debug
+        
+        #else
+            [CoreBTObj StopScanPeripheral];
+        #endif
+        
+        [spinner stopAnimating];
         if([self.CBStatus isEqualToString:@"Scan..."])
         {
             self.CBStatus = @"Disconnected";
@@ -274,6 +327,7 @@
             IndexSetAccessoryCheckmark = 0;
             [self.tableView reloadData];
             //NSLog(@"Scan time-out");
+            //[spinner stopAnimating];
         }
     }
 }
@@ -301,12 +355,21 @@
         vc.APPConfig &= ~(ApplicationMode);
         vc.APPConfig |= Sports;
         vc.APPConfig |= BLE_Connected;
-        vc.polarH7HRMPeripheral = CoreBTObj.activePeripheral;
+        
+        #ifdef BLE_Debug
+        
+        #else
+            vc.polarH7HRMPeripheral = CoreBTObj.activePeripheral;
+        #endif
         
         theDataObject.APPConfig |= Sports;
         
-        CoreBTObj.delegate2 = vc;
-        [CoreBTObj SetVC:1];
+        #ifdef BLE_Debug
+        
+        #else
+            CoreBTObj.delegate2 = vc;
+            [CoreBTObj SetVC:1];
+        #endif
     }
     else if([segue.identifier isEqualToString:@"SegueForTest"])
     {
@@ -328,6 +391,14 @@
             theDataObject.APPConfig |= Sleep;
         }
     }
+    else if([[segue identifier] isEqualToString:@"SegueLogMessage"])
+    {
+        #ifdef BLE_Debug
+        HRMTableSetting *User = [segue destinationViewController];
+        User.Log = self.Log;
+        #endif
+    }
+
 }
 
 #pragma mark -
@@ -498,9 +569,16 @@
         }
         else
         {
-            APPTitle.text = nil;
-            APPDetail.text = nil;
-            APPUseFreq.text = nil;
+            #ifdef BLE_Debug
+                APPTitle.text = @"BLE debug mode";
+                APPDetail.text = nil;
+                APPUseFreq.text = nil;
+                [cell setAccessoryType:UITableViewCellAccessoryDisclosureIndicator];
+            #else
+                APPTitle.text = nil;
+                APPDetail.text = nil;
+                APPUseFreq.text = nil;
+            #endif
         }
     }
     else if(indexPath.row == 4)
@@ -868,6 +946,12 @@
             }
 #endif
         }
+        else
+        {
+#ifdef BLE_Debug
+            [self performSegueWithIdentifier:@"SegueLogMessage" sender:[tableView cellForRowAtIndexPath:indexPath]];
+#endif
+        }
      }
     else if(indexPath.row == 4)//BLE State (Scan , Connect , Disconnect)
     {
@@ -881,7 +965,14 @@
                 [ScanTimer invalidate];
                 Count10sec = BLEScanTime;
             }
-            [CoreBTObj StopScanPeripheral];
+            
+            #ifdef BLE_Debug
+            
+            #else
+                [CoreBTObj StopScanPeripheral];
+            #endif
+            
+            [spinner stopAnimating];
             self.CBStatus = @"Disconnected";
             self.BLE_device1 = nil;
             self.BLE_device2 = nil;
@@ -911,8 +1002,11 @@
             UILabel *Device1 = (UILabel *)[cell viewWithTag:101];
             if(Device1.text != nil)
             {
-                //NSLog(@"%@",Devece1.text);
-                [CoreBTObj ConnectHRMDevice:Device1.text];
+                #ifdef BLE_Debug
+                
+                #else
+                    [CoreBTObj ConnectHRMDevice:Device1.text];
+                #endif
                 [cell setAccessoryType:UITableViewCellAccessoryCheckmark];
             }
         }
@@ -924,8 +1018,11 @@
             UILabel *Device2 = (UILabel *)[cell viewWithTag:101];
             if(Device2.text != nil)
             {
-                //NSLog(@"%@",Device2.text);
-                [CoreBTObj ConnectHRMDevice:Device2.text];
+                #ifdef BLE_Debug
+                
+                #else
+                    [CoreBTObj ConnectHRMDevice:Device2.text];
+                #endif
                 [cell setAccessoryType:UITableViewCellAccessoryCheckmark];
             }
         }
@@ -937,8 +1034,11 @@
             UILabel *Device3 = (UILabel *)[cell viewWithTag:101];
             if(Device3.text != nil)
             {
-                //NSLog(@"%@",Device3.text);
-                [CoreBTObj ConnectHRMDevice:Device3.text];
+                #ifdef BLE_Debug
+                
+                #else
+                    [CoreBTObj ConnectHRMDevice:Device3.text];
+                #endif
                 [cell setAccessoryType:UITableViewCellAccessoryCheckmark];
             }
         }
@@ -948,7 +1048,7 @@
 /*
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:<#@"reuseIdentifier"#> forIndexPath:indexPath];
+    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"reuseIdentifier" forIndexPath:indexPath];
     
     // Configure the cell...
     

@@ -8,6 +8,12 @@
 
 #import "HRMCBTask.h"
 
+#define DebugMode
+
+//Test mode
+#define SetHeartRateNotifyDisabled  30
+#define SetHeartRateNotifyEnabled   31
+
 @implementation HRMCBTask
 
 - (void)SetVC:(NSInteger)vc
@@ -36,12 +42,14 @@
 
 - (void)ScanHRMDevice
 {
-    NSArray *services = @[[CBUUID UUIDWithString:HRM_HEART_RATE_SERVICE_UUID], [CBUUID UUIDWithString:HRM_DEVICE_INFO_SERVICE_UUID]];
+    //NSArray *services = @[[CBUUID UUIDWithString:HRM_HEART_RATE_SERVICE_UUID], [CBUUID UUIDWithString:HRM_DEVICE_INFO_SERVICE_UUID]];
+    
+    NSArray *services = @[[CBUUID UUIDWithString:HRM_HEART_RATE_SERVICE_UUID], [CBUUID UUIDWithString:HRM_DEVICE_INFO_SERVICE_UUID], [CBUUID UUIDWithString:IMM_ALERT_SERVICE_UUID]];
 
     if(self.CM != nil)
     {
         [self.CM scanForPeripheralsWithServices:services options:nil];
-        //NSLog(@"Scan BLE device");
+        //NSLog(@"Scan BLE_HeartRate device");
     }
     else
     {
@@ -189,16 +197,16 @@ didDisconnectPeripheral:(CBPeripheral *)peripheral
 // Invoked when you discover the characteristics of a specified service.
 - (void)peripheral:(CBPeripheral *)peripheral didDiscoverCharacteristicsForService:(CBService *)service error:(NSError *)error
 {
-    if ([service.UUID isEqual:[CBUUID UUIDWithString:HRM_HEART_RATE_SERVICE_UUID]])  {  // 1
+    if ([service.UUID isEqual:[CBUUID UUIDWithString:HRM_HEART_RATE_SERVICE_UUID]])  {
         for (CBCharacteristic *aChar in service.characteristics)
         {
             // Request heart rate notifications
-            if ([aChar.UUID isEqual:[CBUUID UUIDWithString:HRM_NOTIFICATIONS_SERVICE_UUID]]) { // 2
+            if ([aChar.UUID isEqual:[CBUUID UUIDWithString:HRM_NOTIFICATIONS_SERVICE_UUID]]) {
                 
                 [self.activePeripheral setNotifyValue:YES forCharacteristic:aChar];
             }
             // Request body sensor location
-            else if ([aChar.UUID isEqual:[CBUUID UUIDWithString:HRM_BODY_LOCATION_UUID]]) { // 3
+            else if ([aChar.UUID isEqual:[CBUUID UUIDWithString:HRM_BODY_LOCATION_UUID]]) { 
                 [self.activePeripheral readValueForCharacteristic:aChar];
             }
         }

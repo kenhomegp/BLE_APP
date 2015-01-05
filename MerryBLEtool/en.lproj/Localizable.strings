@@ -31,6 +31,7 @@
 "TableViewCell3Detail" = "Relaxation and help sleep";
 "TableViewCell4Title" = "History";
 "TableViewCell4Detail" = "History";
+"HistoryTableViewCell0" = "Running history";
 "HistoryTableViewCell1" = "Average HeartRate(bpm) : ";
 "HistoryTableViewCell2" = "Spend time(h/m/s) : ";
 "HistoryTableViewCell3" = "Calorie expenditure(cal) : ";

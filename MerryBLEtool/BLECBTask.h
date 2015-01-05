@@ -12,6 +12,11 @@
 #import "BLEDefines.h"
 #import "BLEDebug.h" 
 
+@protocol CoreBTDelagate
+-(void) logBLEMessage:(NSString *)message;
+@end
+
+/*
 @protocol BLECBDelegate
 @optional
 -(void) keyfobReady:(char)DeviceFound GATT_Service_1:(int)Service_1 GATT_Service_2:(int)Service_2;
@@ -22,6 +27,7 @@
 -(void) keyValuesUpdated:(char)sw;
 -(void) TXPwrLevelUpdated:(char)TXPwr;
 @end
+ */
 
 @interface BLECBTask : NSObject <CBCentralManagerDelegate, CBPeripheralDelegate> {    
 }
@@ -36,7 +42,7 @@
 @property (nonatomic)   char TXPwrLevel;
 @property (nonatomic)   NSString *DevRSSI;
 
-@property (nonatomic,assign) id <BLECBDelegate> delegate;
+@property (nonatomic,assign) id <CoreBTDelagate> delegate;
 @property (strong, nonatomic)  NSMutableArray *peripherals;
 @property (strong, nonatomic) CBCentralManager *CM;
 @property (strong, nonatomic) CBPeripheral *activePeripheral;
@@ -48,6 +54,7 @@
 
 @property (nonatomic) int Service1;
 @property (nonatomic) int Service2;
+@property (nonatomic) int TestStep;
 
 -(void) initConnectButtonPointer:(UIButton *)b;
 -(void) soundBuzzer:(Byte)buzVal p:(CBPeripheral *)p;

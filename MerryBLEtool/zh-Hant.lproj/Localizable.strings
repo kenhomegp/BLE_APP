@@ -31,6 +31,7 @@
 "TableViewCell3Detail" = "放鬆幫助睡眠";
 "TableViewCell4Title" = "歷史紀錄";
 "TableViewCell4Detail" = "歷史紀錄";
+"HistoryTableViewCell0" = "跑步歷史記錄";
 "HistoryTableViewCell1" = "平均心率(bpm) : ";
 "HistoryTableViewCell2" = "花費時間(時/分/秒) : ";
 "HistoryTableViewCell3" = "燃燒卡路里(卡) : ";

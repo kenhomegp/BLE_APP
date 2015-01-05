@@ -123,6 +123,10 @@
     
     self.Version.text = [version stringByAppendingString:build];
     
+    #ifdef BLE_Debug
+    self.BLE_Log.text = self.Log;
+    #endif
+    
 }
 
 - (void)didReceiveMemoryWarning

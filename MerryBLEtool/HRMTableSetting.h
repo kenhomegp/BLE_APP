@@ -21,11 +21,12 @@
 
 #define UseNSUserDefaults
 #define SaveDataToFile
-#define SaveLocationToFile
+#define SaveLocationToFilex
 #define NSFileHandleReadWrite
 #define GradientPolyline
 #define DebugWithoutBLEConnection
-#define DebugWithoutTrackPath
+#define DebugWithoutTrackPathx
+#define BLE_Debug           //Only for iPad
 
 @protocol passUserSetting1 <NSObject>
 -(void)setName : (NSString *)User_Name;
@@ -65,4 +66,6 @@
 @property (nonatomic) NSInteger UserAgeValue;
 @property (nonatomic, assign) id <passUserSetting1> delegate;
 @property (weak, nonatomic) IBOutlet UILabel *Version;
+@property (nonatomic , strong) NSString *Log;
+@property (weak, nonatomic) IBOutlet UITextView *BLE_Log;
 @end

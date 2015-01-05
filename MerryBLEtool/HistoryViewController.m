@@ -219,7 +219,7 @@
             {
                 cell.textLabel.font = myFont;
                 
-                [[cell textLabel] setText:@"跑步歷史紀錄"];
+                [[cell textLabel] setText:NSLocalizedString(@"HistoryTableViewCell0", @"cell0")];
                 
                 [[cell imageView] setImage:[UIImage imageNamed:@"rsz_running.png"]];
             }

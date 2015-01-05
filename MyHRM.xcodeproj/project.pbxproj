@@ -10,6 +10,8 @@
 		123D4C131A4AB22A0087C30F /* rsz_running.png in Resources */ = {isa = PBXBuildFile; fileRef = 123D4C121A4AB22A0087C30F /* rsz_running.png */; };
 		1243E9381A4BA87400344A03 /* GoogleMaps.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1243E9371A4BA87400344A03 /* GoogleMaps.framework */; };
 		1243E93A1A4BA8A400344A03 /* GoogleMaps.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 1243E9391A4BA8A400344A03 /* GoogleMaps.bundle */; };
+		126D8F411A4FE10300ED35C7 /* Battery.png in Resources */ = {isa = PBXBuildFile; fileRef = 126D8F401A4FE10300ED35C7 /* Battery.png */; };
+		126D8F451A4FE3E900ED35C7 /* BLECBTask.m in Sources */ = {isa = PBXBuildFile; fileRef = 126D8F431A4FE3E900ED35C7 /* BLECBTask.m */; };
 		C105A4B419E51C40007E34D1 /* SoftMusic.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = C105A4B319E51C40007E34D1 /* SoftMusic.mp3 */; };
 		C108E4ED19D10CC20097B920 /* MessageUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C108E4EC19D10CC20097B920 /* MessageUI.framework */; };
 		C10B01F019B7133F00325785 /* AVFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C10B01EF19B7133F00325785 /* AVFoundation.framework */; };
@@ -126,8 +128,13 @@
 
 /* Begin PBXFileReference section */
 		123D4C121A4AB22A0087C30F /* rsz_running.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = rsz_running.png; sourceTree = "<group>"; };
+		12427AAC1A50ECBC00D1F1F8 /* BLEDefines.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BLEDefines.h; sourceTree = "<group>"; };
 		1243E9371A4BA87400344A03 /* GoogleMaps.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = GoogleMaps.framework; sourceTree = "<group>"; };
 		1243E9391A4BA8A400344A03 /* GoogleMaps.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; name = GoogleMaps.bundle; path = GoogleMaps.framework/Versions/A/Resources/GoogleMaps.bundle; sourceTree = "<group>"; };
+		126D8F401A4FE10300ED35C7 /* Battery.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Battery.png; sourceTree = "<group>"; };
+		126D8F421A4FE3E900ED35C7 /* BLECBTask.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BLECBTask.h; sourceTree = "<group>"; };
+		126D8F431A4FE3E900ED35C7 /* BLECBTask.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BLECBTask.m; sourceTree = "<group>"; };
+		126D8F441A4FE3E900ED35C7 /* BLEDebug.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BLEDebug.h; sourceTree = "<group>"; };
 		C105A4B319E51C40007E34D1 /* SoftMusic.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = SoftMusic.mp3; sourceTree = "<group>"; };
 		C108E4EC19D10CC20097B920 /* MessageUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MessageUI.framework; path = System/Library/Frameworks/MessageUI.framework; sourceTree = SDKROOT; };
 		C10B01EF19B7133F00325785 /* AVFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AVFoundation.framework; path = System/Library/Frameworks/AVFoundation.framework; sourceTree = SDKROOT; };
@@ -294,6 +301,86 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		126D8F391A4FBACF00ED35C7 /* StartUpViewController */ = {
+			isa = PBXGroup;
+			children = (
+				C12CA81F1A23099900F6CC76 /* CustomHeaderCell.m */,
+				C12CA81E1A23099900F6CC76 /* CustomHeaderCell.h */,
+				C11073651A0F573900FE3CFD /* HRStartViewController.m */,
+				C11073641A0F573800FE3CFD /* HRStartViewController.h */,
+			);
+			name = StartUpViewController;
+			sourceTree = "<group>";
+		};
+		126D8F3A1A4FBBB800ED35C7 /* CoreBluetooth */ = {
+			isa = PBXGroup;
+			children = (
+				12427AAC1A50ECBC00D1F1F8 /* BLEDefines.h */,
+				126D8F421A4FE3E900ED35C7 /* BLECBTask.h */,
+				126D8F431A4FE3E900ED35C7 /* BLECBTask.m */,
+				126D8F441A4FE3E900ED35C7 /* BLEDebug.h */,
+				C194955F1A303C8D00204ECE /* HRMCBTask.m */,
+				C194955E1A303C7E00204ECE /* HRMCBTask.h */,
+			);
+			name = CoreBluetooth;
+			sourceTree = "<group>";
+		};
+		126D8F3B1A4FBBEB00ED35C7 /* HRMResource */ = {
+			isa = PBXGroup;
+			children = (
+				C1E017C819FF77C600F5FA46 /* BLE_APP_Storyboard.storyboard */,
+				C18300B91A0C615E00CAAB55 /* HRM_iPhone.storyboard */,
+				C1E017D419FF90E400F5FA46 /* Localizable.strings */,
+				C10B01F619B71C9E00325785 /* HRAlarm.mp3 */,
+				C1F97CAD19D5554300C753BE /* data.txt */,
+			);
+			name = HRMResource;
+			sourceTree = "<group>";
+		};
+		126D8F3C1A4FBC4400ED35C7 /* HRMViewController */ = {
+			isa = PBXGroup;
+			children = (
+				C1DF28B9186147DB00000695 /* AppDelegate.m */,
+				C1DF28B8186147DB00000695 /* AppDelegate.h */,
+				C12529D219EE11EB004AFA0F /* HRHealthyCare.m */,
+				C12529D119EE11EB004AFA0F /* HRHealthyCare.h */,
+				C1F97CAB19D54E9900C753BE /* HeartLive.m */,
+				C1F97CAA19D54E9900C753BE /* HeartLive.h */,
+				C11742BF19AADC1600721449 /* HRMViewController.m */,
+				C11742BE19AADC1600721449 /* HRMViewController.h */,
+			);
+			name = HRMViewController;
+			sourceTree = "<group>";
+		};
+		126D8F3D1A4FBC7800ED35C7 /* HRMHistory */ = {
+			isa = PBXGroup;
+			children = (
+				C1EDD4C21A3A9CA4008E4E75 /* HistoryViewController.m */,
+				C1EDD4C11A3A9CA4008E4E75 /* HistoryViewController.h */,
+			);
+			name = HRMHistory;
+			sourceTree = "<group>";
+		};
+		126D8F3E1A4FBC8900ED35C7 /* HRMProfile */ = {
+			isa = PBXGroup;
+			children = (
+				C1E700CB19D2747400410667 /* HRMSetting.m */,
+				C1E700CA19D2747400410667 /* HRMSetting.h */,
+				C1D5CD2B1A1A4C2F00AF72BB /* HRMTableSetting.m */,
+				C1D5CD2A1A1A4C2F00AF72BB /* HRMTableSetting.h */,
+			);
+			name = HRMProfile;
+			sourceTree = "<group>";
+		};
+		126D8F3F1A4FDB1600ED35C7 /* HRMGoogleMap */ = {
+			isa = PBXGroup;
+			children = (
+				C130E61919F1025A00550957 /* HRMapView.m */,
+				C130E61819F1025900550957 /* HRMapView.h */,
+			);
+			name = HRMGoogleMap;
+			sourceTree = "<group>";
+		};
 		C12545FF1A13482E001E0EBD /* ViewControllerDataSharing */ = {
 			isa = PBXGroup;
 			children = (
@@ -352,34 +439,14 @@
 		C1DF28AF186147DA00000695 /* MerryBLEtool */ = {
 			isa = PBXGroup;
 			children = (
+				126D8F3F1A4FDB1600ED35C7 /* HRMGoogleMap */,
+				126D8F3E1A4FBC8900ED35C7 /* HRMProfile */,
+				126D8F3D1A4FBC7800ED35C7 /* HRMHistory */,
+				126D8F3C1A4FBC4400ED35C7 /* HRMViewController */,
+				126D8F3B1A4FBBEB00ED35C7 /* HRMResource */,
+				126D8F3A1A4FBBB800ED35C7 /* CoreBluetooth */,
+				126D8F391A4FBACF00ED35C7 /* StartUpViewController */,
 				C12545FF1A13482E001E0EBD /* ViewControllerDataSharing */,
-				C11073641A0F573800FE3CFD /* HRStartViewController.h */,
-				C11073651A0F573900FE3CFD /* HRStartViewController.m */,
-				C194955E1A303C7E00204ECE /* HRMCBTask.h */,
-				C194955F1A303C8D00204ECE /* HRMCBTask.m */,
-				C12CA81E1A23099900F6CC76 /* CustomHeaderCell.h */,
-				C12CA81F1A23099900F6CC76 /* CustomHeaderCell.m */,
-				C1F97CAD19D5554300C753BE /* data.txt */,
-				C10B01F619B71C9E00325785 /* HRAlarm.mp3 */,
-				C1DF28B8186147DB00000695 /* AppDelegate.h */,
-				C1DF28B9186147DB00000695 /* AppDelegate.m */,
-				C11742BE19AADC1600721449 /* HRMViewController.h */,
-				C11742BF19AADC1600721449 /* HRMViewController.m */,
-				C18300B91A0C615E00CAAB55 /* HRM_iPhone.storyboard */,
-				C1EDD4C11A3A9CA4008E4E75 /* HistoryViewController.h */,
-				C1EDD4C21A3A9CA4008E4E75 /* HistoryViewController.m */,
-				C1D5CD2A1A1A4C2F00AF72BB /* HRMTableSetting.h */,
-				C1D5CD2B1A1A4C2F00AF72BB /* HRMTableSetting.m */,
-				C1E017C819FF77C600F5FA46 /* BLE_APP_Storyboard.storyboard */,
-				C1E017D419FF90E400F5FA46 /* Localizable.strings */,
-				C130E61819F1025900550957 /* HRMapView.h */,
-				C130E61919F1025A00550957 /* HRMapView.m */,
-				C12529D119EE11EB004AFA0F /* HRHealthyCare.h */,
-				C12529D219EE11EB004AFA0F /* HRHealthyCare.m */,
-				C1E700CA19D2747400410667 /* HRMSetting.h */,
-				C1F97CAA19D54E9900C753BE /* HeartLive.h */,
-				C1F97CAB19D54E9900C753BE /* HeartLive.m */,
-				C1E700CB19D2747400410667 /* HRMSetting.m */,
 				C1F60B90198B378B0032A497 /* Images.xcassets */,
 				C1DF28B0186147DA00000695 /* Supporting Files */,
 			);
@@ -390,6 +457,7 @@
 			isa = PBXGroup;
 			children = (
 				123D4C121A4AB22A0087C30F /* rsz_running.png */,
+				126D8F401A4FE10300ED35C7 /* Battery.png */,
 				C143D9F01A414BDE00BF6AE4 /* history2.png */,
 				C1EDD4C81A3AC4FB008E4E75 /* rsz_speed.png */,
 				C1EDD4C61A3AC4F0008E4E75 /* rsz_time.png */,
@@ -563,6 +631,7 @@
 				C110736E1A0F5CA800FE3CFD /* cell_top.png in Resources */,
 				C143D9F11A414BDE00BF6AE4 /* history2.png in Resources */,
 				C1F624B519C92E5C00565830 /* heart_monitor.png in Resources */,
+				126D8F411A4FE10300ED35C7 /* Battery.png in Resources */,
 				C10B01F719B71C9E00325785 /* HRAlarm.mp3 in Resources */,
 				C1E017D219FF90E400F5FA46 /* Localizable.strings in Resources */,
 				C1DF28BC186147DB00000695 /* Default.png in Resources */,
@@ -632,6 +701,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				C12545FA1A133D0C001E0EBD /* AppDataObject.m in Sources */,
+				126D8F451A4FE3E900ED35C7 /* BLECBTask.m in Sources */,
 				C12CA8201A23099900F6CC76 /* CustomHeaderCell.m in Sources */,
 				C12529D319EE11EB004AFA0F /* HRHealthyCare.m in Sources */,
 				C11073661A0F573900FE3CFD /* HRStartViewController.m in Sources */,

@@ -10,6 +10,9 @@
 #import <CoreBluetooth/CoreBluetooth.h>
 #import <CoreBluetooth/CBService.h>
 
+
+#define IMM_ALERT_SERVICE_UUID  @"1802"
+
 #define HRM_DEVICE_INFO_SERVICE_UUID @"180A"       // 180A = Device Information
 #define HRM_HEART_RATE_SERVICE_UUID @"180D"        // 180D = Heart Rate Service
 #define HRM_ENABLE_SERVICE_UUID @"2A39"
@@ -35,6 +38,9 @@
 @property (strong, nonatomic) CBCentralManager *CM;
 @property (strong, nonatomic) CBPeripheral *activePeripheral;
 @property (nonatomic) NSInteger ViewController;
+#ifdef DebugMode
+@property (nonatomic) int TestStep;
+#endif
 -(int) controlSetup;
 -(void) ScanHRMDevice;
 -(void) ConnectHRMDevice:(NSString *)DeviceName;

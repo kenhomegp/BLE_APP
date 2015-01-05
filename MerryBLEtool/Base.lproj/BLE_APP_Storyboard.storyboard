@@ -294,6 +294,7 @@
                     <connections>
                         <segue destination="QGF-u3-cfy" kind="push" identifier="SegueForHRM" id="VBP-V9-mab"/>
                         <segue destination="8JZ-Md-8hj" kind="push" identifier="SegueForTest" id="VCD-qv-POH"/>
+                        <segue destination="geF-eW-m8Z" kind="push" identifier="SegueLogMessage" id="p3y-sa-oj7"/>
                     </connections>
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="Kc2-hX-0fY" userLabel="First Responder" sceneMemberID="firstResponder"/>
@@ -617,6 +618,13 @@
                         <rect key="frame" x="0.0" y="0.0" width="768" height="1024"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <color key="backgroundColor" cocoaTouchSystemColor="groupTableViewBackgroundColor"/>
+                        <textView key="tableFooterView" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" text="Debug Message" id="eSf-NN-Mxd">
+                            <rect key="frame" x="0.0" y="627.5" width="768" height="393"/>
+                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                            <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                            <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                            <textInputTraits key="textInputTraits" autocapitalizationType="sentences"/>
+                        </textView>
                         <sections>
                             <tableViewSection headerTitle="Sporty-Running" id="e42-kg-YI9">
                                 <cells>
@@ -892,6 +900,7 @@
                     <connections>
                         <outlet property="APPModeSelect" destination="xNl-LX-6rV" id="Xts-bq-JX2"/>
                         <outlet property="AlarmTHR" destination="rYG-H4-btl" id="Ocm-BT-7wR"/>
+                        <outlet property="BLE_Log" destination="eSf-NN-Mxd" id="0xv-F8-07S"/>
                         <outlet property="HRNotify" destination="Q9o-2W-Wg5" id="060-B7-tDS"/>
                         <outlet property="LoginButton" destination="awb-ri-u3H" id="dM1-oP-g2w"/>
                         <outlet property="NormalMaxHR" destination="jgy-TT-bYH" id="vLw-V1-wWC"/>
@@ -927,7 +936,7 @@
         <simulatedScreenMetrics key="destination"/>
     </simulatedMetricsContainer>
     <inferredMetricsTieBreakers>
-        <segue reference="LUa-SB-8X4"/>
-        <segue reference="Bvq-2G-i3F"/>
+        <segue reference="p3y-sa-oj7"/>
+        <segue reference="VCD-qv-POH"/>
     </inferredMetricsTieBreakers>
 </document>

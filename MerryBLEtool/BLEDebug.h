@@ -14,7 +14,6 @@
 #ifdef DEBUG_PRINT_ENABLE
     //#define DEBUG(x) {printf x;}
     #define DEBUG_BLETask
-    #define DEBUG_ViewControl
 #endif
 
 #endif
