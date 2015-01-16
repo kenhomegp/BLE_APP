@@ -211,6 +211,15 @@ didDisconnectPeripheral:(CBPeripheral *)peripheral
             }
         }
     }
+    else if ([service.UUID isEqual:[CBUUID UUIDWithString:@"FFE0"]])
+    {
+        for (CBCharacteristic *aChar in service.characteristics)
+        {
+            if ([aChar.UUID isEqual:[CBUUID UUIDWithString:@"FFE2"]]) {
+                [self.activePeripheral setNotifyValue:YES forCharacteristic:aChar];
+            }
+        }
+    }
 }
 
 // Invoked when you retrieve a specified characteristic's value, or when the peripheral device notifies your app that the characteristic's value has changed.
@@ -221,6 +230,12 @@ didDisconnectPeripheral:(CBPeripheral *)peripheral
         // Get the Heart Rate Monitor BPM
         [self getHeartBPMData:characteristic error:error];
     }
+    
+    if ([characteristic.UUID isEqual:[CBUUID UUIDWithString:@"FFE2"]])
+    {
+        [self getCharData:characteristic error:error];
+    }
+    
     // Retrieve the characteristic value for manufacturer name received
     if ([characteristic.UUID isEqual:[CBUUID UUIDWithString:HRM_MANUFACTURER_NAME_UUID]]) {  // 2
         [self getManufacturerName:characteristic];
@@ -275,6 +290,89 @@ didDisconnectPeripheral:(CBPeripheral *)peripheral
         if(self.ViewController == 1)
             [[self delegate2] HeartRateBPM:bpm];
     }
+}
+
+- (void) getCharData:(CBCharacteristic *)characteristic error:(NSError *)error
+{
+    // Get the Heart Rate Monitor BPM
+    NSData *data = [characteristic value];
+    const uint8_t *reportData = [data bytes];
+    UInt8 button = 0;
+    button = reportData[0];
+    if(button == 0)
+    {
+        //NSLog(@"Long button");
+        //[[self delegate1] CBStatusUpdate:@"Connected" BLEData:@"NO"];
+    }
+    else{
+        //NSLog(@"Short button");
+        [[self delegate1] CBStatusUpdate:@"CustomBLEService" BLEData:@"ShortButton"];
+    }
+}
+
+-(int) compareCBUUID:(CBUUID *) UUID1 UUID2:(CBUUID *)UUID2 {
+    char b1[16];
+    char b2[16];
+    [UUID1.data getBytes:b1];
+    [UUID2.data getBytes:b2];
+    if (memcmp(b1, b2, UUID1.data.length) == 0)return 1;
+    else return 0;
+}
+
+-(CBService *) findServiceFromUUID:(CBUUID *)UUID p:(CBPeripheral *)p {
+    for(int i = 0; i < p.services.count; i++) {
+        CBService *s = [p.services objectAtIndex:i];
+        if ([self compareCBUUID:s.UUID UUID2:UUID]) return s;
+    }
+    return nil; //Service not found on this peripheral
+}
+
+-(CBCharacteristic *) findCharacteristicFromUUID:(CBUUID *)UUID service:(CBService*)service {
+    for(int i=0; i < service.characteristics.count; i++) {
+        CBCharacteristic *c = [service.characteristics objectAtIndex:i];
+        if ([self compareCBUUID:c.UUID UUID2:UUID]) return c;
+    }
+    return nil; //Characteristic not found on this service
+}
+
+- (void)WriteValueForCustomCharacteristic:(BOOL)IOType OnOff:(BOOL)OnOffValue
+{
+    char data;
+    
+    CBUUID *cu = [CBUUID UUIDWithString:@"FFE1"];   //Characteristic UUID
+    CBUUID *su = [CBUUID UUIDWithString:@"FFE0"];   //Service UUID
+    
+    CBService *service = [self findServiceFromUUID:su p:self.activePeripheral];
+    
+    if(!service)
+    {
+        return;
+    }
+    
+    CBCharacteristic *characteristic = [self findCharacteristicFromUUID:cu service:service];
+    
+    if(!characteristic)
+    {
+        return;
+    }
+
+    if(IOType)  //LED
+    {
+        if(OnOffValue)
+            data = 0x10;
+        else
+            data = 0x11;
+    }
+    else        //Buzzer
+    {
+        if(OnOffValue)
+            data = 0x12;
+        else
+            data = 0x13;
+    }
+    
+    NSData *d = [[NSData alloc] initWithBytes:&data length:1];
+    [self.activePeripheral writeValue:d forCharacteristic:characteristic type:CBCharacteristicWriteWithResponse];
 }
 
 @end

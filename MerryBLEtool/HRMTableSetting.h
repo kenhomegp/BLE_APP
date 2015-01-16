@@ -26,7 +26,8 @@
 #define GradientPolyline
 #define DebugWithoutBLEConnection
 #define DebugWithoutTrackPathx
-#define BLE_Debug           //Only for iPad
+#define BLE_Debugx                  //Only for iPad
+#define CustomBLEService            //Button , LED
 
 @protocol passUserSetting1 <NSObject>
 -(void)setName : (NSString *)User_Name;
@@ -68,4 +69,6 @@
 @property (weak, nonatomic) IBOutlet UILabel *Version;
 @property (nonatomic , strong) NSString *Log;
 @property (weak, nonatomic) IBOutlet UITextView *BLE_Log;
+@property (weak, nonatomic) IBOutlet UISwitch *Control_LED;
+@property (weak, nonatomic) IBOutlet UISwitch *Control_Button;
 @end

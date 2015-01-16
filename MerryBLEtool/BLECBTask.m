@@ -18,14 +18,19 @@
 #define BLE_Characteristic_DEBUG(x)
 #endif
 
+#define TestWithSunnerx
+
 //Test mode
 #define TestLEDOn           30
 #define TestLEDOff          31
 #define SoundBuzzerTwice    32
 #define SoundBuzzerLong     33
 #define EnableHeartRate     34
-#define DisableHeartRate    35
-#define TestComplete        36
+#define EnableButton        35
+#define DisableButton       36
+#define DisableHeartRate    37
+#define TestComplete        38
+#define RunNormal           39
 
 @implementation BLECBTask
 
@@ -190,6 +195,15 @@
 - (void) DisableHRM:(CBPeripheral *)p {
     [self notification:0x180d characteristicUUID:0x2a37 p:p on:NO];
 }
+
+-(void) BleEnableButtons:(CBPeripheral *)p{
+    [self notification:0xffe0 characteristicUUID:0xffe2 p:p on:YES];
+}
+
+-(void) BleDisableButtons:(CBPeripheral *)p{
+    [self notification:0xffe0 characteristicUUID:0xffe2 p:p on:NO];
+}
+
 
 /*!
  *  @method writeValue:
@@ -356,7 +370,8 @@
     
     [NSTimer scheduledTimerWithTimeInterval:(float)timeout target:self selector:@selector(scanTimer:) userInfo:nil repeats:NO];
     
-    NSArray *services = @[[CBUUID UUIDWithString:@"180D"], [CBUUID UUIDWithString:@"1802"], [CBUUID UUIDWithString:@"180A"]];
+    //NSArray *services = @[[CBUUID UUIDWithString:@"180D"], [CBUUID UUIDWithString:@"1802"], [CBUUID UUIDWithString:@"180A"]];
+    NSArray *services = @[[CBUUID UUIDWithString:@"180D"], [CBUUID UUIDWithString:@"180A"]];
     
     //[self.CM scanForPeripheralsWithServices:nil options:0]; // Start scanning
     [self.CM scanForPeripheralsWithServices:services options:0]; // Start scanning
@@ -908,30 +923,90 @@
                     }
                 }
             }
+            
+            /*
+            if([service.UUID isEqual:[CBUUID UUIDWithString:@"180D"]])
+            {
+                for (CBCharacteristic *aChar in service.characteristics)
+                {
+                    if([aChar.UUID isEqual:[CBUUID UUIDWithString:@"2A37"]])
+                    {
+                        NSLog(@"##### CSR standard HRM ######");
+                        [self EnableHRM:self.activePeripheral];
+                    }
+                }
+            }*/
+            
+            
             BLE_Characteristic_DEBUG(("\r\n"));
             
-            if([service.UUID isEqual:[CBUUID UUIDWithString:@"1802"]])
+            #ifdef TestWithSunner
+            if([service.UUID isEqual:[CBUUID UUIDWithString:@"FF01"]])
+            #else
+            if([service.UUID isEqual:[CBUUID UUIDWithString:@"FFE0"]])
+            #endif
             {
-                if(service.characteristics.count == 1)
+                //if(service.characteristics.count == 1)
+                if(service.characteristics.count == 2)
                 {
+                    for (CBCharacteristic *aChar in service.characteristics)
+                    {
+                        #ifdef TestWithSunner
+                        if([aChar.UUID isEqual:[CBUUID UUIDWithString:@"FF03"]])
+                        {
+                            NSLog(@"### Testing with Sunner ####");
+                            self.TestStep = EnableHeartRate;
+                            [self performSelector:@selector(BLETestScript) withObject:nil afterDelay:5.0];
+                        }
+                        #else
+                        if([aChar.UUID isEqual:[CBUUID UUIDWithString:@"FFE1"]])
+                        {
+                            if(CharacteristicType == 2)
+                            {
+                                BLE_Characteristic_DEBUG(("Custom BLE service(FFE0)/Characteristic(FFE1) found!\r\n"));
+                            
+                                [[self delegate] logBLEMessage:@"Custom service(FFE0)/Characteristic(FFE1) found!"];
+                            }
+                        }
+                        else if([aChar.UUID isEqual:[CBUUID UUIDWithString:@"FFE2"]])
+                        {
+                            if(CharacteristicType == 3)
+                            {
+                                BLE_Characteristic_DEBUG(("Characteristic(FFE2) found!\r\n"));
+                            
+                                [[self delegate] logBLEMessage:@"Characteristic(FFE2) found!"];
+                                
+                                #if 0 //Run Testing
+                                    NSLog(@"### Run testing... ####");
+                                    self.TestStep = TestLEDOn;
+                                    [self performSelector:@selector(BLETestScript) withObject:nil afterDelay:5.0];
+                                #else
+                                    self.TestStep = RunNormal;
+                                    [self performSelector:@selector(BLETestScript) withObject:nil afterDelay:5.0];
+                                #endif
+                            }
+                        }
+                        #endif
+                    }
+                    
+                    /*
                     CBCharacteristic *ImmAlertChar = [service.characteristics objectAtIndex:0];
-                    if([ImmAlertChar.UUID isEqual:[CBUUID UUIDWithString:@"2A06"]])
+                    
+                    if([ImmAlertChar.UUID isEqual:[CBUUID UUIDWithString:@"FFE1"]])
                     {
                         if(CharacteristicType == 2)
                         {
-                            BLE_Characteristic_DEBUG(("Immediate Alert Service/Characteristic found!\r\n"));
-                            [[self delegate] logBLEMessage:@"Immediate Alert Service/Characteristic found!"];
-                            /*
-                            char data = 0x10;
-                            NSData *d = [[NSData alloc] initWithBytes:&data length:1];
-                            [self.activePeripheral writeValue:d forCharacteristic:ImmAlertChar type:CBCharacteristicWriteWithResponse];
-                            //[self.activePeripheral writeValue:d forCharacteristic:ImmAlertChar type:CBCharacteristicWriteWithoutResponse];
-                            */
+                            BLE_Characteristic_DEBUG(("Custom BLE service(FFE0)/Characteristic(FFE1) found!\r\n"));
                             
+                            [[self delegate] logBLEMessage:@"Custom service(FFE0)/Characteristic(FFE1) found!"];
+                            
+                            #if 0 //Run Testing
                             self.TestStep = TestLEDOn;
                             [self performSelector:@selector(BLETestScript) withObject:nil afterDelay:3.0];
+                            #endif
                         }
                     }
+                    */
                 }
             }
             
@@ -942,7 +1017,8 @@
                 BLE_Characteristic_DEBUG(("Finished discovering characteristics\r\n"));
                 //[[self delegate] keyfobReady: self.KeyfobFound GATT_Service_1:self.Service1 GATT_Service_2:self.Service2];
             }
-        }
+            
+         }
     }
     else {
         Core_Bluetooth_DEBUG(("Characteristic discorvery unsuccessfull !\r\n"));
@@ -993,7 +1069,7 @@
 
 - (void)peripheral:(CBPeripheral *)peripheral didUpdateNotificationStateForCharacteristic:(CBCharacteristic *)characteristic error:(NSError *)error {
     if (!error) {
-        BLE_Characteristic_DEBUG(("Updated notification state for characteristic with UUID %s on service with  UUID %s on peripheral with UUID %s\r\n",[self CBUUIDToString:characteristic.UUID],[self CBUUIDToString:characteristic.service.UUID],[self UUIDToString:peripheral.UUID]));
+        //BLE_Characteristic_DEBUG(("Updated notification state for characteristic with UUID %s on service with  UUID %s on peripheral with UUID %s\r\n",[self CBUUIDToString:characteristic.UUID],[self CBUUIDToString:characteristic.service.UUID],[self UUIDToString:peripheral.UUID]));
 #if 1
         NSString *ss1 = [@"Update notification state for characteristic with UUID " stringByAppendingString:[NSString stringWithCString:[self CBUUIDToString:characteristic.UUID] encoding:NSUTF8StringEncoding]];
         NSString *ss2 = [@" on service with UUID " stringByAppendingString:[NSString stringWithCString:[self CBUUIDToString:characteristic.service.UUID] encoding:NSUTF8StringEncoding]];
@@ -1052,6 +1128,12 @@
     UInt16 characteristicUUID = [self CBUUIDToInt:characteristic.UUID];
     if (!error) {
         switch(characteristicUUID){
+            case 0xffe2:
+            {
+                [self getCharData:characteristic error:error];
+                break;
+            }
+            /*
             case TI_KEYFOB_LEVEL_SERVICE_UUID:
             {
                 char batlevel;
@@ -1102,6 +1184,7 @@
                 //[[self delegate] TXPwrLevelUpdated:TXLevel];
                 break;
             }
+            */
             /*Heart Rate profile*/
             case 0x2A37://Heart Rate Measurement
             {
@@ -1183,13 +1266,38 @@
     }
 }
 
+- (void) getCharData:(CBCharacteristic *)characteristic error:(NSError *)error
+{
+    // Get the Heart Rate Monitor BPM
+    NSData *data = [characteristic value];
+    const uint8_t *reportData = [data bytes];
+    UInt8 button = 0;
+    button = reportData[0];
+    if(button == 0)
+    {
+        NSLog(@"Long button");
+        //[[self delegate] logBLEMessage:@"Btn_0"];
+
+    }
+    else{
+        NSLog(@"Short button");
+        //[[self delegate] logBLEMessage:@"Btn_1"];
+    }
+}
 
 - (void)BLETestScript
 {
     char data;
     
-    CBUUID *cu = [CBUUID UUIDWithString:@"2A06"];   //Characteristic UUID
-    CBUUID *su = [CBUUID UUIDWithString:@"1802"];   //Service UUID
+    if(self.TestStep == RunNormal)
+    {
+        [self EnableHRM:self.activePeripheral];
+        [self BleEnableButtons:self.activePeripheral];
+        return;
+    }
+    
+    CBUUID *cu = [CBUUID UUIDWithString:@"FFE1"];   //Characteristic UUID
+    CBUUID *su = [CBUUID UUIDWithString:@"FFE0"];   //Service UUID
     
     CBService *service = [self findServiceFromUUID:su p:self.activePeripheral];
      
@@ -1229,8 +1337,24 @@
             break;
         case EnableHeartRate:
             [self EnableHRM:self.activePeripheral];
+            #ifndef TestWithSunner
+            [self BleEnableButtons:self.activePeripheral];
+            self.TestStep = EnableButton;
+            NSLog(@"Enable HRM & Button");
+            #else
+            self.TestStep = 0;
+            NSLog(@"Enable HRM, End...");
+            #endif
+            break;
+        case EnableButton:
+            //[self BleEnableButtons:self.activePeripheral];
+            self.TestStep = DisableButton;
+            NSLog(@"Enable Button");
+            break;
+        case DisableButton:
+            //[self BleDisableButtons:self.activePeripheral];
             self.TestStep = DisableHeartRate;
-            NSLog(@"Enable HRM");
+            NSLog(@"Disable Button");
             break;
         case DisableHeartRate:
             [self DisableHRM:self.activePeripheral];
@@ -1252,7 +1376,10 @@
             [self.activePeripheral writeValue:d forCharacteristic:characteristic type:CBCharacteristicWriteWithResponse];
         }
         
-        [self performSelector:@selector(BLETestScript) withObject:nil afterDelay:5.0];
+        if((self.TestStep == EnableButton))
+            [self performSelector:@selector(BLETestScript) withObject:nil afterDelay:12.0];
+        else
+            [self performSelector:@selector(BLETestScript) withObject:nil afterDelay:5.0];
     }
 }
 

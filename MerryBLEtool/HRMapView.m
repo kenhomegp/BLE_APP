@@ -88,6 +88,7 @@
     //NSLog(@"viewDidDisappear");
     [HRMTimer invalidate];
     [[UIApplication sharedApplication] setIdleTimerDisabled:NO];
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 
 #ifdef BatteryLevel

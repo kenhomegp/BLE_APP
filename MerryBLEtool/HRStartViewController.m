@@ -17,6 +17,12 @@
 
 #import "CustomHeaderCell.h"
 
+#import <sys/types.h>
+#import <sys/sysctl.h>
+
+#import <CoreTelephony/CTCallCenter.h>
+#import <CoreTelephony/CTCall.h>
+
 #define BLEScanTime 16
 #define AlertViewTimeout 10.0
 
@@ -28,6 +34,13 @@
     NSInteger IndexSetAccessoryCheckmark;
     UIAlertView *myAlert;
     UIActivityIndicatorView *spinner;
+    NSInteger PlatNumber;
+    NSTimer *TestTimer;
+#ifdef CustomBLEService
+    bool TestSwitch;
+    bool LEDSwitch;
+    bool BuzzerSwitch;
+#endif
 }
 @end
 
@@ -155,6 +168,23 @@
         IndexSetAccessoryCheckmark = 0;
         [self.tableView reloadData];
     }
+    else if([BLE_Status isEqualToString:@"CustomBLEService"])
+    {
+        #ifdef CustomBLEService
+            self.CBStatus = @"CustomBLEService";
+        
+            if(TestSwitch)
+            {
+                TestSwitch = FALSE;
+            }
+            else
+            {
+                TestSwitch = TRUE;
+            }
+        
+            [self.tableView reloadData];
+        #endif
+    }
 }
 
 - (id)initWithStyle:(UITableViewStyle)style
@@ -179,6 +209,7 @@
 {
     [ScanTimer invalidate];
     [AlertTimer invalidate];
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 
 - (void)viewDidLoad
@@ -209,38 +240,64 @@
     self.CBStatus = @"Scan...";
     self.LastConnectDevice = nil;
     
-#ifdef BLE_Debug
-    CoreBTObj = [[BLECBTask alloc] init];
-    [CoreBTObj controlSetup:1];
-    CoreBTObj.delegate = self;
-    CoreBTObj.activePeripheral = nil;
-    self.Log = @"";
-#else
-    CoreBTObj = [[HRMCBTask alloc] init];
-    [CoreBTObj controlSetup];
-    [CoreBTObj SetVC:0];
-    CoreBTObj.delegate1 = self;
-#endif
+    PlatNumber = 0;
+    PlatNumber = [self platformNumber];
+
+    if(((UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) && PlatNumber != 0) || ((UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPhone) && PlatNumber > 6))
+    {
+    #ifdef BLE_Debug
+        CoreBTObj = [[BLECBTask alloc] init];
+        [CoreBTObj controlSetup:1];
+        CoreBTObj.delegate = self;
+        CoreBTObj.activePeripheral = nil;
+        self.Log = @"";
+    #else
+        CoreBTObj = [[HRMCBTask alloc] init];
+        [CoreBTObj controlSetup];
+        [CoreBTObj SetVC:0];
+        CoreBTObj.delegate1 = self;
     
-    ScanTimer = [NSTimer scheduledTimerWithTimeInterval:1.0
+        ScanTimer = [NSTimer scheduledTimerWithTimeInterval:1.0
                 target:self selector:@selector(ScanBLEPeripheral)
                 userInfo:nil repeats:YES];
-    Count10sec = BLEScanTime;
+        Count10sec = BLEScanTime;
     
-    NSUserDefaults *userDefaults = [NSUserDefaults standardUserDefaults];
-    self.LastConnectDevice = [userDefaults objectForKey:@"myHRMApp_Device"];
+        NSUserDefaults *userDefaults = [NSUserDefaults standardUserDefaults];
+        self.LastConnectDevice = [userDefaults objectForKey:@"myHRMApp_Device"];
     
-    spinner = [[UIActivityIndicatorView alloc]
+        spinner = [[UIActivityIndicatorView alloc]
                                         initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray];
     
-    if(UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad)
-        spinner.center = CGPointMake(390, 500);
-    else
-        spinner.center = CGPointMake(160, 240);
+        if(UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad)
+            spinner.center = CGPointMake(390, 500);
+        else
+            spinner.center = CGPointMake(160, 240);
     
-    spinner.hidesWhenStopped = YES;
-    [self.view addSubview:spinner];
-    [spinner startAnimating];
+        spinner.hidesWhenStopped = YES;
+        [self.view addSubview:spinner];
+        [spinner startAnimating];
+        
+        #ifdef CustomBLEService
+        LEDSwitch = FALSE;
+        BuzzerSwitch = FALSE;
+        #endif
+    #endif
+    }
+    else
+    {
+        //NSLog(@"Not support BLE!!,%ld",(long)PlatNumber);
+        if(UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPhone)
+            PlatNumber = 0;
+        
+        //TestTimer = [NSTimer scheduledTimerWithTimeInterval:1.0
+        //                                             target:self selector:@selector(TestTest)
+          //                                         userInfo:nil repeats:YES];
+        
+        [[NSNotificationCenter defaultCenter] addObserver:self
+        selector:@selector(APPStateChanged:)
+        name:UIApplicationWillResignActiveNotification
+        object:nil];
+    }
 }
 
 - (void)DismissAlertView
@@ -262,6 +319,24 @@
     //    IndexSetAccessoryCheckmark = 0;
     
     return cc;
+}
+
+- (void)APPStateChanged:(NSNotification *)notification
+{
+    CTCallCenter *callCenter = [[CTCallCenter alloc] init];
+    for (CTCall *call in callCenter.currentCalls)  {
+        //if (call.callState == CTCallStateConnected) {
+        if(call.callState ==  CTCallStateIncoming){
+            NSLog(@"### Incoming call..");
+        }
+    }
+
+}
+
+- (void) TestTest
+{
+    UIApplicationState st = [[UIApplication sharedApplication] applicationState];
+    NSLog(@"AppState = %ld",(long)st);
 }
 
 - (void)ScanBLEPeripheral
@@ -479,7 +554,11 @@
     }
     else
     {
-        return 100;
+        #ifdef CustomBLEService
+            return 70;
+        #else
+            return 100;
+        #endif
     }
 }
 
@@ -583,12 +662,29 @@
     }
     else if(indexPath.row == 4)
     {
-        APPTitle.text = self.CBStatus;
-        APPDetail.text = nil;
-        APPUseFreq.text = nil;
+        if(PlatNumber != 0)
+        {
+            #ifdef BLE_Debug
+            //APPTitle.text = nil;
+            APPTitle.text = @"LED On/Off";
+            #else
+            APPTitle.text = self.CBStatus;
+            #endif
+            APPDetail.text = nil;
+            APPUseFreq.text = nil;
+        }
+        else
+        {
+            APPTitle.text = nil;
+            APPDetail.text = nil;
+            APPUseFreq.text = nil;
+        }
     }
     else if(indexPath.row == 5)//Update three BLE devices here.
     {
+        #ifdef BLE_Debug
+        APPTitle.text = @"Buzzer";
+        #else
         if(self.BLE_device1 != nil)
         {
             [APPTitle setTextColor:[UIColor blueColor]];
@@ -600,36 +696,6 @@
             [cell setAccessoryType:UITableViewCellAccessoryNone];
         }
         
-        /*
-        if([self.CBStatus isEqualToString:@"Connected : YES"])
-        {
-            if(self.LastConnectDevice == nil)
-            {
-                NSUserDefaults *userDefaults = [NSUserDefaults standardUserDefaults];
-                [userDefaults setObject:self.BLE_device1 forKey:@"myHRMApp_Device"];
-                [userDefaults synchronize];
-                
-                self.LastConnectDevice = self.BLE_device1;
-            }
-            else
-            {
-                if(!([self.LastConnectDevice isEqualToString:self.BLE_device1]))
-                {
-                    NSUserDefaults *userDefaults = [NSUserDefaults standardUserDefaults];
-                    [userDefaults setObject:self.BLE_device1 forKey:@"myHRMApp_Device"];
-                    [userDefaults synchronize];
-                    
-                    self.LastConnectDevice = self.BLE_device1;
-                }
-            }
-            
-            if((cell.accessoryType == UITableViewCellAccessoryNone) && (IndexSetAccessoryCheckmark == indexPath.row) )
-            {
-                [cell setAccessoryType:UITableViewCellAccessoryCheckmark];
-                IndexSetAccessoryCheckmark = 0;
-            }
-        }*/
-
         if(cell.accessoryType == UITableViewCellAccessoryCheckmark)
         {
             if([self.CBStatus isEqualToString:@"Connected : YES"])
@@ -669,12 +735,17 @@
                 }
             }
         }
+        #endif
         
         APPDetail.text = nil;
         APPUseFreq.text = nil;
+        
     }
     else if(indexPath.row == 6)
     {
+        #ifdef BLE_Debug
+        APPTitle.text = @"Button";
+        #else
         if(self.BLE_device2 != nil)
         {
             [APPTitle setTextColor:[UIColor blueColor]];
@@ -685,36 +756,6 @@
             APPTitle.text = nil;
             [cell setAccessoryType:UITableViewCellAccessoryNone];
         }
-        
-        /*
-        if([self.CBStatus isEqualToString:@"Connected : YES"])
-        {
-            if(self.LastConnectDevice == nil)
-            {
-                NSUserDefaults *userDefaults = [NSUserDefaults standardUserDefaults];
-                [userDefaults setObject:self.BLE_device2 forKey:@"myHRMApp_Device"];
-                [userDefaults synchronize];
-                
-                self.LastConnectDevice = self.BLE_device2;
-            }
-            else
-            {
-                if(!([self.LastConnectDevice isEqualToString:self.BLE_device2]))
-                {
-                    NSUserDefaults *userDefaults = [NSUserDefaults standardUserDefaults];
-                    [userDefaults setObject:self.BLE_device2 forKey:@"myHRMApp_Device"];
-                    [userDefaults synchronize];
-                    
-                    self.LastConnectDevice = self.BLE_device2;
-                }
-            }
-            
-            if((cell.accessoryType == UITableViewCellAccessoryNone) && (IndexSetAccessoryCheckmark == indexPath.row) )
-            {
-                [cell setAccessoryType:UITableViewCellAccessoryCheckmark];
-                IndexSetAccessoryCheckmark = 0;
-            }
-        }*/
         
         if(cell.accessoryType == UITableViewCellAccessoryCheckmark)
         {
@@ -755,6 +796,7 @@
                 }
             }
         }
+        #endif
         
         APPDetail.text = nil;
         APPUseFreq.text = nil;
@@ -771,36 +813,6 @@
             APPTitle.text = nil;
             [cell setAccessoryType:UITableViewCellAccessoryNone];
         }
-        
-        /*
-        if([self.CBStatus isEqualToString:@"Connected : YES"])
-        {
-            if(self.LastConnectDevice == nil)
-            {
-                NSUserDefaults *userDefaults = [NSUserDefaults standardUserDefaults];
-                [userDefaults setObject:self.BLE_device3 forKey:@"myHRMApp_Device"];
-                [userDefaults synchronize];
-                
-                self.LastConnectDevice = self.BLE_device3;
-            }
-            else
-            {
-                if(!([self.LastConnectDevice isEqualToString:self.BLE_device3]))
-                {
-                    NSUserDefaults *userDefaults = [NSUserDefaults standardUserDefaults];
-                    [userDefaults setObject:self.BLE_device3 forKey:@"myHRMApp_Device"];
-                    [userDefaults synchronize];
-                    
-                    self.LastConnectDevice = self.BLE_device3;
-                }
-            }
-            
-            if((cell.accessoryType == UITableViewCellAccessoryNone) && (IndexSetAccessoryCheckmark == indexPath.row) )
-            {
-                [cell setAccessoryType:UITableViewCellAccessoryCheckmark];
-                IndexSetAccessoryCheckmark = 0;
-            }
-        }*/
         
         if(cell.accessoryType == UITableViewCellAccessoryCheckmark)
         {
@@ -845,6 +857,49 @@
         APPDetail.text = nil;
         APPUseFreq.text = nil;
     }
+    #ifdef  CustomBLEService
+    else if(indexPath.row == 8)
+    {
+        APPTitle.text = @"LED On/Off";
+        APPDetail.text = nil;
+        APPUseFreq.text = nil;
+        UISwitch *theLEDSwitch = [[UISwitch alloc] initWithFrame:CGRectZero];
+        if(LEDSwitch)
+            [theLEDSwitch setOn:YES];
+        else
+            [theLEDSwitch setOn:NO];
+        [theLEDSwitch addTarget:self action:@selector(CustomBLEServiceLEDChange) forControlEvents:UIControlEventValueChanged];
+        [cell addSubview:theLEDSwitch];
+        cell.accessoryView = theLEDSwitch;
+    }
+    else if(indexPath.row == 9)
+    {
+        APPTitle.text = @"Buzzer";
+        APPDetail.text = nil;
+        APPUseFreq.text = nil;
+        UISwitch *theBuzzerSwitch = [[UISwitch alloc] initWithFrame:CGRectZero];
+        if(BuzzerSwitch)
+            [theBuzzerSwitch setOn:YES];
+        else
+            [theBuzzerSwitch setOn:NO];
+        [theBuzzerSwitch addTarget:self action:@selector(CustomBLEServiceBuzzerOnOff) forControlEvents:UIControlEventValueChanged];
+        [cell addSubview:theBuzzerSwitch];
+        cell.accessoryView = theBuzzerSwitch;
+    }
+    else if(indexPath.row == 10)
+    {
+        APPTitle.text = @"Button";
+        APPDetail.text = nil;
+        APPUseFreq.text = nil;
+        UISwitch *theSwitch = [[UISwitch alloc] initWithFrame:CGRectZero];
+        if(TestSwitch)
+            [theSwitch setOn:YES];
+        else
+            [theSwitch setOn:NO];
+        [cell addSubview:theSwitch];
+        cell.accessoryView = theSwitch;
+    }
+    #endif
     else
     {
         APPTitle.text = nil;
@@ -997,54 +1052,137 @@
     }
     else if(indexPath.row == 5)
     {
+        #ifdef BLE_Debug
+
+        #else
         if([self.CBStatus isEqualToString:@"Scan..."])
         {
             UILabel *Device1 = (UILabel *)[cell viewWithTag:101];
             if(Device1.text != nil)
             {
-                #ifdef BLE_Debug
+                [CoreBTObj ConnectHRMDevice:Device1.text];
                 
-                #else
-                    [CoreBTObj ConnectHRMDevice:Device1.text];
-                #endif
                 [cell setAccessoryType:UITableViewCellAccessoryCheckmark];
             }
         }
+        #endif
     }
     else if(indexPath.row == 6)
     {
+        #ifdef BLE_Debug
+        
+        #else
         if([self.CBStatus isEqualToString:@"Scan..."])
         {
             UILabel *Device2 = (UILabel *)[cell viewWithTag:101];
             if(Device2.text != nil)
             {
-                #ifdef BLE_Debug
+                [CoreBTObj ConnectHRMDevice:Device2.text];
                 
-                #else
-                    [CoreBTObj ConnectHRMDevice:Device2.text];
-                #endif
                 [cell setAccessoryType:UITableViewCellAccessoryCheckmark];
             }
         }
+        #endif
     }
     else if(indexPath.row == 7)
     {
+        #ifdef BLE_Debug
+
+        #else
         if([self.CBStatus isEqualToString:@"Scan..."])
         {
             UILabel *Device3 = (UILabel *)[cell viewWithTag:101];
             if(Device3.text != nil)
             {
-                #ifdef BLE_Debug
+                [CoreBTObj ConnectHRMDevice:Device3.text];
                 
-                #else
-                    [CoreBTObj ConnectHRMDevice:Device3.text];
-                #endif
                 [cell setAccessoryType:UITableViewCellAccessoryCheckmark];
             }
         }
+        #endif
     }
 }
 
+#pragma mark - Get system information
+- (NSString *) platform{
+    int mib[2];
+    size_t len;
+    char *machine;
+    
+    mib[0] = CTL_HW;
+    mib[1] = HW_MACHINE;
+    sysctl(mib, 2, NULL, &len, NULL, 0);
+    machine = malloc(len);
+    sysctl(mib, 2, machine, &len, NULL, 0);
+    
+    NSString *platform = [NSString stringWithCString:machine encoding:NSASCIIStringEncoding];
+    free(machine);
+    return platform;
+}
+
+- (NSInteger) platformNumber
+{
+    NSString *platform = [self platform];
+    if(UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad)
+    {
+        if ([platform isEqualToString:@"iPad3,1"])      return 1;
+        if ([platform isEqualToString:@"iPad3,2"])      return 2;
+        if ([platform isEqualToString:@"iPad3,3"])      return 3;
+        if ([platform isEqualToString:@"iPad3,4"])      return 4;
+        if ([platform isEqualToString:@"iPad3,5"])      return 5;
+        if ([platform isEqualToString:@"iPad3,6"])      return 6;
+        if ([platform isEqualToString:@"iPad4,1"])      return 7;
+        if ([platform isEqualToString:@"iPad4,2"])      return 8;
+        if ([platform isEqualToString:@"iPad4,4"])      return 9;
+        if ([platform isEqualToString:@"iPad4,5"])      return 10;
+        
+        return 0;
+    }
+    else{
+        if ([platform isEqualToString:@"iPhone1,1"])    return 1;
+        if ([platform isEqualToString:@"iPhone1,2"])    return 2;
+        if ([platform isEqualToString:@"iPhone2,1"])    return 3;
+        if ([platform isEqualToString:@"iPhone3,1"])    return 4;
+        if ([platform isEqualToString:@"iPhone3,2"])    return 5;
+        if ([platform isEqualToString:@"iPhone3,3"])    return 6;
+        if ([platform isEqualToString:@"iPhone4,1"])    return 7;
+        if ([platform isEqualToString:@"iPhone5,1"])    return 8;
+        if ([platform isEqualToString:@"iPhone5,2"])    return 9;
+        if ([platform isEqualToString:@"iPhone5,3"])    return 10;
+        if ([platform isEqualToString:@"iPhone5,4"])    return 11;
+        if ([platform isEqualToString:@"iPhone6,1"])    return 12;
+        if ([platform isEqualToString:@"iPhone6,2"])    return 13;
+        if ([platform isEqualToString:@"iPhone7,1"])    return 14;
+        if ([platform isEqualToString:@"iPhone7,2"])    return 15;
+        return 0;
+    }
+}
+
+#ifdef CustomBLEService
+- (void)CustomBLEServiceLEDChange
+{
+    //NSLog(@"###LED Change...");
+    
+    if(LEDSwitch)
+        LEDSwitch = FALSE;
+    else
+        LEDSwitch = TRUE;
+    
+    [CoreBTObj WriteValueForCustomCharacteristic:TRUE OnOff:LEDSwitch];
+}
+
+-(void)CustomBLEServiceBuzzerOnOff
+{
+    //NSLog(@"$$$Buzzer On...");
+    
+    if(BuzzerSwitch)
+        BuzzerSwitch = FALSE;
+    else
+        BuzzerSwitch = TRUE;
+    
+    [CoreBTObj WriteValueForCustomCharacteristic:FALSE OnOff:BuzzerSwitch];
+}
+#endif
 /*
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
