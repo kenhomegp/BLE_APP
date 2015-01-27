@@ -23,6 +23,8 @@
 #import <CoreTelephony/CTCallCenter.h>
 #import <CoreTelephony/CTCall.h>
 
+#import <AVFoundation/AVFoundation.h>
+
 #define BLEScanTime 16
 #define AlertViewTimeout 10.0
 
@@ -40,11 +42,21 @@
     bool TestSwitch;
     bool LEDSwitch;
     bool BuzzerSwitch;
+    CLLocationManager *locationManager;
+    CLLocationDegrees Linkloss_latitude;
+    CLLocationDegrees Linkloss_longitude;
+    AVAudioPlayer *_audioPlayer;
+    NSString *DevBattLevel;
 #endif
 }
 @end
 
 @implementation HRStartViewController
+
+#ifdef CustomBLEService
+@synthesize myLatitude;
+@synthesize myLongitude;
+#endif
 
 #ifdef BLE_Debug
 #pragma mark - CoreBTDelegate
@@ -152,6 +164,14 @@
                 Count10sec = BLEScanTime;
                 [spinner stopAnimating];
             }
+            
+            #ifdef CustomBLEService
+            [locationManager startUpdatingLocation];
+            //NSLog(@"Start location service!");
+            ScanTimer = [NSTimer scheduledTimerWithTimeInterval:3.0
+                                                         target:self selector:  @selector(EnableLocationService)
+                                                       userInfo:nil repeats:YES];
+            #endif
         }
         else if([payload isEqualToString:@"NO"])
         {
@@ -167,11 +187,24 @@
         self.BLE_device3 = nil;
         IndexSetAccessoryCheckmark = 0;
         [self.tableView reloadData];
+        
+        #ifdef CustomBLEService
+        //NSLog(@"Stop location service!");
+        [locationManager stopUpdatingLocation];
+        if([ScanTimer isValid])
+        {
+            [ScanTimer invalidate];
+        }
+        
+        [self.tabBarController setSelectedIndex:1];
+        
+        //[[UIApplication sharedApplication] openURL:[NSURL URLWithString:@"mailto://kenhomegp@yahoo.com.tw"]];
+        #endif
     }
     else if([BLE_Status isEqualToString:@"CustomBLEService"])
     {
         #ifdef CustomBLEService
-            self.CBStatus = @"CustomBLEService";
+            //self.CBStatus = @"CustomBLEService";
         
             if(TestSwitch)
             {
@@ -183,6 +216,15 @@
             }
         
             [self.tableView reloadData];
+        
+            [_audioPlayer play];
+        #endif
+    }
+    else if ([BLE_Status isEqualToString:@"BattUpdateLevel"])
+    {
+        #ifdef CustomBLEService
+        DevBattLevel = payload;
+        [self.tableView reloadData];
         #endif
     }
 }
@@ -278,8 +320,24 @@
         [spinner startAnimating];
         
         #ifdef CustomBLEService
-        LEDSwitch = FALSE;
-        BuzzerSwitch = FALSE;
+            LEDSwitch = FALSE;
+            BuzzerSwitch = FALSE;
+            locationManager = [[CLLocationManager alloc]init];
+            locationManager.delegate = self;
+            myLatitude = 0.0;
+            myLongitude = 0.0;
+            DevBattLevel = nil;
+        
+            // Check for iOS 8. Without this guard the code will crash with "unknown selector" on iOS 7.
+            if ([locationManager respondsToSelector:@selector(requestWhenInUseAuthorization)])
+            {
+                [locationManager requestWhenInUseAuthorization];
+            }
+        
+            NSString *path1 = [NSString stringWithFormat:@"%@/HRAlarm1.mp3", [[NSBundle mainBundle] resourcePath]];
+            NSURL *soundUrl1 = [NSURL fileURLWithPath:path1];
+            _audioPlayer = [[AVAudioPlayer alloc] initWithContentsOfURL:soundUrl1 error:nil];
+            [_audioPlayer setVolume:1.0];
         #endif
     #endif
     }
@@ -293,10 +351,18 @@
         //                                             target:self selector:@selector(TestTest)
           //                                         userInfo:nil repeats:YES];
         
+        /*
         [[NSNotificationCenter defaultCenter] addObserver:self
         selector:@selector(APPStateChanged:)
         name:UIApplicationWillResignActiveNotification
-        object:nil];
+        object:nil];*/
+    }
+    
+    if((UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPhone) && PlatNumber != 0)
+    {
+        [[NSNotificationCenter defaultCenter] addObserver:self
+        selector:@selector(APPStateChanged:)
+        name:UIApplicationWillResignActiveNotification object:nil];
     }
 }
 
@@ -323,14 +389,31 @@
 
 - (void)APPStateChanged:(NSNotification *)notification
 {
-    CTCallCenter *callCenter = [[CTCallCenter alloc] init];
-    for (CTCall *call in callCenter.currentCalls)  {
-        //if (call.callState == CTCallStateConnected) {
-        if(call.callState ==  CTCallStateIncoming){
-            NSLog(@"### Incoming call..");
+    if([self.CBStatus isEqualToString:@"Connected : YES"])
+    {
+        CTCallCenter *callCenter = [[CTCallCenter alloc] init];
+        for (CTCall *call in callCenter.currentCalls)  {
+            //if (call.callState == CTCallStateConnected) {
+            if(call.callState ==  CTCallStateIncoming){
+                //NSLog(@"### Incoming call..,Count 10 seconds");
+                [self performSelector:@selector(PerformSelectorMethod) withObject:nil afterDelay:5.0f];
+            }
         }
     }
+}
 
+- (void) PerformSelectorMethod
+{
+    CTCallCenter *callCenter = [[CTCallCenter alloc] init];
+    for (CTCall *call in callCenter.currentCalls)
+    {
+        if(call.callState ==  CTCallStateIncoming)
+        {
+            //NSLog(@"Incoming call,Timeout!");
+            [CoreBTObj WriteValueForCustomCharacteristic:FALSE OnOff:TRUE];
+            [self performSelector:@selector(PerformSelectorMethod) withObject:nil afterDelay:3.0f];
+        }
+    }
 }
 
 - (void) TestTest
@@ -338,6 +421,13 @@
     UIApplicationState st = [[UIApplication sharedApplication] applicationState];
     NSLog(@"AppState = %ld",(long)st);
 }
+
+#ifdef CustomBLEService
+- (void)EnableLocationService
+{
+    [locationManager startUpdatingLocation];
+}
+#endif
 
 - (void)ScanBLEPeripheral
 {
@@ -403,6 +493,9 @@
             [self.tableView reloadData];
             //NSLog(@"Scan time-out");
             //[spinner stopAnimating];
+            
+            //Sending a mail from iOS App
+            //[[UIApplication sharedApplication] openURL:[NSURL URLWithString:@"mailto://kenhomegp@yahoo.com.tw"]];
         }
     }
 }
@@ -896,8 +989,19 @@
             [theSwitch setOn:YES];
         else
             [theSwitch setOn:NO];
+        [theSwitch setUserInteractionEnabled:NO];
         [cell addSubview:theSwitch];
         cell.accessoryView = theSwitch;
+    }
+    else if(indexPath.row == 11)
+    {
+        if(DevBattLevel != nil)
+            APPTitle.text = [@"Battery level :" stringByAppendingString:DevBattLevel];
+        else
+            APPTitle.text = @"Battery level ";
+        
+        APPDetail.text = nil;
+        APPUseFreq.text = nil;
     }
     #endif
     else
@@ -947,11 +1051,13 @@
 #ifdef DebugWithoutBLEConnection
         [self performSegueWithIdentifier:@"SegueForHRM" sender:[tableView cellForRowAtIndexPath:indexPath]];
 #else
+        #ifndef CustomBLEService
         if([self.CBStatus rangeOfString:@"Connected"].location !=
            NSNotFound)
         {
             [self performSegueWithIdentifier:@"SegueForHRM" sender:[tableView cellForRowAtIndexPath:indexPath]];
         }
+        #endif
 #endif
     }
     else if(indexPath.row == 1)
@@ -961,6 +1067,14 @@
     else if(indexPath.row == 2)
     {
         //[self performSegueWithIdentifier:@"SegueForTest" sender:[tableView cellForRowAtIndexPath:indexPath]];
+        
+#ifdef FacebookSDK
+        if(UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad)
+        {
+            [self performSegueWithIdentifier:@"SegueForFBDemo" sender:[tableView cellForRowAtIndexPath:indexPath]];
+        }
+#endif
+
     }
     else if(indexPath.row == 3)
     {
@@ -1101,7 +1215,47 @@
         }
         #endif
     }
+    #ifdef CustomBLEService
+    else if(indexPath.row == 11)
+    {
+        if([self.CBStatus isEqualToString:@"Connected : YES"])
+        {
+            [CoreBTObj ReadBatterylevelCharacteristic];
+        }
+    }
+    #endif
 }
+
+#ifdef CustomBLEService
+#pragma mark - CLLocationManager delegate
+
+- (void)locationManager:(CLLocationManager *)manager didFailWithError:(NSError *)error
+{
+    //NSLog(@"didFailWithError: %@", error);
+    UIAlertView *errorAlert = [[UIAlertView alloc]
+                               initWithTitle:@"Error" message:@"Failed to Get Your Location" delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil];
+    [errorAlert show];
+}
+
+- (void)locationManager:(CLLocationManager *)manager didUpdateToLocation:(CLLocation *)newLocation fromLocation:(CLLocation *)oldLocation
+{
+    //NSLog(@"didUpdateToLocation: %@", newLocation);
+    CLLocation *currentLocation = newLocation;
+    
+    //double lat = currentLocation.coordinate.latitude;
+    //double lng = currentLocation.coordinate.longitude;
+
+    Linkloss_latitude = currentLocation.coordinate.latitude;
+    Linkloss_longitude = currentLocation.coordinate.longitude;
+    
+    myLatitude = currentLocation.coordinate.latitude;
+    myLongitude = currentLocation.coordinate.longitude;
+    
+    NSLog(@"didUpdateToLocation");
+    [locationManager stopUpdatingLocation];
+}
+
+#endif
 
 #pragma mark - Get system information
 - (NSString *) platform{

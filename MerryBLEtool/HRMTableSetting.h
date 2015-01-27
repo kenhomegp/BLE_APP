@@ -24,10 +24,11 @@
 #define SaveLocationToFilex
 #define NSFileHandleReadWrite
 #define GradientPolyline
-#define DebugWithoutBLEConnection
+#define DebugWithoutBLEConnectionx
 #define DebugWithoutTrackPathx
 #define BLE_Debugx                  //Only for iPad
 #define CustomBLEService            //Button , LED
+#define FacebookSDK
 
 @protocol passUserSetting1 <NSObject>
 -(void)setName : (NSString *)User_Name;

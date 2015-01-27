@@ -48,4 +48,5 @@
 - (void)SetVC:(NSInteger)vc;
 - (void)StopScanPeripheral;
 - (void)WriteValueForCustomCharacteristic:(BOOL)IOType OnOff:(BOOL)OnOffValue;
+- (void)ReadBatterylevelCharacteristic;
 @end

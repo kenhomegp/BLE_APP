@@ -8,11 +8,15 @@
 
 /* Begin PBXBuildFile section */
 		123D4C131A4AB22A0087C30F /* rsz_running.png in Resources */ = {isa = PBXBuildFile; fileRef = 123D4C121A4AB22A0087C30F /* rsz_running.png */; };
+		1241A5F21A6CFB4D008E5340 /* HRStartViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = C11073651A0F573900FE3CFD /* HRStartViewController.m */; };
 		1243E9381A4BA87400344A03 /* GoogleMaps.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1243E9371A4BA87400344A03 /* GoogleMaps.framework */; };
 		1243E93A1A4BA8A400344A03 /* GoogleMaps.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 1243E9391A4BA8A400344A03 /* GoogleMaps.bundle */; };
+		1247CF3D1A6E4E9600518A4D /* AboutViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1247CF3C1A6E4E9600518A4D /* AboutViewController.m */; };
 		124B055E1A5F67C400E468F9 /* CoreTelephony.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 124B055D1A5F67C400E468F9 /* CoreTelephony.framework */; };
 		126D8F411A4FE10300ED35C7 /* Battery.png in Resources */ = {isa = PBXBuildFile; fileRef = 126D8F401A4FE10300ED35C7 /* Battery.png */; };
 		126D8F451A4FE3E900ED35C7 /* BLECBTask.m in Sources */ = {isa = PBXBuildFile; fileRef = 126D8F431A4FE3E900ED35C7 /* BLECBTask.m */; };
+		12BBAFEF1A778C7500DAE31A /* FBDemoViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 12BBAFEE1A778C7500DAE31A /* FBDemoViewController.m */; };
+		12BBAFF11A778CB300DAE31A /* FacebookSDK.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 12BBAFF01A778CB300DAE31A /* FacebookSDK.framework */; };
 		C105A4B419E51C40007E34D1 /* SoftMusic.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = C105A4B319E51C40007E34D1 /* SoftMusic.mp3 */; };
 		C108E4ED19D10CC20097B920 /* MessageUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C108E4EC19D10CC20097B920 /* MessageUI.framework */; };
 		C10B01F019B7133F00325785 /* AVFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C10B01EF19B7133F00325785 /* AVFoundation.framework */; };
@@ -20,7 +24,6 @@
 		C10C35011A1605BE008F3E5D /* rsz_arrow.png in Resources */ = {isa = PBXBuildFile; fileRef = C10C35001A1605BE008F3E5D /* rsz_arrow.png */; };
 		C11073611A0F0C9400FE3CFD /* Login.png in Resources */ = {isa = PBXBuildFile; fileRef = C11073601A0F0C9300FE3CFD /* Login.png */; };
 		C11073631A0F0CA200FE3CFD /* Loginhighlight.png in Resources */ = {isa = PBXBuildFile; fileRef = C11073621A0F0CA200FE3CFD /* Loginhighlight.png */; };
-		C11073661A0F573900FE3CFD /* HRStartViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = C11073651A0F573900FE3CFD /* HRStartViewController.m */; };
 		C11073681A0F5C0F00FE3CFD /* common_bg.png in Resources */ = {isa = PBXBuildFile; fileRef = C11073671A0F5C0F00FE3CFD /* common_bg.png */; };
 		C110736A1A0F5C8A00FE3CFD /* cell_bottom.png in Resources */ = {isa = PBXBuildFile; fileRef = C11073691A0F5C8A00FE3CFD /* cell_bottom.png */; };
 		C110736C1A0F5C9A00FE3CFD /* cell_middle.png in Resources */ = {isa = PBXBuildFile; fileRef = C110736B1A0F5C9A00FE3CFD /* cell_middle.png */; };
@@ -132,11 +135,16 @@
 		12427AAC1A50ECBC00D1F1F8 /* BLEDefines.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BLEDefines.h; sourceTree = "<group>"; };
 		1243E9371A4BA87400344A03 /* GoogleMaps.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = GoogleMaps.framework; sourceTree = "<group>"; };
 		1243E9391A4BA8A400344A03 /* GoogleMaps.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; name = GoogleMaps.bundle; path = GoogleMaps.framework/Versions/A/Resources/GoogleMaps.bundle; sourceTree = "<group>"; };
+		1247CF3B1A6E4E9600518A4D /* AboutViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AboutViewController.h; sourceTree = "<group>"; };
+		1247CF3C1A6E4E9600518A4D /* AboutViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AboutViewController.m; sourceTree = "<group>"; };
 		124B055D1A5F67C400E468F9 /* CoreTelephony.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreTelephony.framework; path = System/Library/Frameworks/CoreTelephony.framework; sourceTree = SDKROOT; };
 		126D8F401A4FE10300ED35C7 /* Battery.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Battery.png; sourceTree = "<group>"; };
 		126D8F421A4FE3E900ED35C7 /* BLECBTask.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BLECBTask.h; sourceTree = "<group>"; };
 		126D8F431A4FE3E900ED35C7 /* BLECBTask.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BLECBTask.m; sourceTree = "<group>"; };
 		126D8F441A4FE3E900ED35C7 /* BLEDebug.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BLEDebug.h; sourceTree = "<group>"; };
+		12BBAFED1A778C7500DAE31A /* FBDemoViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FBDemoViewController.h; sourceTree = "<group>"; };
+		12BBAFEE1A778C7500DAE31A /* FBDemoViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FBDemoViewController.m; sourceTree = "<group>"; };
+		12BBAFF01A778CB300DAE31A /* FacebookSDK.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = FacebookSDK.framework; path = ../../Documents/FacebookSDK/FacebookSDK.framework; sourceTree = "<group>"; };
 		C105A4B319E51C40007E34D1 /* SoftMusic.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = SoftMusic.mp3; sourceTree = "<group>"; };
 		C108E4EC19D10CC20097B920 /* MessageUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MessageUI.framework; path = System/Library/Frameworks/MessageUI.framework; sourceTree = SDKROOT; };
 		C10B01EF19B7133F00325785 /* AVFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AVFoundation.framework; path = System/Library/Frameworks/AVFoundation.framework; sourceTree = SDKROOT; };
@@ -280,6 +288,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				124B055E1A5F67C400E468F9 /* CoreTelephony.framework in Frameworks */,
+				12BBAFF11A778CB300DAE31A /* FacebookSDK.framework in Frameworks */,
 				C130E61719F0F8DE00550957 /* SystemConfiguration.framework in Frameworks */,
 				C130E61519F0F8B000550957 /* OpenGLES.framework in Frameworks */,
 				C130E61319F0F89B00550957 /* libz.dylib in Frameworks */,
@@ -307,6 +316,8 @@
 		126D8F391A4FBACF00ED35C7 /* StartUpViewController */ = {
 			isa = PBXGroup;
 			children = (
+				1247CF3B1A6E4E9600518A4D /* AboutViewController.h */,
+				1247CF3C1A6E4E9600518A4D /* AboutViewController.m */,
 				C12CA81F1A23099900F6CC76 /* CustomHeaderCell.m */,
 				C12CA81E1A23099900F6CC76 /* CustomHeaderCell.h */,
 				C11073651A0F573900FE3CFD /* HRStartViewController.m */,
@@ -384,6 +395,15 @@
 			name = HRMGoogleMap;
 			sourceTree = "<group>";
 		};
+		12BBAFEC1A778B9A00DAE31A /* HRMFBDemo */ = {
+			isa = PBXGroup;
+			children = (
+				12BBAFED1A778C7500DAE31A /* FBDemoViewController.h */,
+				12BBAFEE1A778C7500DAE31A /* FBDemoViewController.m */,
+			);
+			name = HRMFBDemo;
+			sourceTree = "<group>";
+		};
 		C12545FF1A13482E001E0EBD /* ViewControllerDataSharing */ = {
 			isa = PBXGroup;
 			children = (
@@ -416,6 +436,7 @@
 		C1DF28A8186147DA00000695 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				12BBAFF01A778CB300DAE31A /* FacebookSDK.framework */,
 				124B055D1A5F67C400E468F9 /* CoreTelephony.framework */,
 				1243E9391A4BA8A400344A03 /* GoogleMaps.bundle */,
 				1243E9371A4BA87400344A03 /* GoogleMaps.framework */,
@@ -443,6 +464,7 @@
 		C1DF28AF186147DA00000695 /* MerryBLEtool */ = {
 			isa = PBXGroup;
 			children = (
+				12BBAFEC1A778B9A00DAE31A /* HRMFBDemo */,
 				126D8F3F1A4FDB1600ED35C7 /* HRMGoogleMap */,
 				126D8F3E1A4FBC8900ED35C7 /* HRMProfile */,
 				126D8F3D1A4FBC7800ED35C7 /* HRMHistory */,
@@ -707,18 +729,20 @@
 				C12545FA1A133D0C001E0EBD /* AppDataObject.m in Sources */,
 				126D8F451A4FE3E900ED35C7 /* BLECBTask.m in Sources */,
 				C12CA8201A23099900F6CC76 /* CustomHeaderCell.m in Sources */,
+				12BBAFEF1A778C7500DAE31A /* FBDemoViewController.m in Sources */,
 				C12529D319EE11EB004AFA0F /* HRHealthyCare.m in Sources */,
-				C11073661A0F573900FE3CFD /* HRStartViewController.m in Sources */,
 				C1DF28B6186147DB00000695 /* main.m in Sources */,
 				C1EDD4C31A3A9CA4008E4E75 /* HistoryViewController.m in Sources */,
 				C1DF28BA186147DB00000695 /* AppDelegate.m in Sources */,
 				C1D5CD2C1A1A4C2F00AF72BB /* HRMTableSetting.m in Sources */,
 				C130E61A19F1025A00550957 /* HRMapView.m in Sources */,
 				C1F97CAC19D54E9900C753BE /* HeartLive.m in Sources */,
+				1247CF3D1A6E4E9600518A4D /* AboutViewController.m in Sources */,
 				C19495601A303C8D00204ECE /* HRMCBTask.m in Sources */,
 				C11742C019AADC1600721449 /* HRMViewController.m in Sources */,
 				C12545FD1A133D77001E0EBD /* HRMDataObject.m in Sources */,
 				C1E700CC19D2747400410667 /* HRMSetting.m in Sources */,
+				1241A5F21A6CFB4D008E5340 /* HRStartViewController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -820,6 +844,7 @@
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)",
+					/Users/ho005167/Documents/FacebookSDK,
 				);
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "MerryBLEtool/MyHRM-Prefix.pch";
@@ -899,6 +924,7 @@
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)",
+					/Users/ho005167/Documents/FacebookSDK,
 				);
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "MerryBLEtool/MyHRM-Prefix.pch";
@@ -920,6 +946,7 @@
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)",
+					/Users/ho005167/Documents/FacebookSDK,
 				);
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "MerryBLEtool/MyHRM-Prefix.pch";

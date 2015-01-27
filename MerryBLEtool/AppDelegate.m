@@ -7,7 +7,10 @@
 //
 
 #import "AppDelegate.h"
+
 #import <GoogleMaps/GoogleMaps.h>
+#import <FacebookSDK/FacebookSDK.h>
+
 #import "AppDelegateProtocol.h"
 #import "HRMDataObject.h"
 
@@ -62,6 +65,10 @@
     
     self.theAppDataObject = [[HRMDataObject alloc] init];
     
+#ifdef FacebookSDK
+    [FBLoginView class];
+#endif
+    
     return YES;
 }
 							
@@ -79,7 +86,7 @@
     // If your application supports background execution, this method is called instead of applicationWillTerminate: when the user quits.
     
     APPState = @"Background";
-    NSLog(@"App Enter Background\n");
+    //NSLog(@"App Enter Background\n");
 }
 
 - (void)applicationWillEnterForeground:(UIApplication *)application
@@ -110,4 +117,12 @@
     // Called when the application is about to terminate. Save data if appropriate. See also applicationDidEnterBackground:.
 }
 
+#pragma mark - FacebookSDK framework
+- (BOOL)application:(UIApplication *)application
+            openURL:(NSURL *)url
+  sourceApplication:(NSString *)sourceApplication
+         annotation:(id)annotation {
+    // attempt to extract a token from the url
+    return [FBAppCall handleOpenURL:url sourceApplication:sourceApplication];
+}
 @end

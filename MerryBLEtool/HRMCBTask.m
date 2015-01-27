@@ -179,6 +179,7 @@ didDisconnectPeripheral:(CBPeripheral *)peripheral
         if(peripheral.state == 0)//Disconnected
         {
             self.activePeripheral = nil;
+            
             [[self delegate1] CBStatusUpdate:@"Disconnected" BLEData:@"YES"];
             //NSLog(@"Peripheral disconnected!");
         }
@@ -244,7 +245,23 @@ didDisconnectPeripheral:(CBPeripheral *)peripheral
     else if ([characteristic.UUID isEqual:[CBUUID UUIDWithString:HRM_BODY_LOCATION_UUID]]) {  // 3
         [self getBodyLocation:characteristic];
     }
-        
+    
+    //Read Battery level
+    if ([characteristic.UUID isEqual:[CBUUID UUIDWithString:@"2A19"]])
+    {
+        //NSLog(@"Get Battery level!");
+        if(characteristic.value != nil)
+        {
+            NSData *BattData = [characteristic value];
+            uint8_t *pBattLevel = (uint8_t *)[BattData bytes];
+            if(pBattLevel)
+            {
+                uint8_t BattLevel  = pBattLevel[0];
+                //NSLog(@"Get Battery level!,%d",BattLevel);
+                [[self delegate1] CBStatusUpdate:@"BattUpdateLevel" BLEData:[NSString stringWithFormat:@"  %d",BattLevel]];
+            }
+        }
+    }
 }
 
 // Instance method to get the manufacturer name of the device
@@ -373,6 +390,29 @@ didDisconnectPeripheral:(CBPeripheral *)peripheral
     
     NSData *d = [[NSData alloc] initWithBytes:&data length:1];
     [self.activePeripheral writeValue:d forCharacteristic:characteristic type:CBCharacteristicWriteWithResponse];
+
+}
+
+- (void)ReadBatterylevelCharacteristic
+{
+    CBUUID *cu = [CBUUID UUIDWithString:@"2A19"];   //Characteristic UUID
+    CBUUID *su = [CBUUID UUIDWithString:@"180F"];   //Service UUID
+    
+    CBService *service = [self findServiceFromUUID:su p:self.activePeripheral];
+    
+    if(!service)
+    {
+        return;
+    }
+    
+    CBCharacteristic *characteristic = [self findCharacteristicFromUUID:cu service:service];
+    
+    if(!characteristic)
+    {
+        return;
+    }
+
+    [self.activePeripheral readValueForCharacteristic:characteristic];
 }
 
 @end

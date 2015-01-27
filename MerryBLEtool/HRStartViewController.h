@@ -13,10 +13,18 @@
 #import "BLEDebug.h"
 #import "HRMTableSetting.h"
 
+#ifdef CustomBLEService
+#import <CoreLocation/CoreLocation.h>
+#endif
+
 #ifdef BLE_Debug
-@interface HRStartViewController : UITableViewController <CoreBTDelagate , UIAlertViewDelegate >
+    @interface HRStartViewController : UITableViewController <CoreBTDelagate , UIAlertViewDelegate >
 #else
-@interface HRStartViewController : UITableViewController <BLECBDelegate , UIAlertViewDelegate >
+    #ifdef CustomBLEService
+        @interface HRStartViewController : UITableViewController <BLECBDelegate , UIAlertViewDelegate , CLLocationManagerDelegate >
+    #else
+        @interface HRStartViewController : UITableViewController <BLECBDelegate , UIAlertViewDelegate >
+    #endif
 #endif
 {
 #ifdef BLE_Debug
@@ -32,5 +40,9 @@
 @property (nonatomic , strong) NSString *LastConnectDevice;
 #ifdef BLE_Debug
 @property (nonatomic , strong) NSString *Log;
+#endif
+#ifdef CustomBLEService
+@property (nonatomic) CLLocationDegrees myLatitude;
+@property (nonatomic) CLLocationDegrees myLongitude;
 #endif
 @end
