@@ -29,6 +29,7 @@
 - (BOOL)textFieldShouldReturn:(UITextField *)textField
 {
     [textField resignFirstResponder];
+    int hh,mm;
     
     //Set focus to next UITextField
     if(textField.tag == 70)//Name
@@ -39,6 +40,32 @@
     {
         [self.UserRHR becomeFirstResponder];
     }
+    else if(textField.tag == 80)
+    {
+        if(self.Alarm_hh.text != nil)
+        {
+            hh = [self.Alarm_hh.text intValue];
+            if(hh < 0 || hh > 24)
+            {
+                self.Alarm_hh.text = @"";
+            }
+            else
+                [self.Alarm_mm becomeFirstResponder];
+        }
+        
+        //[self.Alarm_mm becomeFirstResponder];
+    }
+    else if(textField.tag == 81)
+    {
+        if(self.Alarm_mm.text != nil)
+        {
+            mm = [self.Alarm_mm.text intValue];
+            if(mm < 0 || mm > 59)
+            {
+                self.Alarm_mm.text = @"";
+            }
+        }
+     }
     
     [self CalculateHRData];
     return NO;
@@ -54,11 +81,16 @@
     // Uncomment the following line to display an Edit button in the navigation bar for this view controller.
     // self.navigationItem.rightBarButtonItem = self.editButtonItem;
     
+    self.tableView.scrollEnabled = YES;
+    
+    //UITextFieldDelegate
     self.UserName.delegate = self;
     self.UserAge.delegate = self;
     self.UserMaxHR.delegate = self;
     self.UserRHR.delegate = self;
     self.UserTHR1.delegate = self;
+    self.Alarm_hh.delegate = self;
+    self.Alarm_mm.delegate = self;
     
     //Custom button
     [self.LoginButton setBackgroundImage:[UIImage imageNamed:@"Button1.png"] forState:UIControlStateNormal];
@@ -141,7 +173,7 @@
 {
 //#warning Potentially incomplete method implementation.
     // Return the number of sections.
-    return 3;
+    return 4;
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
@@ -154,6 +186,8 @@
         return 3;
     else if(section == 2)
         return 2;
+    else if(section == 3)
+        return 3;
     else
         return 0;
 }
@@ -161,6 +195,55 @@
 -(CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section
 {
     return 30;
+}
+
+- (IBAction)BleDevLEDChanged:(id)sender {
+    //NSLog(@"test protocol,LED");
+    if(self.BleDeviceLED.isOn)
+        [[self delegate1] SwitchControl:TRUE SetValue:TRUE];
+    else
+        [[self delegate1] SwitchControl:TRUE SetValue:FALSE];
+}
+
+- (IBAction)BleDevBuzzerChanged:(id)sender {
+    //NSLog(@"test protocol,Buzzer");
+    if(self.BleDeviceBuzzer.isOn)
+        [[self delegate1] SwitchControl:FALSE SetValue:TRUE];
+    else
+        [[self delegate1] SwitchControl:FALSE SetValue:FALSE];
+}
+
+- (IBAction)SetAlarmClock:(id)sender {
+    int hh,mm;
+    
+    if(self.AlarmSwitch.isOn)
+    {
+        //NSLog(@"Set AlarmClock");
+        if(self.Alarm_hh.text != nil)
+        {
+            hh = [self.Alarm_hh.text intValue];
+            if(hh < 0 || hh > 24)
+                hh = 0;
+        }
+        else
+        {
+            hh = 0;
+        }
+        
+        if(self.Alarm_mm.text != nil)
+        {
+            mm = [self.Alarm_mm.text intValue];
+            if(mm < 0 || mm > 59)
+                mm = 0;
+        }
+        else
+        {
+            mm = 0;
+        }
+        
+        [[self delegate1] SetAlarmClock:hh Minute:mm];
+        [self.AlarmSwitch setOn:NO];
+    }
 }
 
 /*
@@ -331,6 +414,8 @@
     [self SaveUserData];
     [[self delegate] APPSetting:self.APPConfig];
     [[self delegate] passHeartRateData:self.MaximumHR SetMaxHR:self.SetMaxHR SetMinHR:self.SetMinHR RestHeartRate:self.SetRHR UpperTargetHeartRate:self.UpperTHR LowerTargetHeartRate:self.LowerTHR];
+    
+    [[self delegate1] ConfigUserInformation];
     [self dismissViewControllerAnimated:YES completion:nil];
 }
 

@@ -24,17 +24,26 @@
 #define SaveLocationToFilex
 #define NSFileHandleReadWrite
 #define GradientPolyline
-#define DebugWithoutBLEConnectionx
+#define DebugWithoutBLEConnection
 #define DebugWithoutTrackPathx
-#define BLE_Debugx                  //Only for iPad
-#define CustomBLEService            //Button , LED
+#define BLE_Debugx                   //Only for iPad
+#define CustomBLEServicex            //Button , LED (Custom UI for iPad)
+#define CustomBLE_iPhoneDemo        //(Custom UI for iPhone , LED , Button)
 #define FacebookSDK
+#define iOSSelfieDemo
+#define MERBHC1510_Project
 
 @protocol passUserSetting1 <NSObject>
 -(void)setName : (NSString *)User_Name;
 -(void)setAge : (NSString *)User_Age;
 -(void)APPSetting : (NSInteger)Configdata;
 -(void)passHeartRateData:(NSInteger)MaxHR SetMaxHR:(NSInteger)MaxHeartRate SetMinHR:(NSInteger)MinHeartRate RestHeartRate:(NSInteger)RHR UpperTargetHeartRate:(NSInteger)UpperTHR LowerTargetHeartRate:(NSInteger)LowerTHR;
+@end
+
+@protocol BLEDeviceIOControl
+-(void) SwitchControl:(BOOL)IOType SetValue:(BOOL)IOControl;
+-(void) SetAlarmClock:(int)HH Minute:(int)MM;
+-(void) ConfigUserInformation;
 @end
 
 @interface HRMTableSetting : UITableViewController <UITextFieldDelegate>
@@ -50,6 +59,11 @@
 @property (weak, nonatomic) IBOutlet UILabel *NormalMinHR;
 @property (weak, nonatomic) IBOutlet UISwitch *HRNotify;
 @property (weak, nonatomic) IBOutlet UISegmentedControl *APPModeSelect;
+@property (weak, nonatomic) IBOutlet UISwitch *BleDeviceLED;
+@property (weak, nonatomic) IBOutlet UISwitch *BleDeviceBuzzer;
+@property (weak, nonatomic) IBOutlet UITextField *Alarm_hh;
+@property (weak, nonatomic) IBOutlet UITextField *Alarm_mm;
+@property (weak, nonatomic) IBOutlet UISwitch *AlarmSwitch;
 @property (weak, nonatomic) IBOutlet UIButton *LoginButton;
 - (IBAction)SaveHRData:(id)sender;
 - (IBAction)MaxValueChanged:(id)sender;
@@ -67,6 +81,7 @@
 @property (nonatomic) NSInteger SetRHR;
 @property (nonatomic) NSInteger UserAgeValue;
 @property (nonatomic, assign) id <passUserSetting1> delegate;
+@property (nonatomic, assign) id <BLEDeviceIOControl> delegate1;
 @property (weak, nonatomic) IBOutlet UILabel *Version;
 @property (nonatomic , strong) NSString *Log;
 @property (weak, nonatomic) IBOutlet UITextView *BLE_Log;
