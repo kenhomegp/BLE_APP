@@ -17,6 +17,8 @@
 
 #import "CustomHeaderCell.h"
 
+#import "AboutViewController.h"
+
 #import <sys/types.h>
 #import <sys/sysctl.h>
 
@@ -38,22 +40,24 @@
     UIActivityIndicatorView *spinner;
     NSInteger PlatNumber;
     NSTimer *TestTimer;
-#ifdef CustomBLEService
-    bool TestSwitch;
-    bool LEDSwitch;
-    bool BuzzerSwitch;
+#if (defined(CustomBLEService) || defined(CustomBLE_iPhoneDemo))
+    bool TestSwitch;    //Button
+    bool LEDSwitch;     //LED
+    bool BuzzerSwitch;  //Buzzer
     CLLocationManager *locationManager;
     CLLocationDegrees Linkloss_latitude;
     CLLocationDegrees Linkloss_longitude;
     AVAudioPlayer *_audioPlayer;
     NSString *DevBattLevel;
+    int AlarmClockRemains;
 #endif
 }
 @end
 
 @implementation HRStartViewController
 
-#ifdef CustomBLEService
+//#ifdef CustomBLEService
+#if (defined(CustomBLEService) || defined(CustomBLE_iPhoneDemo))
 @synthesize myLatitude;
 @synthesize myLongitude;
 #endif
@@ -113,11 +117,20 @@
         }
         else if([self.CBStatus rangeOfString:@"Connected"].location != NSNotFound)
         {
-            #ifdef BLE_Debug
-            
-            #else
+//#ifdef MERBHC1510_Project
+#if 0
+            if([self.CBStatus isEqualToString:@"Connected : YES"])
+            {
+                [CoreBTObj DisconnectHRM];
+            }
+            else if([self.CBStatus isEqualToString:@"Connected : YES debug"])
+            {
+                [CoreBTObj HRMWriteCommand:0xB1];
+                //NSLog(@"HRM Start!");
+            }
+#else
             [CoreBTObj DisconnectHRM];
-            #endif
+#endif
         }
     }
 }
@@ -165,7 +178,8 @@
                 [spinner stopAnimating];
             }
             
-            #ifdef CustomBLEService
+            //#ifdef CustomBLEService
+            #if (defined(CustomBLEService) || defined(CustomBLE_iPhoneDemo))
             [locationManager startUpdatingLocation];
             //NSLog(@"Start location service!");
             ScanTimer = [NSTimer scheduledTimerWithTimeInterval:3.0
@@ -187,23 +201,24 @@
         self.BLE_device3 = nil;
         IndexSetAccessoryCheckmark = 0;
         [self.tableView reloadData];
-        
-        #ifdef CustomBLEService
-        //NSLog(@"Stop location service!");
         [locationManager stopUpdatingLocation];
         if([ScanTimer isValid])
         {
             [ScanTimer invalidate];
         }
         
-        [self.tabBarController setSelectedIndex:1];
+        #ifdef CustomBLEService
+            [self.tabBarController setSelectedIndex:1];
+        #endif
         
-        //[[UIApplication sharedApplication] openURL:[NSURL URLWithString:@"mailto://kenhomegp@yahoo.com.tw"]];
+        #ifdef CustomBLE_iPhoneDemo
+            [self performSegueWithIdentifier:@"SegueForAboutView" sender:self];
         #endif
     }
     else if([BLE_Status isEqualToString:@"CustomBLEService"])
     {
-        #ifdef CustomBLEService
+        //#ifdef CustomBLEService
+        #if (defined(CustomBLEService) || defined(CustomBLE_iPhoneDemo))
             //self.CBStatus = @"CustomBLEService";
         
             if(TestSwitch)
@@ -222,12 +237,65 @@
     }
     else if ([BLE_Status isEqualToString:@"BattUpdateLevel"])
     {
-        #ifdef CustomBLEService
-        DevBattLevel = payload;
+        //#ifdef CustomBLEService
+        #if (defined(CustomBLEService) || defined(CustomBLE_iPhoneDemo))
+        //DevBattLevel = payload;
+        DevBattLevel = [payload stringByAppendingString:@"%"];
         [self.tableView reloadData];
         #endif
     }
 }
+
+#pragma mark - BLEDeviceIOControl delegate
+#if (defined(CustomBLEService) || defined(CustomBLE_iPhoneDemo))
+-(void) ConfigUserInformation
+{
+    #ifdef MERBHC1510_Project
+    [CoreBTObj HRMConfig];
+    #endif
+}
+
+-(void) SwitchControl:(BOOL)IOType SetValue:(BOOL)IOControl
+{
+    //NSLog(@"delegate pass");
+    [CoreBTObj WriteValueForCustomCharacteristic:IOType OnOff:IOControl];
+}
+
+-(void) SetAlarmClock:(int)HH Minute:(int)MM
+{
+    if([self.CBStatus isEqualToString:@"Connected : YES"])
+    {
+    if(HH != 0 && MM != 0)
+    {
+        //Get Current time
+        //NSLog(@"HH:%d,MM:%d",HH,MM);
+        
+        NSDate* now = [NSDate date];
+        NSCalendar *gregorian = [[NSCalendar alloc] initWithCalendarIdentifier:NSGregorianCalendar];
+        NSDateComponents *dateComponents = [gregorian components:(NSHourCalendarUnit  | NSMinuteCalendarUnit | NSSecondCalendarUnit) fromDate:now];
+        
+        NSInteger hour = [dateComponents hour];
+        NSInteger minute = [dateComponents minute];
+        NSInteger second = [dateComponents second];
+        
+        //NSLog(@"Current Time  %@",[NSString stringWithFormat:@"%02d:%02d:%02d", hour, minute, second]);
+        
+        AlarmClockRemains = (HH * 3600 + MM * 60) - (hour * 3600 + minute * 60 + second);
+        
+        if(AlarmClockRemains > 0)
+        {
+            if(!(TestTimer.isValid))
+            {
+                TestTimer = [NSTimer scheduledTimerWithTimeInterval:1.0
+                        target:self selector:@selector(AlarmClockSetAlarm)
+                        userInfo:nil repeats:YES];
+                //NSLog(@"AlarmClockRemains =  %d",AlarmClockRemains);
+            }
+        }
+    }
+    }
+}
+#endif
 
 - (id)initWithStyle:(UITableViewStyle)style
 {
@@ -238,26 +306,122 @@
     return self;
 }
 
+- (void)viewWillDisappear:(BOOL)animated
+{
+    [super viewWillDisappear:NO];
+    
+    [ScanTimer invalidate];
+    [AlertTimer invalidate];
+    [TestTimer invalidate];
+    
+#if (defined(CustomBLEService) || defined(CustomBLE_iPhoneDemo))
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
+#endif
+}
+
 - (void)viewWillAppear:(BOOL)animated
 {
+    [super viewWillAppear:NO];
+    
+#if (defined(CustomBLEService) || defined(CustomBLE_iPhoneDemo))
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(APPStateChanged:)
+                                                 name:UIApplicationWillResignActiveNotification object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(TestButtonPressed:)
+                                                 name:@"TestButton" object:nil];
+
+#endif
+    
 #ifdef BLE_Debug
     
 #else
     [CoreBTObj setViewController:0];
 #endif
+    
+//#ifdef CustomBLEService
+#if (defined(CustomBLEService) || defined(CustomBLE_iPhoneDemo))
+    if([self.CBStatus isEqualToString:@"Connected : YES"])
+    {
+        if(UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad)
+        {
+            //Set AlarmClock
+            UINavigationController *NavVC = (UINavigationController *)[self.tabBarController.viewControllers objectAtIndex:1];
+            AboutViewController *myVC = (AboutViewController *)NavVC.topViewController;
+            //NSLog(@"%@",[NSString stringWithFormat:@"HH : %d",myVC.alarmClock_hh]);
+            //NSLog(@"%@",[NSString stringWithFormat:@"MM : %d",myVC.alarmClock_mm]);
+    
+            if(myVC.EnableAlarmClock == FALSE)
+            {
+                [TestTimer invalidate];
+                return;
+            }
+        
+            if((myVC.alarmClock_hh == 0) || (myVC.alarmClock_mm == 0))
+            {
+                [TestTimer invalidate];
+                return;
+            }
+        
+            //Get Current time
+    
+            NSDate* now = [NSDate date];
+            NSCalendar *gregorian = [[NSCalendar alloc] initWithCalendarIdentifier:NSGregorianCalendar];
+            NSDateComponents *dateComponents = [gregorian components:(NSHourCalendarUnit  | NSMinuteCalendarUnit | NSSecondCalendarUnit) fromDate:now];
+    
+            NSInteger hour = [dateComponents hour];
+            NSInteger minute = [dateComponents minute];
+            NSInteger second = [dateComponents second];
+    
+            //NSLog(@"Current Time  %@",[NSString stringWithFormat:@"%02d:%02d:%02d", hour, minute, second]);
+        
+            AlarmClockRemains = (myVC.alarmClock_hh * 3600 + myVC.alarmClock_mm * 60) - (hour * 3600 + minute * 60 + second);
+        
+            if(AlarmClockRemains > 0)
+            {
+                TestTimer = [NSTimer scheduledTimerWithTimeInterval:1.0
+                        target:self selector:@selector(AlarmClockSetAlarm)
+                        userInfo:nil repeats:YES];
+                //NSLog(@"AlarmClockRemains =  %d",AlarmClockRemains);
+            }
+        }
+    }
+    
+
+#endif
+
 }
 
-- (void)viewWillDisappear:(BOOL)animated
+//#ifdef CustomBLEService
+#if (defined(CustomBLEService) || defined(CustomBLE_iPhoneDemo))
+- (void)AlarmClockSetAlarm
 {
-    [ScanTimer invalidate];
-    [AlertTimer invalidate];
-    [[NSNotificationCenter defaultCenter] removeObserver:self];
+    if(AlarmClockRemains > 0)
+    {
+        AlarmClockRemains--;
+    }
+    else if(AlarmClockRemains == 0)
+    {
+        [TestTimer invalidate];
+        //NSLog(@"TestTimer time-out");
+        
+        if([self.CBStatus isEqualToString:@"Connected : YES"])
+        {
+            //NSLog(@"Connected");
+            [CoreBTObj WriteValueForCustomCharacteristic:FALSE OnOff:TRUE];
+            TestTimer = [NSTimer scheduledTimerWithTimeInterval:2.5
+                                                        target:self selector:@selector(AlarmClockSetAlarm)
+                                                      userInfo:nil repeats:YES];
+            
+        }
+    }
 }
+#endif
 
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-    
+
     // Uncomment the following line to preserve selection between presentations.
     // self.clearsSelectionOnViewWillAppear = NO;
     
@@ -270,10 +434,11 @@
     self.parentViewController.view.backgroundColor = [UIColor colorWithPatternImage:[UIImage imageNamed:@"common_bg"]];
     self.tableView.backgroundColor = [UIColor clearColor];
     
-    //self.title = @"應用類型";
-    //self.title = @"Application Mode";
-    
-    self.title = NSLocalizedString(@"StartViewController", @"title");
+    #if (defined(CustomBLEService) || defined(CustomBLE_iPhoneDemo))
+        self.title = @"Merry Demo HRM";
+    #else
+        self.title = NSLocalizedString(@"StartViewController", @"title");
+    #endif
     
     //Initial CoreBluetooth Framework
     self.BLE_device1 = nil;
@@ -287,13 +452,13 @@
 
     if(((UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) && PlatNumber != 0) || ((UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPhone) && PlatNumber > 6))
     {
-    #ifdef BLE_Debug
-        CoreBTObj = [[BLECBTask alloc] init];
-        [CoreBTObj controlSetup:1];
-        CoreBTObj.delegate = self;
-        CoreBTObj.activePeripheral = nil;
-        self.Log = @"";
-    #else
+        #ifdef BLE_Debug
+            CoreBTObj = [[BLECBTask alloc] init];
+            [CoreBTObj controlSetup:1];
+            CoreBTObj.delegate = self;
+            CoreBTObj.activePeripheral = nil;
+            self.Log = @"";
+        #else
         CoreBTObj = [[HRMCBTask alloc] init];
         [CoreBTObj controlSetup];
         [CoreBTObj SetVC:0];
@@ -319,7 +484,8 @@
         [self.view addSubview:spinner];
         [spinner startAnimating];
         
-        #ifdef CustomBLEService
+        //#ifdef CustomBLEService
+        #if (defined(CustomBLEService) || defined(CustomBLE_iPhoneDemo))
             LEDSwitch = FALSE;
             BuzzerSwitch = FALSE;
             locationManager = [[CLLocationManager alloc]init];
@@ -339,13 +505,13 @@
             _audioPlayer = [[AVAudioPlayer alloc] initWithContentsOfURL:soundUrl1 error:nil];
             [_audioPlayer setVolume:1.0];
         #endif
-    #endif
+        #endif
     }
     else
     {
         //NSLog(@"Not support BLE!!,%ld",(long)PlatNumber);
         if(UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPhone)
-            PlatNumber = 0;
+            PlatNumber = 0; //Device not support BLE
         
         //TestTimer = [NSTimer scheduledTimerWithTimeInterval:1.0
         //                                             target:self selector:@selector(TestTest)
@@ -360,9 +526,6 @@
     
     if((UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPhone) && PlatNumber != 0)
     {
-        [[NSNotificationCenter defaultCenter] addObserver:self
-        selector:@selector(APPStateChanged:)
-        name:UIApplicationWillResignActiveNotification object:nil];
     }
 }
 
@@ -387,6 +550,7 @@
     return cc;
 }
 
+#if (defined(CustomBLEService) || defined(CustomBLE_iPhoneDemo))
 - (void)APPStateChanged:(NSNotification *)notification
 {
     if([self.CBStatus isEqualToString:@"Connected : YES"])
@@ -395,7 +559,7 @@
         for (CTCall *call in callCenter.currentCalls)  {
             //if (call.callState == CTCallStateConnected) {
             if(call.callState ==  CTCallStateIncoming){
-                //NSLog(@"### Incoming call..,Count 10 seconds");
+                //NSLog(@"### Incoming call..,Set time-out value = 5 seconds");
                 [self performSelector:@selector(PerformSelectorMethod) withObject:nil afterDelay:5.0f];
             }
         }
@@ -416,13 +580,24 @@
     }
 }
 
+- (void)TestButtonPressed:(NSNotification *)notification
+{
+    //NSLog(@"Bg : short button");
+    
+    //Receive a notification from CoreBTObj
+    NSLog(@"Receive a notification");
+}
+#endif
+
 - (void) TestTest
 {
+    /*
     UIApplicationState st = [[UIApplication sharedApplication] applicationState];
-    NSLog(@"AppState = %ld",(long)st);
+    NSLog(@"AppState = %ld",(long)st);*/
 }
 
-#ifdef CustomBLEService
+//#ifdef CustomBLEService
+#if (defined(CustomBLEService) || defined(CustomBLE_iPhoneDemo))
 - (void)EnableLocationService
 {
     [locationManager startUpdatingLocation];
@@ -566,7 +741,21 @@
         User.Log = self.Log;
         #endif
     }
-
+    #ifdef CustomBLE_iPhoneDemo
+    else if([[segue identifier] isEqualToString:@"SegueForAboutView"])
+    {
+        //NSLog(@"SegueForAboutView");
+        AboutViewController *VC = [segue destinationViewController];
+        VC.testLatitude = myLatitude;
+        VC.testLongitude = myLongitude;
+    }
+    else if([[segue identifier] isEqualToString:@"SegueSetting"])
+    {
+        //NSLog(@"SegueSetting");
+        HRMTableSetting *Setting = [segue destinationViewController];
+        Setting.delegate1 = self;
+    }
+    #endif
 }
 
 #pragma mark -
@@ -773,6 +962,82 @@
             APPUseFreq.text = nil;
         }
     }
+//#ifdef CustomBLE_iPhoneDemo
+#ifdef CustomBLE_iPhoneDemo_
+    else if(indexPath.row == 5)
+    {
+        [APPTitle setTextColor:[UIColor blueColor]];
+        APPTitle.text = @"LED On/Off";
+        APPDetail.text = nil;
+        APPUseFreq.text = nil;
+        UISwitch *theLEDSwitch = [[UISwitch alloc] initWithFrame:CGRectZero];
+        if(LEDSwitch)
+            [theLEDSwitch setOn:YES];
+        else
+            [theLEDSwitch setOn:NO];
+        [theLEDSwitch addTarget:self action:@selector(CustomBLEServiceLEDChange) forControlEvents:UIControlEventValueChanged];
+        [cell addSubview:theLEDSwitch];
+        cell.accessoryView = theLEDSwitch;
+
+    }
+    else if(indexPath.row == 6)
+    {
+        [APPTitle setTextColor:[UIColor blueColor]];
+        APPTitle.text = @"Buzzer";
+        APPDetail.text = nil;
+        APPUseFreq.text = nil;
+        UISwitch *theBuzzerSwitch = [[UISwitch alloc] initWithFrame:CGRectZero];
+        if(BuzzerSwitch)
+            [theBuzzerSwitch setOn:YES];
+        else
+            [theBuzzerSwitch setOn:NO];
+        [theBuzzerSwitch addTarget:self action:@selector(CustomBLEServiceBuzzerOnOff) forControlEvents:UIControlEventValueChanged];
+        [cell addSubview:theBuzzerSwitch];
+        cell.accessoryView = theBuzzerSwitch;
+    }
+    else if(indexPath.row == 7)
+    {
+        [APPTitle setTextColor:[UIColor blueColor]];
+        APPTitle.text = @"Button";
+        APPDetail.text = nil;
+        APPUseFreq.text = nil;
+        UISwitch *theSwitch = [[UISwitch alloc] initWithFrame:CGRectZero];
+        if(TestSwitch)
+            [theSwitch setOn:YES];
+        else
+            [theSwitch setOn:NO];
+        [theSwitch setUserInteractionEnabled:NO];
+        [cell addSubview:theSwitch];
+        cell.accessoryView = theSwitch;
+    }
+    else if(indexPath.row == 8)
+    {
+        [APPTitle setTextColor:[UIColor blueColor]];
+        
+        if([self.CBStatus isEqualToString:@"Connected : YES"])
+        {
+            if(DevBattLevel != nil)
+                APPTitle.text = [@"Battery level :" stringByAppendingString:DevBattLevel];
+            else
+                APPTitle.text = @"Battery level ";
+        }
+        else
+        {
+            UIDeviceBatteryState battState = [[UIDevice currentDevice] batteryState];
+            if(battState == UIDeviceBatteryStateCharging)
+                APPTitle.text = @"Battery: Charging";
+            else if(battState == UIDeviceBatteryStateUnplugged)
+                APPTitle.text = @"Battery: Unplugged";
+            else if(battState == UIDeviceBatteryStateUnknown)
+                APPTitle.text = @"Battery: Unknown";
+            else if(battState == UIDeviceBatteryStateFull)
+                APPTitle.text = @"Battery: Full";
+        }
+        
+        APPDetail.text = nil;
+        APPUseFreq.text = nil;
+    }
+#else
     else if(indexPath.row == 5)//Update three BLE devices here.
     {
         #ifdef BLE_Debug
@@ -950,6 +1215,7 @@
         APPDetail.text = nil;
         APPUseFreq.text = nil;
     }
+#endif
     #ifdef  CustomBLEService
     else if(indexPath.row == 8)
     {
@@ -995,10 +1261,25 @@
     }
     else if(indexPath.row == 11)
     {
-        if(DevBattLevel != nil)
-            APPTitle.text = [@"Battery level :" stringByAppendingString:DevBattLevel];
+        if([self.CBStatus isEqualToString:@"Connected : YES"])
+        {
+            if(DevBattLevel != nil)
+                APPTitle.text = [@"Battery level :" stringByAppendingString:DevBattLevel];
+            else
+                APPTitle.text = @"Battery level ";
+        }
         else
-            APPTitle.text = @"Battery level ";
+        {
+            UIDeviceBatteryState battState = [[UIDevice currentDevice] batteryState];
+            if(battState == UIDeviceBatteryStateCharging)
+                APPTitle.text = @"Battery: Charging";
+            else if(battState == UIDeviceBatteryStateUnplugged)
+                APPTitle.text = @"Battery: Unplugged";  //Discharging
+            else if(battState == UIDeviceBatteryStateUnknown)
+                APPTitle.text = @"Battery: Unknown";
+            else if(battState == UIDeviceBatteryStateFull)
+                APPTitle.text = @"Battery: Full";
+        }
         
         APPDetail.text = nil;
         APPUseFreq.text = nil;
@@ -1051,7 +1332,8 @@
 #ifdef DebugWithoutBLEConnection
         [self performSegueWithIdentifier:@"SegueForHRM" sender:[tableView cellForRowAtIndexPath:indexPath]];
 #else
-        #ifndef CustomBLEService
+        //#ifndef CustomBLEService
+        #if (!defined(CustomBLEService) && !defined(CustomBLE_iPhoneDemo))
         if([self.CBStatus rangeOfString:@"Connected"].location !=
            NSNotFound)
         {
@@ -1063,6 +1345,12 @@
     else if(indexPath.row == 1)
     {
         //[self performSegueWithIdentifier:@"SegueForTest" sender:[tableView cellForRowAtIndexPath:indexPath]];
+#ifdef CustomBLE_iPhoneDemo
+        if(UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPhone)
+        {
+            [self performSegueWithIdentifier:@"SegueForAboutView" sender:[tableView cellForRowAtIndexPath:indexPath]];
+        }
+#endif
     }
     else if(indexPath.row == 2)
     {
@@ -1164,10 +1452,12 @@
             AlertTimer = [NSTimer scheduledTimerWithTimeInterval:AlertViewTimeout target:self selector:@selector(DismissAlertView) userInfo:nil repeats:NO];
         }
     }
+//#ifndef CustomBLE_iPhoneDemo
+#ifdef CustomBLE_iPhoneDemo
     else if(indexPath.row == 5)
     {
         #ifdef BLE_Debug
-
+        //BLE Log message
         #else
         if([self.CBStatus isEqualToString:@"Scan..."])
         {
@@ -1184,7 +1474,7 @@
     else if(indexPath.row == 6)
     {
         #ifdef BLE_Debug
-        
+        //BLE Log message
         #else
         if([self.CBStatus isEqualToString:@"Scan..."])
         {
@@ -1201,7 +1491,7 @@
     else if(indexPath.row == 7)
     {
         #ifdef BLE_Debug
-
+        //BLE Log message
         #else
         if([self.CBStatus isEqualToString:@"Scan..."])
         {
@@ -1215,6 +1505,23 @@
         }
         #endif
     }
+    else if(indexPath.row == 8)//   Start/Stop Activity
+    {
+        //#ifdef MERBHC1510_Project
+        #if 0
+        if([self.CBStatus isEqualToString:@"Connected : YES"])
+        {
+            self.CBStatus = [self.CBStatus stringByAppendingString:@" debug"];
+            
+            //NSLog(@"%@",self.CBStatus);
+            
+            myAlert = [[UIAlertView alloc] initWithTitle:self.BLE_device1 message:@"Start Activity" delegate:self cancelButtonTitle:@"No" otherButtonTitles:@"Yes", nil];
+        
+            [myAlert show];
+        }
+        #endif
+    }
+#endif
     #ifdef CustomBLEService
     else if(indexPath.row == 11)
     {
@@ -1222,11 +1529,34 @@
         {
             [CoreBTObj ReadBatterylevelCharacteristic];
         }
+        else
+        {
+            //Update UIDeviceBatteryState
+            [UIDevice currentDevice].batteryMonitoringEnabled = YES;
+            [self.tableView reloadData];
+        }
     }
+    #endif
+    #ifdef CustomBLE_iPhoneDemo
+    else if(indexPath.row == 8)
+    {
+        if([self.CBStatus isEqualToString:@"Connected : YES"])
+        {
+            [CoreBTObj ReadBatterylevelCharacteristic];
+        }
+        else
+        {
+            //Update UIDeviceBatteryState
+            [UIDevice currentDevice].batteryMonitoringEnabled = YES;
+            [self.tableView reloadData];
+        }
+    }
+    
     #endif
 }
 
-#ifdef CustomBLEService
+//#ifdef CustomBLEService
+#if (defined(CustomBLEService) || defined(CustomBLE_iPhoneDemo))
 #pragma mark - CLLocationManager delegate
 
 - (void)locationManager:(CLLocationManager *)manager didFailWithError:(NSError *)error
@@ -1251,7 +1581,7 @@
     myLatitude = currentLocation.coordinate.latitude;
     myLongitude = currentLocation.coordinate.longitude;
     
-    NSLog(@"didUpdateToLocation");
+    //NSLog(@"didUpdateToLocation");
     [locationManager stopUpdatingLocation];
 }
 
@@ -1312,7 +1642,7 @@
     }
 }
 
-#ifdef CustomBLEService
+#if (defined(CustomBLEService) || defined(CustomBLE_iPhoneDemo))
 - (void)CustomBLEServiceLEDChange
 {
     //NSLog(@"###LED Change...");
@@ -1337,16 +1667,6 @@
     [CoreBTObj WriteValueForCustomCharacteristic:FALSE OnOff:BuzzerSwitch];
 }
 #endif
-/*
-- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
-{
-    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"reuseIdentifier" forIndexPath:indexPath];
-    
-    // Configure the cell...
-    
-    return cell;
-}
-*/
 
 /*
 // Override to support conditional editing of the table view.

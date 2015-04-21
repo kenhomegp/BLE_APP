@@ -8,7 +8,7 @@
 
 #import "AboutViewController.h"
 
-#import "HRMTableSetting.h"
+//#import "HRMTableSetting.h"
 
 #import "HRStartViewController.h"
 
@@ -27,19 +27,40 @@
     //Load an external page into our UIWebView
     //NSURL *myNSURL = [[NSURL alloc] initWithString:@"http://www.merry.com.tw"];
 
-#ifdef CustomBLEService
-    UINavigationController *NavVC = (UINavigationController *)[self.tabBarController.viewControllers objectAtIndex:0];
-    HRStartViewController *myVC = (HRStartViewController *)NavVC.topViewController;
-    NSString *GPS = [NSString stringWithFormat:@"%f,%f",myVC.myLatitude,myVC.myLongitude];
-    
+//#ifdef CustomBLEService
     NSURL *myNSURL;
-    if(myVC.myLatitude == 0.0 && myVC.myLongitude == 0.0)
+#if (defined(CustomBLEService) || defined(CustomBLE_iPhoneDemo))
+    
+    if(UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad)
     {
-        myNSURL = [[NSURL alloc] initWithString:@"http://www.merry.com.tw"];
+        UINavigationController *NavVC = (UINavigationController *)[self.tabBarController.viewControllers objectAtIndex:0];
+        HRStartViewController *myVC = (HRStartViewController *)NavVC.topViewController;
+        NSString *GPS = [NSString stringWithFormat:@"%f,%f",myVC.myLatitude,myVC.myLongitude];
+    
+        //NSURL *myNSURL;
+        if(myVC.myLatitude == 0.0 && myVC.myLongitude == 0.0)
+        {
+            myNSURL = [[NSURL alloc] initWithString:@"http://www.merry.com.tw"];
+        }
+        else
+        {
+            myNSURL = [[NSURL alloc] initWithString:[@"http://maps.google.com/?q=" stringByAppendingString:GPS]];
+        }
     }
     else
     {
-        myNSURL = [[NSURL alloc] initWithString:[@"http://maps.google.com/?q=" stringByAppendingString:GPS]];
+    #ifdef CustomBLE_iPhoneDemo
+        NSString *GPS1 = [NSString stringWithFormat:@"%f,%f",self.testLatitude,self.testLongitude];
+        
+        if(self.testLatitude == 0.0 && self.testLongitude == 0.0)
+        {
+            myNSURL = [[NSURL alloc] initWithString:@"http://www.merry.com.tw"];
+        }
+        else
+        {
+            myNSURL = [[NSURL alloc] initWithString:[@"http://maps.google.com/?q=" stringByAppendingString:GPS1]];
+        }
+    #endif
     }
 #else
     NSURL *myNSURL = [[NSURL alloc] initWithString:@"http://maps.google.com/?q=24.161838,120.604486"];  //Merry Electronics Co.,Ltd
@@ -48,6 +69,10 @@
     NSURLRequest *myNSURLRequest = [[NSURLRequest alloc] initWithURL:myNSURL];
     
     [self.webView loadRequest:myNSURLRequest];
+    
+    self.AlarmSwitch.on = NO;
+    self.alarmClock_hh = 0;
+    self.alarmClock_mm = 0;
 }
 
 - (void)didReceiveMemoryWarning {
@@ -55,11 +80,71 @@
     // Dispose of any resources that can be recreated.
 }
 
-- (BOOL)textFieldShouldReturn:(UITextField *)textField
+- (void)viewWillDisappear:(BOOL)animated
 {
-    [textField resignFirstResponder];
+    [super viewWillDisappear:NO];
     
-    return NO;
+    //NSLog(@"viewdisappear");
+    if(self.Alarm_hh.text != nil)
+        self.alarmClock_hh = [self.Alarm_hh.text intValue];
+    else
+        self.alarmClock_hh = 0;
+    
+    if(self.Alarm_mm.text != nil)
+        self.alarmClock_mm = [self.Alarm_mm.text intValue];
+    else
+        self.alarmClock_mm = 0;
+    
+    if(self.AlarmSwitch.on)
+        self.EnableAlarmClock = TRUE;
+    else
+        self.EnableAlarmClock = FALSE;
+}
+
+- (IBAction)doEditFieldDone:(id)sender
+{
+    //NSLog(@"doEditFieldDone");
+    if(self.Alarm_hh.text != nil)
+        self.alarmClock_hh = [self.Alarm_hh.text intValue];
+    else
+        self.alarmClock_hh = 0;
+    
+    if(self.Alarm_mm.text != nil)
+        self.alarmClock_mm = [self.Alarm_mm.text intValue];
+    
+    [sender resignFirstResponder];
+    
+    /*
+    if(self.Alarm_hh.text != nil)
+    {
+        NSLog(@"%@",self.Alarm_hh.text);
+    }
+    if(self.Alarm_mm.text != nil)
+    {
+        NSLog(@"%@",self.Alarm_mm.text);
+    }
+    */
+}
+
+- (IBAction)UpdateAlarmClockState:(id)sender {
+    
+    //NSLog(@"SwitchValueChange");
+    
+    if(self.AlarmSwitch.on)
+        self.EnableAlarmClock = TRUE;
+    else
+        self.EnableAlarmClock = FALSE;
+    
+    if(self.Alarm_hh.text != nil)
+        self.alarmClock_hh = [self.Alarm_hh.text intValue];
+    else
+        self.alarmClock_hh = 0;
+    
+    if(self.Alarm_mm.text != nil)
+        self.alarmClock_mm = [self.Alarm_mm.text intValue];
+    else
+        self.alarmClock_mm = 0;
+
 }
 
 /*
