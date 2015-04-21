@@ -9,6 +9,8 @@
 #import <UIKit/UIKit.h>
 #import <FacebookSDK/FacebookSDK.h>
 
+#define FBShareDialog
+
 @interface FBDemoViewController : UIViewController <FBLoginViewDelegate , UIImagePickerControllerDelegate>
 @property (weak, nonatomic) IBOutlet UILabel *lblLoginStatus;
 @property (weak, nonatomic) IBOutlet FBProfilePictureView *profilePicture;

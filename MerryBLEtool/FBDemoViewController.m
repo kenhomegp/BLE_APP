@@ -192,6 +192,40 @@
 }
 */
 
+#pragma mark - SharePhotoWithDialog
+#ifdef FBShareDialog
+- (IBAction)SharePhotoWithShareDialog:(id)sender {
+    // If the Facebook app is installed and we can present the share dialog
+    if([FBDialogs canPresentShareDialogWithPhotos]) {
+        NSLog(@"canPresent");
+        // Retrieve a picture from the device's photo library
+        /*
+         NOTE: SDK Image size limits are 480x480px minimum resolution to 12MB maximum file size.
+         In this app we're not making sure that our image is within those limits but you should.
+         Error code for images that go below or above the size limits is 102.
+         */
+        /*
+        UIImagePickerController *imagePicker = [[UIImagePickerController alloc] init];
+        [imagePicker setSourceType:UIImagePickerControllerSourceTypePhotoLibrary];
+        [imagePicker setDelegate:self];
+        [self presentViewController:imagePicker animated:YES completion:nil];
+         */
+        [self pickImageAndPublishStory];
+        
+    } else {
+        //The user doesn't have the Facebook for iOS app installed, so we can't present the Share Dialog
+        /*Fallback: You have two options
+         1. Share the photo as a Custom Story using a "share a photo" Open Graph action, and publish it using API calls.
+         See our Custom Stories tutorial: https://developers.facebook.com/docs/ios/open-graph
+         2. Upload the photo making a requestForUploadPhoto
+         See the reference: https://developers.facebook.com/docs/reference/ios/current/class/FBRequest/#requestForUploadPhoto:
+         */
+    }
+    
+}
+
+#endif
+
 #pragma mark - FBLoginView
 
 -(void)loginViewFetchedUserInfo:(FBLoginView *)loginView user:(id<FBGraphUser>)user{
