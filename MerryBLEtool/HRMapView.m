@@ -19,6 +19,11 @@
 #define DrawRoute
 #define ChkLocation
 #define GoogleMapFullScreen
+#define SaveImage
+
+#ifdef SaveImage
+#import <QuartzCore/QuartzCore.h>
+#endif
 
 @interface HRMapView ()
 @end
@@ -73,7 +78,6 @@
     return theDataObject;
 }
 
-
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
 {
     self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
@@ -83,15 +87,7 @@
     return self;
 }
 
-- (void)viewDidDisappear:(BOOL)animated
-{
-    //NSLog(@"viewDidDisappear");
-    [HRMTimer invalidate];
-    [[UIApplication sharedApplication] setIdleTimerDisabled:NO];
-    [[NSNotificationCenter defaultCenter] removeObserver:self];
-}
-
-#ifdef BatteryLevel
+#ifdef iPhoneBatteryLevel
 - (void)batteryLevelChanged:(NSNotification *)notification
 {
     //Update Battery Level
@@ -112,7 +108,48 @@
         //self.BatteryLabel.text = [numberFormatter stringFromNumber:levelObj];
         self.BatteryLabel.text = [@"Battery: " stringByAppendingString:[numberFormatter stringFromNumber:levelObj]];
     }
+}
+#endif
 
+- (void)viewDidDisappear:(BOOL)animated
+{
+    [super viewDidDisappear:NO];
+    
+    //NSLog(@"viewDidDisappear");
+    [HRMTimer invalidate];
+    [[UIApplication sharedApplication] setIdleTimerDisabled:NO];
+    
+#ifdef iPhoneBatteryLevel
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
+#endif
+    
+#ifdef CoreLocationBackground
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
+#endif
+}
+
+- (void)viewDidAppear:(BOOL)animated
+{
+    [super viewDidAppear:NO];
+#ifdef iPhoneBatteryLevel
+    // Register for battery level and state change notifications.
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(batteryLevelChanged:)
+                                                 name:UIDeviceBatteryLevelDidChangeNotification object:nil];
+    [UIDevice currentDevice].batteryMonitoringEnabled = YES;
+    //NSLog(@"BatteryMonitorEnabled!");
+#endif
+
+#ifdef CoreLocationBackground
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(APPDidEnterBackground:) name:UIApplicationDidEnterBackgroundNotification object:nil];
+    
+#endif
+}
+
+#ifdef CoreLocationBackground
+- (void)APPDidEnterBackground:(NSNotification *)notification
+{
+    NSLog(@"APPDidEnterBackground,%d",(int)[UIApplication sharedApplication].applicationState);
 }
 #endif
 
@@ -144,17 +181,7 @@
     self.navigationItem.rightBarButtonItem = StartButton;
     
     //Disable Idle Timer
-    //[[UIApplication sharedApplication] setIdleTimerDisabled:YES];
     [UIApplication sharedApplication].idleTimerDisabled = YES;
-    
-    #ifdef BatteryLevel
-    // Register for battery level and state change notifications.
-	[[NSNotificationCenter defaultCenter] addObserver:self
-											 selector:@selector(batteryLevelChanged:)
-												 name:UIDeviceBatteryLevelDidChangeNotification object:nil];
-    [UIDevice currentDevice].batteryMonitoringEnabled = YES;
-    //NSLog(@"BatteryMonitorEnabled!");
-    #endif
     
     //Start/Stop button
     [self.CustomButton setBackgroundImage:[UIImage imageNamed:@"Button1.png"] forState:UIControlStateNormal];
@@ -240,7 +267,7 @@
             TrackRouteSwitch = [[UISwitch alloc] initWithFrame:CGRectMake(-90, 100, 0, 0)];
             TrackRouteSwitch.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin;
             [TrackRouteSwitch addTarget:self action:@selector(didChangeRouteSwitch) forControlEvents:UIControlEventValueChanged];
-            TrackRouteSwitch.on = YES;
+            TrackRouteSwitch.on = NO;
             [holder addSubview:TrackRouteSwitch];
 
             self.CustomButton.hidden = YES;
@@ -333,7 +360,7 @@
             TrackRouteSwitch.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin;
             [TrackRouteSwitch addTarget:self action:@selector(didChangeRouteSwitch)
               forControlEvents:UIControlEventValueChanged];
-            TrackRouteSwitch.on = YES;
+            TrackRouteSwitch.on = NO;
             [holder addSubview:TrackRouteSwitch];
         #else
             mapView_ = [GMSMapView mapWithFrame:CGRectMake(0, 0, 320, 400) camera:camera];
@@ -640,25 +667,41 @@
 
 - (void)locationManager:(CLLocationManager *)manager didUpdateToLocation:(CLLocation *)newLocation fromLocation:(CLLocation *)oldLocation
 {
-    //NSLog(@"didUpdateToLocation: %@", newLocation);
+    /*
+    if(([UIApplication sharedApplication].applicationState) == UIApplicationStateBackground)
+    {
+        NSLog(@"Bg : didUpdateToLocation: %@", newLocation);
+        return;
+    }
+    else if(([UIApplication sharedApplication].applicationState) == UIApplicationStateActive)
+    {
+        NSLog(@"didUpdateToLocation: %@", newLocation);
+        return;
+    }
+    */
+    
+    int APPState;
     CLLocation *currentLocation = newLocation;
+    APPState = [UIApplication sharedApplication].applicationState;
     
 #ifdef ChkLocation
-    GMSVisibleRegion visibleRegion = mapView_.projection.visibleRegion;
-    GMSCoordinateBounds *bounds = [[GMSCoordinateBounds alloc] initWithRegion:visibleRegion];
+    if(APPState == UIApplicationStateActive)
+    {
+        GMSVisibleRegion visibleRegion = mapView_.projection.visibleRegion;
+        GMSCoordinateBounds *bounds = [[GMSCoordinateBounds alloc] initWithRegion:visibleRegion];
     
-    if([bounds containsCoordinate:currentLocation.coordinate])
-    {
-        #ifdef DebugMessage
-            NSLog(@"Coordinate is contained within the bounds");
-        #endif
-    }
-    else
-    {
-        //Move camera
-        //NSLog(@"Chang camera");
-        GMSCameraPosition *CurrLocation = [GMSCameraPosition cameraWithLatitude:currentLocation.coordinate.latitude longitude:Current_Location_longitude zoom:16];
-        [mapView_ setCamera:CurrLocation];
+        if([bounds containsCoordinate:currentLocation.coordinate])
+        {
+            #ifdef DebugMessage
+                NSLog(@"Coordinate is contained within the bounds");
+            #endif
+        }
+        else
+        {
+            //Move camera
+            GMSCameraPosition *CurrLocation = [GMSCameraPosition cameraWithLatitude:currentLocation.coordinate.latitude longitude:Current_Location_longitude zoom:16];
+            [mapView_ setCamera:CurrLocation];
+        }
     }
 #endif
 
@@ -726,6 +769,7 @@
                     NSString *pointString=[NSString stringWithFormat:@"%f,%f",newLocation.coordinate.latitude,newLocation.coordinate.longitude];
                     [points addObject:pointString];
                     GMSMutablePath *Mypath = [GMSMutablePath path];
+                    
                     for (int i=0; i<points.count; i++)
                     {
                         NSArray *latlongArray = [[points   objectAtIndex:i]componentsSeparatedByCharactersInSet:[NSCharacterSet characterSetWithCharactersInString:@","]];
@@ -735,12 +779,15 @@
                     
                     if (points.count>2)
                     {
-                        [mapView_ removeFromSuperview];
-                        polyline_ = [GMSPolyline polylineWithPath:Mypath];
-                        polyline_.strokeWidth = 6;
-                        polyline_.map = mapView_;
-                        [self.view addSubview:mapView_];
-                        [self.view addSubview:holder];
+                        if(APPState == UIApplicationStateActive)
+                        {
+                            [mapView_ removeFromSuperview];
+                            polyline_ = [GMSPolyline polylineWithPath:Mypath];
+                            polyline_.strokeWidth = 6;
+                            polyline_.map = mapView_;
+                            [self.view addSubview:mapView_];
+                            [self.view addSubview:holder];
+                        }
                     }
                 }
                 #endif
@@ -763,6 +810,19 @@
         #ifdef SaveLocationToFile
         [self DeleteTrackingData];
         #endif
+        
+        
+    }
+    else
+    {
+#ifdef SaveImage
+        UIImageWriteToSavedPhotosAlbum([self captureImageFromView:self.view], self, nil, nil);
+        
+        if(UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPhone)
+        {
+            [self performSegueWithIdentifier:@"SegueMapToFB" sender:self];
+        }
+#endif
     }
 }
 
@@ -833,9 +893,17 @@
 #endif
 }
 
--(IBAction)PressStartButton:(id)sender {
+-(IBAction)PressStartButton:(id)sender
+{
+#if 0
+    [locationManager startUpdatingLocation];
+    return;
+#endif
+    
     HRMDataObject* theDataObject = [self theAppDataObject];
+    
     self.APPConfig = theDataObject.APPConfig;
+
 #ifdef DebugMessage
     NSLog(@"APPConfig = %d",self.APPConfig);
 #endif
@@ -896,8 +964,29 @@
         
         [myAlert show];
 #endif
+        
+#ifdef SaveImage
+        UIAlertView *myAlert = [[UIAlertView alloc] initWithTitle:@"Facebook demo" message:@"Save image and share to Facebook" delegate:self cancelButtonTitle:@"No" otherButtonTitles:@"Yes", nil];
+        
+        [myAlert show];
+#endif
     }
 }
+
+#ifdef SaveImage
+- (UIImage *)captureImageFromView:(UIView *)theView {
+    
+    //設定邊界大小和影像透明度與比例
+    UIGraphicsBeginImageContextWithOptions(theView.bounds.size, theView.opaque, 0.0);
+    [theView.layer renderInContext:UIGraphicsGetCurrentContext()];
+    
+    //取得影像
+    UIImage *captureImage = UIGraphicsGetImageFromCurrentImageContext();
+    UIGraphicsEndImageContext();
+    
+    return captureImage;
+}
+#endif
 
 /*
 // Google Map SDK Demo example code

@@ -11,8 +11,9 @@
 
 #import "HRMTableSetting.h"
 
-#define BatteryLevel
+#define iPhoneBatteryLevelx
 #define iPhoneMapFullScreenx
+#define CoreLocationBackgroundx
 
 @protocol passMapPositionDelegate <NSObject>
 -(void) passDistance : (double)Map_distance;
