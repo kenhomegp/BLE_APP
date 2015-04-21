@@ -42,16 +42,11 @@
 		</dict>
 	</array>
 	<key>CFBundleVersion</key>
-	<string>8</string>
+	<string>9</string>
 	<key>FacebookAppID</key>
 	<string>718855008228887</string>
 	<key>FacebookDisplayName</key>
 	<string>MyHRM</string>
-	<key>UIBackgroundModes</key>
-	<array>
-		<string>bluetooth-peripheral</string>
-		<string>bluetooth-central</string>
-	</array>
 	<key>LSApplicationCategoryType</key>
 	<string></string>
 	<key>LSRequiresIPhoneOS</key>
@@ -60,6 +55,12 @@
 	<string></string>
 	<key>NSLocationWhenInUseUsageDescription</key>
 	<string>This will be used to obtain your location.</string>
+	<key>UIBackgroundModes</key>
+	<array>
+		<string>bluetooth-central</string>
+		<string>bluetooth-peripheral</string>
+		<string>fetch</string>
+	</array>
 	<key>UILaunchImages</key>
 	<array>
 		<dict>
