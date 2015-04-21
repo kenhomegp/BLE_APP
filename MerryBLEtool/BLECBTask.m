@@ -18,8 +18,6 @@
 #define BLE_Characteristic_DEBUG(x)
 #endif
 
-#define TestWithSunnerx
-
 //Test mode
 #define TestLEDOn           30
 #define TestLEDOff          31
@@ -370,8 +368,11 @@
     
     [NSTimer scheduledTimerWithTimeInterval:(float)timeout target:self selector:@selector(scanTimer:) userInfo:nil repeats:NO];
     
-    //NSArray *services = @[[CBUUID UUIDWithString:@"180D"], [CBUUID UUIDWithString:@"1802"], [CBUUID UUIDWithString:@"180A"]];
-    NSArray *services = @[[CBUUID UUIDWithString:@"180D"], [CBUUID UUIDWithString:@"180A"]];
+    //Find HRM device
+    //NSArray *services = @[[CBUUID UUIDWithString:@"180D"], [CBUUID UUIDWithString:@"180A"]];
+    
+    //Find HID device
+    NSArray *services = @[[CBUUID UUIDWithString:@"1812"], [CBUUID UUIDWithString:@"180D"]];
     
     //[self.CM scanForPeripheralsWithServices:nil options:0]; // Start scanning
     [self.CM scanForPeripheralsWithServices:services options:0]; // Start scanning
@@ -836,6 +837,7 @@
         self.m_Device.text = peripheral.name;
         NSString *localName = [advertisementData objectForKey:CBAdvertisementDataLocalNameKey];
         Core_Bluetooth_DEBUG(("Found a device, connecting..\n"));
+        
         //[[self delegate] logBLEMessage:@"Found a device, connecting"];
         [[self delegate] logBLEMessage:[NSString stringWithFormat:@"Found a device: %@ , connecting..",localName]];
     }
@@ -844,8 +846,11 @@
 - (void)centralManager:(CBCentralManager *)central didConnectPeripheral:(CBPeripheral *)peripheral {
     Core_Bluetooth_DEBUG(("Connection to peripheral with UUID : %s successfull\r\n",[self UUIDToString:peripheral.UUID]));
     
+    //NSArray *services = @[[CBUUID UUIDWithString:@"FFE0"]];
+    
     self.activePeripheral = peripheral;
     [self.activePeripheral discoverServices:nil];
+    //[self.activePeripheral discoverServices:services];
     [central stopScan];
 }
 
@@ -977,11 +982,12 @@
                                 [[self delegate] logBLEMessage:@"Characteristic(FFE2) found!"];
                                 
                                 #if 0 //Run Testing
-                                    NSLog(@"### Run testing... ####");
+                                    //NSLog(@"### Run testing... ####");
                                     self.TestStep = TestLEDOn;
                                     [self performSelector:@selector(BLETestScript) withObject:nil afterDelay:5.0];
                                 #else
-                                    self.TestStep = RunNormal;
+                                    NSLog(@"### Run testing... ####");
+                                    self.TestStep = EnableHeartRate;
                                     [self performSelector:@selector(BLETestScript) withObject:nil afterDelay:5.0];
                                 #endif
                             }
@@ -1285,6 +1291,84 @@
     }
 }
 
+- (void)WriteValueForCustomCharacteristic:(BOOL)IOType OnOff:(BOOL)OnOffValue
+{
+    if(self.activePeripheral == nil)
+    {
+        return;
+    }
+    
+    //char data;
+    uint8_t data;
+    
+    CBUUID *cu = [CBUUID UUIDWithString:@"FFE1"];   //Characteristic UUID
+    CBUUID *su = [CBUUID UUIDWithString:@"FFE0"];   //Service UUID
+    
+    CBService *service = [self findServiceFromUUID:su p:self.activePeripheral];
+    
+    if(!service)
+    {
+        //NSLog(@"Error service!");
+        return;
+    }
+    
+    CBCharacteristic *characteristic = [self findCharacteristicFromUUID:cu service:service];
+    
+    if(!characteristic)
+    {
+        //NSLog(@"Error char.!");
+        return;
+    }
+    
+    if(IOType)  //LED
+    {
+        if(OnOffValue)
+            data = 0;
+        else
+            data = 1;
+    }
+    else        //Buzzer
+    {
+        if(OnOffValue)
+            data = 2;
+        else
+            data = 3;
+    }
+    
+    NSData *d = [[NSData alloc] initWithBytes:&data length:1];
+    [self.activePeripheral writeValue:d forCharacteristic:characteristic type:CBCharacteristicWriteWithResponse];
+    
+    //NSLog(@"writeValue");
+    Core_Bluetooth_DEBUG(("CB:writeValue!,%d\r\n",data));
+}
+
+- (void)ReadBatterylevelCharacteristic
+{
+    if(self.activePeripheral == nil)
+        return;
+    
+    
+    CBUUID *cu = [CBUUID UUIDWithString:@"2A19"];   //Characteristic UUID
+    CBUUID *su = [CBUUID UUIDWithString:@"180F"];   //Service UUID
+    
+    CBService *service = [self findServiceFromUUID:su p:self.activePeripheral];
+    
+    if(!service)
+    {
+        return;
+    }
+    
+    CBCharacteristic *characteristic = [self findCharacteristicFromUUID:cu service:service];
+    
+    if(!characteristic)
+    {
+        return;
+    }
+    
+    [self.activePeripheral readValueForCharacteristic:characteristic];
+}
+
+
 - (void)BLETestScript
 {
     char data;
@@ -1337,7 +1421,7 @@
             break;
         case EnableHeartRate:
             [self EnableHRM:self.activePeripheral];
-            #ifndef TestWithSunner
+            #if 0
             [self BleEnableButtons:self.activePeripheral];
             self.TestStep = EnableButton;
             NSLog(@"Enable HRM & Button");

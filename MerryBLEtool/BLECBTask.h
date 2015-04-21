@@ -89,6 +89,6 @@
 -(int) compareCBUUIDToInt:(CBUUID *) UUID1 UUID2:(UInt16)UUID2;
 -(UInt16) CBUUIDToInt:(CBUUID *) UUID;
 -(int) UUIDSAreEqual:(CFUUIDRef)u1 u2:(CFUUIDRef)u2;
-
-
+- (void)WriteValueForCustomCharacteristic:(BOOL)IOType OnOff:(BOOL)OnOffValue;
+- (void)ReadBatterylevelCharacteristic;
 @end

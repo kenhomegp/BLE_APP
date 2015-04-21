@@ -7,17 +7,25 @@
 //
 
 #import "HRMCBTask.h"
-
-#define DebugMode
+#import "HRMTableSetting.h"
 
 //Test mode
 #define SetHeartRateNotifyDisabled  30
 #define SetHeartRateNotifyEnabled   31
 
+#define UUID_Custom_Service         @"FFE0"
+#define UUID_Custom_Control         @"FFE1"
+#define UUID_Custom_Button          @"FFE2"
+#define UUID_Custom_SensorData      @"FFE3"
+
+
 @implementation HRMCBTask
 
 - (void)SetVC:(NSInteger)vc
 {
+    //ViewController 0 ==> HRStartViewController
+    //ViewController 1 ==> HRMViewController
+    
     self.ViewController = vc;
 }
 
@@ -25,6 +33,7 @@
     self.CM = [[CBCentralManager alloc] initWithDelegate:self queue:nil];
     self.tmp = nil;
     self.activeDevName = nil;
+    self.activePeripheral = nil;
     
     //self.peripherals = [[NSMutableArray alloc] initWithCapacity:3];
     //NSLog(@"Control setup");
@@ -42,13 +51,17 @@
 
 - (void)ScanHRMDevice
 {
-    //NSArray *services = @[[CBUUID UUIDWithString:HRM_HEART_RATE_SERVICE_UUID], [CBUUID UUIDWithString:HRM_DEVICE_INFO_SERVICE_UUID]];
+#ifdef iOSSelfieDemo
+    //GATT_Human_Interface_Service
+    NSArray *services = @[[CBUUID UUIDWithString:@"1812"], [CBUUID UUIDWithString:HRM_HEART_RATE_SERVICE_UUID]];
+#else
+    NSArray *services = @[[CBUUID UUIDWithString:HRM_HEART_RATE_SERVICE_UUID], [CBUUID UUIDWithString:HRM_DEVICE_INFO_SERVICE_UUID]];
+#endif
     
-    NSArray *services = @[[CBUUID UUIDWithString:HRM_HEART_RATE_SERVICE_UUID], [CBUUID UUIDWithString:HRM_DEVICE_INFO_SERVICE_UUID], [CBUUID UUIDWithString:IMM_ALERT_SERVICE_UUID]];
-
     if(self.CM != nil)
     {
         [self.CM scanForPeripheralsWithServices:services options:nil];
+        //[self.CM scanForPeripheralsWithServices:nil options:nil];
         //NSLog(@"Scan BLE_HeartRate device");
     }
     else
@@ -109,23 +122,30 @@
 {
     NSString *localName = [advertisementData objectForKey:CBAdvertisementDataLocalNameKey];
 
+#if 0
+    NSUUID *Peripheraluuid = peripheral.identifier;
+    NSLog(@"Peripheral UUID = %@",Peripheraluuid.UUIDString);
+#endif
+    
     if (![localName isEqual:@""])
     {
-        /*
-        //Scan device and Auto-reconnect
-        if (([localName isEqual:@"HR Sensor306125"]) || ([localName isEqual:@"HRM"]) || ([localName isEqual:@"HR Sensor306041"]))
-        {
-                // We found the Heart Rate Monitor
-                [self.CM stopScan];
-            
-                self.activePeripheral = peripheral;
-            
-                peripheral.delegate = self;
-            
-                [self.CM connectPeripheral:peripheral options:nil];
-        }
-        */
+#ifdef CustomBLE_iPhoneDemo_
         
+        //Scan device and Auto-reconnect
+        //if (([localName isEqual:@"HR Sensor306125"]) || ([localName isEqual:@"HRM"]) || ([localName isEqual:@"HR Sensor306041"]))
+        if([localName isEqualToString:@"HR Sensor1000"])
+        {
+            // We found the Heart Rate Monitor
+            [self.CM stopScan];
+            self.activePeripheral = peripheral;
+            self.activeDevName = localName;
+            self.activePeripheral.delegate = self;
+            [self.CM connectPeripheral:peripheral options:nil];
+            //NSLog(@"Find device,Merry HRM Demo");
+            return;
+        }
+        
+#else
         if([localName isEqualToString:self.tmp])
         {
             [self.CM stopScan];
@@ -136,10 +156,16 @@
             return;
         }
         
-        //NSLog(@"***Found a device : %@",localName);
+        #ifdef iOSSelfieDemo
+            //NSLog(@"***Found a BLE device : %@",localName);
+        #else
+            //NSLog(@"***Found a HRM device : %@",localName);
+        #endif
+        
         self.activePeripheral = peripheral;
         self.activeDevName = localName;
         [[self delegate1] CBStatusUpdate:@"Scan" BLEData:localName];
+#endif
     }
 }
 
@@ -205,6 +231,8 @@ didDisconnectPeripheral:(CBPeripheral *)peripheral
             if ([aChar.UUID isEqual:[CBUUID UUIDWithString:HRM_NOTIFICATIONS_SERVICE_UUID]]) {
                 
                 [self.activePeripheral setNotifyValue:YES forCharacteristic:aChar];
+                
+                //NSLog(@"HRM Notify : YES");
             }
             // Request body sensor location
             else if ([aChar.UUID isEqual:[CBUUID UUIDWithString:HRM_BODY_LOCATION_UUID]]) { 
@@ -212,12 +240,18 @@ didDisconnectPeripheral:(CBPeripheral *)peripheral
             }
         }
     }
-    else if ([service.UUID isEqual:[CBUUID UUIDWithString:@"FFE0"]])
+    else if ([service.UUID isEqual:[CBUUID UUIDWithString:UUID_Custom_Service]])
     {
         for (CBCharacteristic *aChar in service.characteristics)
         {
-            if ([aChar.UUID isEqual:[CBUUID UUIDWithString:@"FFE2"]]) {
+            if ([aChar.UUID isEqual:[CBUUID UUIDWithString:UUID_Custom_Button]]) {
                 [self.activePeripheral setNotifyValue:YES forCharacteristic:aChar];
+                //NSLog(@"Button Notify : YES");
+            }
+            
+            if ([aChar.UUID isEqual:[CBUUID UUIDWithString:UUID_Custom_SensorData]]) {
+                [self.activePeripheral setNotifyValue:YES forCharacteristic:aChar];
+                //NSLog(@"Sensors Notify : YES");
             }
         }
     }
@@ -232,7 +266,12 @@ didDisconnectPeripheral:(CBPeripheral *)peripheral
         [self getHeartBPMData:characteristic error:error];
     }
     
-    if ([characteristic.UUID isEqual:[CBUUID UUIDWithString:@"FFE2"]])
+    if ([characteristic.UUID isEqual:[CBUUID UUIDWithString:UUID_Custom_Button]])
+    {
+        [self getCharData:characteristic error:error];
+    }
+    
+    if ([characteristic.UUID isEqual:[CBUUID UUIDWithString:UUID_Custom_SensorData]])
     {
         [self getCharData:characteristic error:error];
     }
@@ -311,19 +350,45 @@ didDisconnectPeripheral:(CBPeripheral *)peripheral
 
 - (void) getCharData:(CBCharacteristic *)characteristic error:(NSError *)error
 {
-    // Get the Heart Rate Monitor BPM
     NSData *data = [characteristic value];
     const uint8_t *reportData = [data bytes];
     UInt8 button = 0;
     button = reportData[0];
-    if(button == 0)
+    
+    if ([characteristic.UUID isEqual:[CBUUID UUIDWithString:UUID_Custom_Button]])
     {
-        //NSLog(@"Long button");
-        //[[self delegate1] CBStatusUpdate:@"Connected" BLEData:@"NO"];
+        if(button == 0)
+        {
+            //NSLog(@"Long button");
+            //[[self delegate1] CBStatusUpdate:@"Connected" BLEData:@"NO"];
+        }
+        else{
+            //NSLog(@"Short button");
+            int APPState = [UIApplication sharedApplication].applicationState;
+        
+            if(APPState == UIApplicationStateActive){
+                [[self delegate1] CBStatusUpdate:@"CustomBLEService" BLEData:@"ShortButton"];
+            }
+            else if (APPState == UIApplicationStateBackground){
+                [[NSNotificationCenter defaultCenter] postNotificationName:@"TestButton" object:nil];
+            }
+        }
     }
-    else{
-        //NSLog(@"Short button");
-        [[self delegate1] CBStatusUpdate:@"CustomBLEService" BLEData:@"ShortButton"];
+    else
+    {
+        UInt8 buff[8];
+        for(int i = 0 ; i < 8 ; i++)
+        {
+            buff[i] = *(reportData+i);
+            //NSLog(@" %x",buff[i]);
+        }
+        //NSLog(@"\n");
+        
+        if(self.ViewController == 1)
+        {
+            //[[self delegate2] HeartRateBPM:bpm];
+            [[self delegate2] HRMRelatedInfo:(buff[2]*256+buff[3]) Caloriesa:(buff[4]*256+buff[5])];
+        }
     }
 }
 
@@ -354,7 +419,13 @@ didDisconnectPeripheral:(CBPeripheral *)peripheral
 
 - (void)WriteValueForCustomCharacteristic:(BOOL)IOType OnOff:(BOOL)OnOffValue
 {
-    char data;
+    if(self.activePeripheral == nil)
+    {
+        return;
+    }
+    
+    //char data;
+    uint8_t data;
     
     CBUUID *cu = [CBUUID UUIDWithString:@"FFE1"];   //Characteristic UUID
     CBUUID *su = [CBUUID UUIDWithString:@"FFE0"];   //Service UUID
@@ -363,6 +434,7 @@ didDisconnectPeripheral:(CBPeripheral *)peripheral
     
     if(!service)
     {
+        //NSLog(@"Error service!");
         return;
     }
     
@@ -370,31 +442,37 @@ didDisconnectPeripheral:(CBPeripheral *)peripheral
     
     if(!characteristic)
     {
+        //NSLog(@"Error char.!");
         return;
     }
 
     if(IOType)  //LED
     {
         if(OnOffValue)
-            data = 0x10;
+            data = 0;
         else
-            data = 0x11;
+            data = 1;
     }
     else        //Buzzer
     {
         if(OnOffValue)
-            data = 0x12;
+            data = 2;
         else
-            data = 0x13;
+            data = 3;
     }
     
     NSData *d = [[NSData alloc] initWithBytes:&data length:1];
     [self.activePeripheral writeValue:d forCharacteristic:characteristic type:CBCharacteristicWriteWithResponse];
 
+    //NSLog(@"CB:WriteValue");
 }
 
 - (void)ReadBatterylevelCharacteristic
 {
+    if(self.activePeripheral == nil)
+        return;
+    
+    
     CBUUID *cu = [CBUUID UUIDWithString:@"2A19"];   //Characteristic UUID
     CBUUID *su = [CBUUID UUIDWithString:@"180F"];   //Service UUID
     
@@ -413,6 +491,79 @@ didDisconnectPeripheral:(CBPeripheral *)peripheral
     }
 
     [self.activePeripheral readValueForCharacteristic:characteristic];
+    
+    //NSLog(@"CB:ReadBatteryLevel");
 }
 
+-(void)HRMConfig
+{
+    int i;
+    uint8_t UserInfo[18] = {0xA0,0x10,0x04,0x10,0x01,0x9E,0x11,0x00,0x00,0x12,0x01,0xF4,0x13,0x00,0xA8,0x20,0x00,0x01};
+    
+    CBUUID *cu = [CBUUID UUIDWithString:@"FFE1"];   //Characteristic UUID
+    CBUUID *su = [CBUUID UUIDWithString:@"FFE0"];   //Service UUID
+    
+    if(self.activePeripheral == nil)
+    {
+        //NSLog(@"No connection!");
+        return;
+    }
+    
+    CBService *service = [self findServiceFromUUID:su p:self.activePeripheral];
+    
+    if(!service)
+    {
+        //NSLog(@"Error service!");
+        return;
+    }
+    
+    CBCharacteristic *characteristic = [self findCharacteristicFromUUID:cu service:service];
+    
+    if(!characteristic)
+    {
+        //NSLog(@"Error char.!");
+        return;
+    }
+    
+    for(i = 0; i < 18; i++)
+    {
+        NSData *d = [[NSData alloc] initWithBytes:&UserInfo[i] length:1];
+        [self.activePeripheral writeValue:d forCharacteristic:characteristic type:CBCharacteristicWriteWithResponse];
+    
+        //NSLog(@"HRMConfig %d",i);
+    }
+}
+
+-(void)HRMWriteCommand:(uint8_t)CMD
+{
+    if(self.activePeripheral == nil)
+    {
+        return;
+    }
+    
+    uint8_t data = CMD;
+    
+    CBUUID *cu = [CBUUID UUIDWithString:@"FFE1"];   //Characteristic UUID
+    CBUUID *su = [CBUUID UUIDWithString:@"FFE0"];   //Service UUID
+    
+    CBService *service = [self findServiceFromUUID:su p:self.activePeripheral];
+    
+    if(!service)
+    {
+        //NSLog(@"Error service!");
+        return;
+    }
+    
+    CBCharacteristic *characteristic = [self findCharacteristicFromUUID:cu service:service];
+    
+    if(!characteristic)
+    {
+        //NSLog(@"Error char.!");
+        return;
+    }
+    
+    NSData *d = [[NSData alloc] initWithBytes:&data length:1];
+    [self.activePeripheral writeValue:d forCharacteristic:characteristic type:CBCharacteristicWriteWithResponse];
+    
+}
 @end

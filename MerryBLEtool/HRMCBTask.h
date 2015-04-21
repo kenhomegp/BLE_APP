@@ -27,6 +27,7 @@
 
 @protocol HRMeasurement
 -(void) HeartRateBPM:(NSInteger)HeartRate;
+-(void) HRMRelatedInfo:(NSInteger) TotalStep Caloriesa:(NSInteger)Cals;
 @end
 
 @interface HRMCBTask : NSObject <CBCentralManagerDelegate, CBPeripheralDelegate> {
@@ -49,4 +50,6 @@
 - (void)StopScanPeripheral;
 - (void)WriteValueForCustomCharacteristic:(BOOL)IOType OnOff:(BOOL)OnOffValue;
 - (void)ReadBatterylevelCharacteristic;
+-(void)HRMConfig;
+-(void)HRMWriteCommand:(uint8_t)CMD;
 @end
