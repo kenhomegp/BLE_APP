@@ -73,6 +73,8 @@ static double TotalCalories = 0;
 
 - (void)viewWillDisappear:(BOOL)animated
 {
+    [super viewWillDisappear:NO];
+    
     if([DrawHRCurve isValid])
     {
         [DrawHRCurve invalidate];
@@ -96,6 +98,8 @@ static double TotalCalories = 0;
 
 - (void)viewWillAppear:(BOOL)animated
 {
+    [super viewWillAppear:NO];
+    
     //NSLog(@"viewWillAppear,%@",self.APPState);
     
     if(self.polarH7HRMPeripheral != nil)
@@ -1994,7 +1998,7 @@ didDisconnectPeripheral:(CBPeripheral *)peripheral
 
 - (void) tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
-	CBPeripheral	*peripheral;
+	//CBPeripheral	*peripheral;
 	//NSArray			*devices;
 	//NSInteger		row	= [indexPath row];
 	
@@ -2006,7 +2010,7 @@ didDisconnectPeripheral:(CBPeripheral *)peripheral
 //    	peripheral = (CBPeripheral*)[devices objectAtIndex:row];
 	}
     
-    peripheral = self.polarH7HRMPeripheral;
+    //peripheral = self.polarH7HRMPeripheral;
     
     /*
 	if (![peripheral isConnected]) {
@@ -2050,7 +2054,13 @@ didDisconnectPeripheral:(CBPeripheral *)peripheral
     self.HR_bpm.text = [NSString stringWithFormat:@"%li bpm", (long)HeartRate];
     self.heartRate = HeartRate;
 }
-
+    
+-(void) HRMRelatedInfo:(NSInteger) TotalStep Caloriesa:(NSInteger)Cals;
+{
+    //self.MileageLabel.text = [NSString stringWithFormat:@"Distance:%2.2f km",(double)(TotalStep*60)];
+    self.BurnCalorieLabel.text = [NSString stringWithFormat:@"Calories:%5.1f cal",(double)Cals];
+}
+    
 #pragma mark -
 #pragma mark MailComposeController delegates
 - (void) mailComposeController:(MFMailComposeViewController *)controller didFinishWithResult:(MFMailComposeResult)result error:(NSError *)error
