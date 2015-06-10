@@ -103,7 +103,7 @@
             IndexSetAccessoryCheckmark = 0;
             [self.tableView reloadData];
             
-            #ifdef BLE_Debug
+            #ifdef BLE_Debug    //iPad only
             
             #else
                 [CoreBTObj ScanHRMDevice];
@@ -248,10 +248,10 @@
 
 #pragma mark - BLEDeviceIOControl delegate
 #if (defined(CustomBLEService) || defined(CustomBLE_iPhoneDemo))
--(void) ConfigUserInformation
+-(void) ConfigUserInformation:(BOOL)Select
 {
     #ifdef MERBHC1510_Project
-    [CoreBTObj HRMConfig];
+    [CoreBTObj HRMConfig:Select];
     #endif
 }
 

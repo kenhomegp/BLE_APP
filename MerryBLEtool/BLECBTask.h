@@ -78,6 +78,7 @@
 -(void) printKnownPeripherals;
 -(void) printPeripheralInfo:(CBPeripheral*)peripheral;
 -(void) connectPeripheral:(CBPeripheral *)peripheral;
+-(void) DisconnectHRM;
 
 -(void) getAllServicesFromKeyfob:(CBPeripheral *)p;
 -(void) getAllCharacteristicsFromKeyfob:(CBPeripheral *)p;

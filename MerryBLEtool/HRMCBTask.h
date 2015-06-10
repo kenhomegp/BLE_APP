@@ -50,6 +50,6 @@
 - (void)StopScanPeripheral;
 - (void)WriteValueForCustomCharacteristic:(BOOL)IOType OnOff:(BOOL)OnOffValue;
 - (void)ReadBatterylevelCharacteristic;
--(void)HRMConfig;
+-(void)HRMConfig:(BOOL)Type;
 -(void)HRMWriteCommand:(uint8_t)CMD;
 @end

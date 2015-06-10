@@ -60,9 +60,35 @@
     
     if(self.CM != nil)
     {
+#if 0
+        //Device is not bonded
         [self.CM scanForPeripheralsWithServices:services options:nil];
-        //[self.CM scanForPeripheralsWithServices:nil options:nil];
         //NSLog(@"Scan BLE_HeartRate device");
+#else
+        
+        //Device bonded
+        //This is a workaround solution : When device is bonding and power on,it will not go to advertising mode(Device can't be scanned by APP)
+        NSArray *HRMDevice_id = @[[[NSUUID alloc] initWithUUIDString:@"28EA5552-AC90-CC9B-0246-E4A9F0B08B68"]];
+        
+        NSArray *HRMDeviceFound = [self.CM retrievePeripheralsWithIdentifiers:HRMDevice_id];
+        
+        //NSLog(@"%lu\n",(unsigned long)HRMDeviceFound.count);
+        
+        if(HRMDeviceFound.count == 1)
+        {
+            self.activePeripheral = [HRMDeviceFound objectAtIndex:0];
+            //NSUUID *Peripheralid = self.activePeripheral.identifier;
+            //NSLog(@"Peripheral ID = %@",Peripheralid.UUIDString);
+            
+            self.activePeripheral.delegate = self;
+            
+            [self.CM stopScan];
+            
+            [self.CM connectPeripheral:self.activePeripheral options:nil];
+            //NSLog(@"Retrieving a list of known HRM device and connect");
+        }
+#endif
+
     }
     else
     {
@@ -79,6 +105,10 @@
         [self.CM stopScan];
         
         [self.CM connectPeripheral:self.activePeripheral options:nil];
+
+        //Get the UUID associated with the peripheral
+        //NSUUID *Peripheralid = self.activePeripheral.identifier;
+        //NSLog(@"Peripheral ID = %@",Peripheralid.UUIDString);
         
         //NSLog(@"Connect to HRM_device,%@",self.activeDevName);
     }
@@ -87,6 +117,7 @@
         [self.CM stopScan];
         self.tmp = DeviceName;
         [self ScanHRMDevice];
+        
     }
 }
 
@@ -495,10 +526,154 @@ didDisconnectPeripheral:(CBPeripheral *)peripheral
     //NSLog(@"CB:ReadBatteryLevel");
 }
 
--(void)HRMConfig
+-(void)HRMConfig:(BOOL)Type
 {
+    //Type =    YES (Config HRM Sensor(MERBHC1510_Projects))
+    //          NO  (Config SystemTime:Initial RTC)
+    
     int i;
+    
     uint8_t UserInfo[18] = {0xA0,0x10,0x04,0x10,0x01,0x9E,0x11,0x00,0x00,0x12,0x01,0xF4,0x13,0x00,0xA8,0x20,0x00,0x01};
+ 
+    //Get current time
+    uint8_t RTCTime[9];
+    RTCTime[0] = 0xa2;
+    RTCTime[1] = 0x07;
+    //==================================================================
+    NSDate *currentDate = [NSDate date];
+    NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
+    [dateFormatter setDateFormat:@"yyyy.MM.dd/HH:mm:ss/aa"];
+    NSDateFormatter *dateFormatterT = [[NSDateFormatter alloc] init];
+    [dateFormatterT setDateFormat:@"EEEE"];
+
+    NSString *timeString = [dateFormatter stringFromDate:currentDate];
+    NSLog(@"%@",timeString);
+    NSString *Weekday = [dateFormatterT stringFromDate:currentDate];
+    NSLog(@"%@",Weekday);
+    
+    NSRange Str = [timeString rangeOfString:@"AM"];
+    if(Str.length > 0)
+    {
+        //NSLog(@"AM");
+        RTCTime[2] = 0x00;
+    }
+    else
+    {
+        //NSLog(@"PM");
+        RTCTime[2] = 0x01;
+    }
+
+    NSRange Str1 = [timeString rangeOfString:@"上午"];
+    if(Str1.length > 0)
+    {
+        //NSLog(@"AM");
+        RTCTime[2] = 0x00;
+    }
+    else
+    {
+        //NSLog(@"PM");
+        RTCTime[2] = 0x01;
+    }
+    
+    if([Weekday isEqualToString:@"星期一"])
+    {
+        //NSLog(@"Today is Friday");
+        RTCTime[2] |= 0x10;
+    }
+    else if ([Weekday isEqualToString:@"Monday"])
+    {
+        RTCTime[2] |= 0x10;
+    }
+    
+    if([Weekday isEqualToString:@"星期二"])
+    {
+        //NSLog(@"Today is Friday");
+        RTCTime[2] |= 0x20;
+    }
+    else if ([Weekday isEqualToString:@"Tuesday"])
+    {
+        RTCTime[2] |= 0x20;
+    }
+
+    if([Weekday isEqualToString:@"星期三"])
+    {
+        //NSLog(@"Today is Friday");
+        RTCTime[2] |= 0x30;
+    }
+    else if ([Weekday isEqualToString:@"Wednesday"])
+    {
+        RTCTime[2] |= 0x30;
+    }
+    
+    if([Weekday isEqualToString:@"星期四"])
+    {
+        //NSLog(@"Today is Friday");
+        RTCTime[2] |= 0x40;
+    }
+    else if ([Weekday isEqualToString:@"Thursday"])
+    {
+        RTCTime[2] |= 0x40;
+    }
+    
+    if([Weekday isEqualToString:@"星期五"])
+    {
+        //NSLog(@"Today is Friday");
+        RTCTime[2] |= 0x50;
+    }
+    else if ([Weekday isEqualToString:@"Friday"])
+    {
+        RTCTime[2] |= 0x50;
+    }
+    
+    if([Weekday isEqualToString:@"星期六"])
+    {
+        //NSLog(@"Today is Friday");
+        RTCTime[2] |= 0x60;
+    }
+    else if ([Weekday isEqualToString:@"Saturday"])
+    {
+        RTCTime[2] |= 0x60;
+    }
+
+    if([Weekday isEqualToString:@"星期日"])
+    {
+        //NSLog(@"Today is Friday");
+        RTCTime[2] |= 0x70;
+    }
+    else if ([Weekday isEqualToString:@"Sunday"])
+    {
+        RTCTime[2] |= 0x70;
+    }
+
+    NSRange Str_year = NSMakeRange(0, 4);
+    int yy = [[timeString substringWithRange:Str_year] intValue];
+    RTCTime[3] = yy-2000;
+    
+    NSRange Str_month = NSMakeRange(5, 2);
+    RTCTime[4] = [[timeString substringWithRange:Str_month] intValue];
+    
+    NSRange Str_day = NSMakeRange(8, 2);
+    RTCTime[5] = [[timeString substringWithRange:Str_day] intValue];
+    
+    NSRange Str_hour = NSMakeRange(11, 2);
+    int hour = [[timeString substringWithRange:Str_hour] intValue];
+    //二十四小時制
+    RTCTime[6] = hour;
+    //十二小時制
+    //if(RTCTime[2] == 0x01)
+    //{
+    //    RTCTime[6] = hour-12;
+    //}
+    //else{
+    //    RTCTime[6] = hour;
+    //}
+    
+    NSRange Str_min = NSMakeRange(14, 2);
+    RTCTime[7] = [[timeString substringWithRange:Str_min] intValue];
+    
+    NSRange Str_sec = NSMakeRange(17, 2);
+    RTCTime[8] = [[timeString substringWithRange:Str_sec] intValue];
+    
     
     CBUUID *cu = [CBUUID UUIDWithString:@"FFE1"];   //Characteristic UUID
     CBUUID *su = [CBUUID UUIDWithString:@"FFE0"];   //Service UUID
@@ -525,13 +700,23 @@ didDisconnectPeripheral:(CBPeripheral *)peripheral
         return;
     }
     
-    for(i = 0; i < 18; i++)
+    if(Type == YES)
     {
-        NSData *d = [[NSData alloc] initWithBytes:&UserInfo[i] length:1];
-        [self.activePeripheral writeValue:d forCharacteristic:characteristic type:CBCharacteristicWriteWithResponse];
-    
-        //NSLog(@"HRMConfig %d",i);
+        for(i = 0; i < 18; i++)
+        {
+            NSData *d1 = [[NSData alloc] initWithBytes:&UserInfo[i] length:1];
+            [self.activePeripheral writeValue:d1 forCharacteristic:characteristic type:CBCharacteristicWriteWithResponse];
+        }
     }
+    else
+    {
+        for(i = 0; i < 9; i++)
+        {
+            NSData *d2 = [[NSData alloc] initWithBytes:&RTCTime[i] length:1];
+            [self.activePeripheral writeValue:d2 forCharacteristic:characteristic type:CBCharacteristicWriteWithResponse];
+        }
+    }
+    
 }
 
 -(void)HRMWriteCommand:(uint8_t)CMD

@@ -206,11 +206,17 @@
 }
 
 - (IBAction)BleDevBuzzerChanged:(id)sender {
+    
+#ifdef MERBHC1510_Project
+    [[self delegate1] ConfigUserInformation:NO];
+    [self dismissViewControllerAnimated:YES completion:nil];
+#else
     //NSLog(@"test protocol,Buzzer");
     if(self.BleDeviceBuzzer.isOn)
         [[self delegate1] SwitchControl:FALSE SetValue:TRUE];
     else
         [[self delegate1] SwitchControl:FALSE SetValue:FALSE];
+#endif
 }
 
 - (IBAction)SetAlarmClock:(id)sender {
@@ -415,7 +421,7 @@
     [[self delegate] APPSetting:self.APPConfig];
     [[self delegate] passHeartRateData:self.MaximumHR SetMaxHR:self.SetMaxHR SetMinHR:self.SetMinHR RestHeartRate:self.SetRHR UpperTargetHeartRate:self.UpperTHR LowerTargetHeartRate:self.LowerTHR];
     
-    [[self delegate1] ConfigUserInformation];
+    [[self delegate1] ConfigUserInformation:YES];
     [self dismissViewControllerAnimated:YES completion:nil];
 }
 

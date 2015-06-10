@@ -43,7 +43,7 @@
 @protocol BLEDeviceIOControl
 -(void) SwitchControl:(BOOL)IOType SetValue:(BOOL)IOControl;
 -(void) SetAlarmClock:(int)HH Minute:(int)MM;
--(void) ConfigUserInformation;
+-(void) ConfigUserInformation:(BOOL)Select;
 @end
 
 @interface HRMTableSetting : UITableViewController <UITextFieldDelegate>

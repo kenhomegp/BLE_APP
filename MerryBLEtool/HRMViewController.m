@@ -2057,8 +2057,10 @@ didDisconnectPeripheral:(CBPeripheral *)peripheral
     
 -(void) HRMRelatedInfo:(NSInteger) TotalStep Caloriesa:(NSInteger)Cals;
 {
-    //self.MileageLabel.text = [NSString stringWithFormat:@"Distance:%2.2f km",(double)(TotalStep*60)];
+#ifdef MERBHC1510_Project
     self.BurnCalorieLabel.text = [NSString stringWithFormat:@"Calories:%5.1f cal",(double)Cals];
+    self.MileageLabel.text = [NSString stringWithFormat:@"TotalSteps:%f",(double)(TotalStep)];
+#endif
 }
     
 #pragma mark -
@@ -2335,6 +2337,42 @@ double getDistanceMetresBetweenLocationCoordinates(
     //[self.CustomButton sendActionsForControlEvents:UIControlEventTouchUpInside];
     
     //[self.navigationController pushViewController:[self.storyboard instantiateViewControllerWithIdentifier:@"HealthyCare"] animated:YES];
+    
+    /*
+    //Get current time(for iOS 8)
+    //==================================================================
+    NSDate *currentDate = [NSDate date];
+    NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
+    [dateFormatter setDateFormat:@"yyyy.MM.dd/HH:mm:ss/aa"];
+    NSString *timeString = [dateFormatter stringFromDate:currentDate];
+    NSLog(@"%@",timeString);
+    
+    NSRange Str_year = NSMakeRange(0, 4);
+    int yy = [[timeString substringWithRange:Str_year] intValue];
+    
+    NSRange Str_month = NSMakeRange(5, 2);
+    int mm = [[timeString substringWithRange:Str_month] intValue];
+    
+    NSRange Str_day = NSMakeRange(8, 2);
+    int dd = [[timeString substringWithRange:Str_day] intValue];
+    
+    NSRange Str_hour = NSMakeRange(11, 2);
+    int hh = [[timeString substringWithRange:Str_hour] intValue];
+    
+    NSRange Str_min = NSMakeRange(14, 2);
+    int min = [[timeString substringWithRange:Str_min] intValue];
+    
+    NSRange Str_sec = NSMakeRange(17, 2);
+    int sec = [[timeString substringWithRange:Str_sec] intValue];
+    
+    NSRange Str = [timeString rangeOfString:@"AM"];
+    if(Str.length > 0)
+        NSLog(@"AM");
+    else
+        NSLog(@"PM");
+    
+    NSLog(@"Time = %d,%d,%d,%d,%d,%d\n",yy,mm,dd,hh,min,sec);
+    */
 
 }
 @end

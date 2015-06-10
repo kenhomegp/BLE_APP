@@ -402,6 +402,11 @@
     //[[self delegate] logBLEMessage:@"Connecting..\n"];
 }
 
+-(void) DisconnectHRM
+{
+    [self.CM cancelPeripheralConnection:self.activePeripheral];
+}
+
 /*!
  *  @method centralManagerStateToString:
  *
@@ -840,6 +845,10 @@
         
         //[[self delegate] logBLEMessage:@"Found a device, connecting"];
         [[self delegate] logBLEMessage:[NSString stringWithFormat:@"Found a device: %@ , connecting..",localName]];
+        
+        NSUUID *Peripheralid = self.activePeripheral.identifier;
+        NSLog(@"Peripheral ID = %@",Peripheralid.UUIDString);
+
     }
 }
 
@@ -945,26 +954,16 @@
             
             BLE_Characteristic_DEBUG(("\r\n"));
             
-            #ifdef TestWithSunner
-            if([service.UUID isEqual:[CBUUID UUIDWithString:@"FF01"]])
-            #else
+
             if([service.UUID isEqual:[CBUUID UUIDWithString:@"FFE0"]])
-            #endif
             {
                 //if(service.characteristics.count == 1)
-                if(service.characteristics.count == 2)
+                if(service.characteristics.count == 3)
                 {
                     for (CBCharacteristic *aChar in service.characteristics)
                     {
-                        #ifdef TestWithSunner
-                        if([aChar.UUID isEqual:[CBUUID UUIDWithString:@"FF03"]])
-                        {
-                            NSLog(@"### Testing with Sunner ####");
-                            self.TestStep = EnableHeartRate;
-                            [self performSelector:@selector(BLETestScript) withObject:nil afterDelay:5.0];
-                        }
-                        #else
-                        if([aChar.UUID isEqual:[CBUUID UUIDWithString:@"FFE1"]])
+                        
+                        if([aChar.UUID isEqual:[CBUUID UUIDWithString:@"FFE1"]])//
                         {
                             if(CharacteristicType == 2)
                             {
@@ -976,8 +975,7 @@
                         else if([aChar.UUID isEqual:[CBUUID UUIDWithString:@"FFE2"]])
                         {
                             if(CharacteristicType == 3)
-                            {
-                                BLE_Characteristic_DEBUG(("Characteristic(FFE2) found!\r\n"));
+                            {                            BLE_Characteristic_DEBUG(("Characteristic(FFE2) found!\r\n"));
                             
                                 [[self delegate] logBLEMessage:@"Characteristic(FFE2) found!"];
                                 
@@ -992,7 +990,6 @@
                                 #endif
                             }
                         }
-                        #endif
                     }
                     
                     /*
