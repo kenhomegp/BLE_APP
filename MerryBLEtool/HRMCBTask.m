@@ -60,10 +60,13 @@
     
     if(self.CM != nil)
     {
-#if 0
+#if 1
         //Device is not bonded
         [self.CM scanForPeripheralsWithServices:services options:nil];
         //NSLog(@"Scan BLE_HeartRate device");
+        
+        //NSUUID *Peripheralid = self.activePeripheral.identifier;
+        //NSLog(@"Peripheral ID = %@",Peripheralid.UUIDString);
 #else
         
         //Device bonded
@@ -107,8 +110,8 @@
         [self.CM connectPeripheral:self.activePeripheral options:nil];
 
         //Get the UUID associated with the peripheral
-        //NSUUID *Peripheralid = self.activePeripheral.identifier;
-        //NSLog(@"Peripheral ID = %@",Peripheralid.UUIDString);
+        NSUUID *Peripheralid = self.activePeripheral.identifier;
+        NSLog(@"Peripheral ID = %@",Peripheralid.UUIDString);
         
         //NSLog(@"Connect to HRM_device,%@",self.activeDevName);
     }
